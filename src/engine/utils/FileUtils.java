@@ -9,7 +9,7 @@ public class FileUtils
     public static String loadAsString(String path)
     {
         StringBuilder result = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Class.class.getResourceAsStream(path))))
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.class.getResourceAsStream(path))))
         {
             String line = "";
             while((line = reader.readLine()) != null)

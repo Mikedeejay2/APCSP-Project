@@ -1,10 +1,12 @@
 package main;
 
+import engine.graphics.Material;
 import engine.graphics.Mesh;
 import engine.graphics.Vertex;
 import engine.graphics.shaders.StaticShader;
 import engine.io.Input;
 import engine.io.Window;
+import engine.maths.Vector2f;
 import engine.maths.Vector3f;
 import engine.renderers.Renderer;
 
@@ -22,14 +24,14 @@ public class Main implements Runnable
     public static final int HEIGHT = 1080;
 
     public Mesh mesh = new Mesh(new Vertex[] {
-            new Vertex(new Vector3f(-0.5f,0.5f, 0.0f), new Vector3f(1, 0, 0)),
-            new Vertex(new Vector3f(0.5f,0.5f, 0.0f), new Vector3f(0, 1, 0)),
-            new Vertex(new Vector3f(0.5f,-0.5f, 0.0f), new Vector3f(0, 0, 1)),
-            new Vertex(new Vector3f(-0.5f,-0.5f, 0.0f), new Vector3f(1, 1, 0))
+            new Vertex(new Vector3f(-0.5f,0.5f, 0.0f), new Vector3f(1, 0, 0), new Vector2f(0.0f, 0.0f)),
+            new Vertex(new Vector3f(0.5f,0.5f, 0.0f), new Vector3f(0, 1, 0), new Vector2f(0.0f, 1.0f)),
+            new Vertex(new Vector3f(0.5f,-0.5f, 0.0f), new Vector3f(0, 0, 1), new Vector2f(1.0f, 1.0f)),
+            new Vertex(new Vector3f(-0.5f,-0.5f, 0.0f), new Vector3f(1, 1, 0), new Vector2f(1.0f, 0.0f))
             }, new int[] {
                 0, 1, 2,
                 0, 3, 2
-            });
+            }, new Material("block/dirt.png"));
 
     public void start()
     {
