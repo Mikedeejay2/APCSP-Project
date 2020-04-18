@@ -26,7 +26,8 @@ public class Input
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods)
             {
-                keys[key] = (action != GLFW_RELEASE);
+                if(key >= 0 && key < GLFW_KEY_LAST)
+                    keys[key] = (action != GLFW_RELEASE);
             }
         };
         mouseMove = new GLFWCursorPosCallback()
@@ -43,6 +44,7 @@ public class Input
             @Override
             public void invoke(long window, int button, int action, int mods)
             {
+                if(button >= 0 && button < GLFW_MOUSE_BUTTON_LAST)
                 buttons[button] = (action != GLFW_RELEASE);
             }
         };

@@ -62,6 +62,7 @@ public class Renderer
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mesh.getMaterial().getTextureID());
         shader.start();
+        shader.setUniform("scale", 2.0f);
 
         glDrawElements(GL_TRIANGLES, mesh.getIndices().length, GL_UNSIGNED_INT, 0);
 

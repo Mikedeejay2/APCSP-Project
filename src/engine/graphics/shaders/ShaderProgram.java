@@ -1,11 +1,18 @@
 package engine.graphics.shaders;
 
+import engine.maths.Matrix4f;
+import engine.maths.Vector2f;
+import engine.maths.Vector3f;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.FloatBuffer;
+
+import static org.lwjgl.opengl.GL20C.*;
 
 public abstract class ShaderProgram
 {
@@ -88,5 +95,42 @@ public abstract class ShaderProgram
         }
 
         return shaderID;
+    }
+
+    public int getUniformLocation(String name)
+    {
+        return glGetUniformLocation(programID, name);
+    }
+
+    public void setUniform(String name, float value)
+    {
+        glUniform1f(getUniformLocation(name), value);
+    }
+
+    public void setUniform(String name, int value)
+    {
+        glUniform1i(getUniformLocation(name), value);
+    }
+
+    public void setUniform(String name, boolean value)
+    {
+        glUniform1i(getUniformLocation(name), value ? 1 : 0);
+    }
+
+    public void setUniform(String name, Vector2f value)
+    {
+        glUniform2f(getUniformLocation(name), value.getX(), value.getY());
+    }
+
+    public void setUniform(String name, Vector3f value)
+    {
+        glUniform3f(getUniformLocation(name), value.getX(), value.getY(), value.getZ());
+    }
+
+    public void setUniform(String name, Matrix4f value)
+    {
+        FloatBuffer matrix = MemoryUtil.memAllocFloat(4 * 4);
+        matrix.put(value.getAll()).flip();
+        glUniformMatrix4fv(getUniformLocation(name), true, matrix);
     }
 }
