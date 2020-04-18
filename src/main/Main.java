@@ -22,6 +22,7 @@ public class Main implements Runnable
     {
         System.out.println("Initializing game!");
         window = new Window(WIDTH, HEIGHT, "Voxel Engine");
+        window.setBackgroundColor(0.6f, 0.8f, 1f); //Sky Background color.
         window.create();
     }
 
@@ -40,7 +41,10 @@ public class Main implements Runnable
     {
         //System.out.println("Updating game!");
         window.update();
-        if(Input.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) System.out.println("X: " + Input.getMouseX() + ", Y: " + Input.getMouseY());
+        if(Input.isKeyDown(GLFW_KEY_F11))
+        {
+            window.setFullscreen(!window.isFullscreen());
+        }
     }
 
     private void render()
