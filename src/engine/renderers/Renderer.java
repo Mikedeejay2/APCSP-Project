@@ -44,6 +44,7 @@ public class Renderer
     {
         glBindVertexArray(mesh.getVAO());
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIBO());
         shader.start();
 
@@ -52,6 +53,7 @@ public class Renderer
         shader.stop();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
     }
 }

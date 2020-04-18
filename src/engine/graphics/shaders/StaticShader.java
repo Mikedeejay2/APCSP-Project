@@ -14,5 +14,6 @@ public class StaticShader extends ShaderProgram
     protected void bindAttributes()
     {
         super.bindAttribute("position", 0);
+        super.bindAttribute("in_Color", 1);
     }
 }

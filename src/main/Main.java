@@ -1,7 +1,6 @@
 package main;
 
 import engine.graphics.Mesh;
-import engine.graphics.shaders.ShaderProgram;
 import engine.graphics.Vertex;
 import engine.graphics.shaders.StaticShader;
 import engine.io.Input;
@@ -23,10 +22,10 @@ public class Main implements Runnable
     public static final int HEIGHT = 1080;
 
     public Mesh mesh = new Mesh(new Vertex[] {
-            new Vertex(new Vector3f(-0.5f,0.5f, 0.0f)),
-            new Vertex(new Vector3f(0.5f,0.5f, 0.0f)),
-            new Vertex(new Vector3f(0.5f,-0.5f, 0.0f)),
-            new Vertex(new Vector3f(-0.5f,-0.5f, 0.0f))
+            new Vertex(new Vector3f(-0.5f,0.5f, 0.0f), new Vector3f(1, 0, 0)),
+            new Vertex(new Vector3f(0.5f,0.5f, 0.0f), new Vector3f(0, 1, 0)),
+            new Vertex(new Vector3f(0.5f,-0.5f, 0.0f), new Vector3f(0, 0, 1)),
+            new Vertex(new Vector3f(-0.5f,-0.5f, 0.0f), new Vector3f(1, 1, 0))
             }, new int[] {
                 0, 1, 2,
                 0, 3, 2
@@ -58,7 +57,7 @@ public class Main implements Runnable
             update();
             render();
         }
-        window.destroy();
+        close();
     }
 
     private void update()
@@ -76,6 +75,13 @@ public class Main implements Runnable
         renderer.renderMesh(mesh);
 
         window.swapBuffers();
+    }
+
+    private void close()
+    {
+        window.destroy();
+        mesh.destroy();
+        shader.destroy();
     }
 
     public static void main(String[] args)
