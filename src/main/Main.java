@@ -1,7 +1,9 @@
 package main;
 
 import engine.graphics.Mesh;
+import engine.graphics.shaders.ShaderProgram;
 import engine.graphics.Vertex;
+import engine.graphics.shaders.StaticShader;
 import engine.io.Input;
 import engine.io.Window;
 import engine.maths.Vector3f;
@@ -15,6 +17,7 @@ public class Main implements Runnable
     public Thread game;
     public Window window;
     public Renderer renderer;
+    public StaticShader shader;
 
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
@@ -32,7 +35,6 @@ public class Main implements Runnable
     public void start()
     {
         instance = this;
-        this.renderer = new Renderer();
         game = new Thread(this, "game");
         game.start();
     }
@@ -41,8 +43,10 @@ public class Main implements Runnable
     {
         System.out.println("Initializing game!");
         window = new Window(WIDTH, HEIGHT, "Voxel Engine");
-        instance.getRenderer().setBackgroundColor(0.6f, 0.8f, 1f); //Sky Background color.
         window.create();
+        shader = new StaticShader();
+        renderer = new Renderer(shader);
+        instance.getRenderer().setBackgroundColor(0.6f, 0.8f, 1f); //Sky Background color.
         mesh.create();
     }
 
@@ -70,6 +74,7 @@ public class Main implements Runnable
     private void render()
     {
         renderer.renderMesh(mesh);
+
         window.swapBuffers();
     }
 

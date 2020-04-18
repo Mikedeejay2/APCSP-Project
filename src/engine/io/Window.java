@@ -115,6 +115,7 @@ public class Window
     public void destroy()
     {
         input.destroy();
+        instance.shader.cleanUp();
         sizeCallback.free();
         glfwWindowShouldClose(window);
         glfwDestroyWindow(window);

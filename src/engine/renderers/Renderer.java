@@ -1,6 +1,7 @@
 package engine.renderers;
 
 import engine.graphics.Mesh;
+import engine.graphics.shaders.ShaderProgram;
 import engine.maths.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -15,8 +16,11 @@ public class Renderer
 {
     private Vector3f backgroundColor;
 
-    public Renderer()
+    private ShaderProgram shader;
+
+    public Renderer(ShaderProgram shader)
     {
+        this.shader = shader;
         backgroundColor = new Vector3f(0, 0, 0);
     }
 
@@ -41,9 +45,11 @@ public class Renderer
         glBindVertexArray(mesh.getVAO());
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIBO());
+        shader.start();
 
         glDrawElements(GL_TRIANGLES, mesh.getIndices().length, GL_UNSIGNED_INT, 0);
 
+        shader.stop();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDisableVertexAttribArray(0);
         glBindVertexArray(0);
