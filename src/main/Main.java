@@ -1,6 +1,9 @@
 package main;
 
+import engine.io.Input;
 import engine.io.Window;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Main implements Runnable
 {
@@ -30,12 +33,14 @@ public class Main implements Runnable
             update();
             render();
         }
+        window.destroy();
     }
 
     private void update()
     {
         //System.out.println("Updating game!");
         window.update();
+        if(Input.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) System.out.println("X: " + Input.getMouseX() + ", Y: " + Input.getMouseY());
     }
 
     private void render()
