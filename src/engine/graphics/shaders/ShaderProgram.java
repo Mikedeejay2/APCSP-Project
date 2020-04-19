@@ -33,6 +33,8 @@ public abstract class ShaderProgram
         GL20.glValidateProgram(programID);
     }
 
+    protected abstract void getAllUniformLocations();
+
     protected abstract void bindAttributes();
 
     protected void bindAttribute(String variableName, int attribute)
@@ -64,7 +66,7 @@ public abstract class ShaderProgram
     {
         StringBuilder shaderSource = new StringBuilder();
 
-        InputStream in = Class.class.getResourceAsStream(file);
+        InputStream in = ShaderProgram.class.getResourceAsStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
         String line;
@@ -132,5 +134,45 @@ public abstract class ShaderProgram
         FloatBuffer matrix = MemoryUtil.memAllocFloat(4 * 4);
         matrix.put(value.getAll()).flip();
         glUniformMatrix4fv(getUniformLocation(name), true, matrix);
+    }
+
+    public void cleanUp(){
+        stop();
+        GL20.glDetachShader(programID, vertexShaderID);
+        GL20.glDetachShader(programID, fragmentShaderID);
+        GL20.glDeleteShader(vertexShaderID);
+        GL20.glDeleteShader(fragmentShaderID);
+        GL20.glDeleteProgram(programID);
+    }
+
+    protected void bindAttribute(int attribute, String variableName){
+        GL20.glBindAttribLocation(programID, attribute, variableName);
+    }
+
+    protected void loadFloat(int location, float value){
+        GL20.glUniform1f(location, value);
+    }
+
+    protected void loadInt(int location, int value){
+        GL20.glUniform1i(location, value);
+    }
+
+    protected void loadVector(int location, Vector3f vector)
+    {
+        GL20.glUniform3f(location,vector.getX(),vector.getY(),vector.getZ());
+    }
+
+    protected void load2DVector(int location, Vector2f vector)
+    {
+        GL20.glUniform2f(location,vector.getX(),vector.getY());
+    }
+
+    protected void loadBoolean(int location, boolean value)
+    {
+        float toLoad = 0;
+        if(value){
+            toLoad = 1;
+        }
+        GL20.glUniform1f(location, toLoad);
     }
 }

@@ -198,6 +198,16 @@ public class Quaternion
     public Quaternion set(float x, float y, float z, float w) {this.x = x; this.y = y; this.z = z; this.w = w; return this;}
     public Quaternion set(Quaternion r) { set(r.getX(), r.getY(), r.getZ(), r.getW()); return this;}
 
+    public Quaternion addDegrees(float x, float y, float z, float degree)
+    {
+        return mul(new Quaternion(new Vector3f(x, y, z), (float)Math.toRadians(degree))).normalized();
+    }
+
+    public Quaternion addDegrees(Vector3f axis, float degree)
+    {
+        return mul(new Quaternion(new Vector3f(axis.getX(), axis.getY(), axis.getZ()), (float)Math.toRadians(degree))).normalized();
+    }
+
     public float getX()
     {
         return x;

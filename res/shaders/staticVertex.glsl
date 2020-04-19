@@ -7,11 +7,12 @@ in vec2 textureCoord;
 out vec3 passColor;
 out vec2 passTextureCoord;
 
-uniform float scale;
+uniform mat4 model;
+uniform mat4 projection;
 
 void main(void)
 {
-    gl_Position = vec4(position, 1.0) * vec4(scale, scale, scale, 1);
+    gl_Position = projection * model * vec4(position, 1.0);
     passColor = color;
     passTextureCoord = textureCoord;
 }

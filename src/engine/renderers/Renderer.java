@@ -3,6 +3,8 @@ package engine.renderers;
 import engine.graphics.Mesh;
 import engine.graphics.shaders.ShaderProgram;
 import engine.maths.Vector3f;
+import engine.objects.GameObject;
+import main.Main;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -17,6 +19,8 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 public class Renderer
 {
+    private Main instance = Main.getInstance();
+
     private Vector3f backgroundColor;
 
     private ShaderProgram shader;
@@ -29,22 +33,17 @@ public class Renderer
 
     public void prepare()
     {
+        glFrontFace(GL_CW);
+        glCullFace(GL_BACK);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+
+        glEnable(GL_DEPTH_CLAMP);
+
+        glEnable(GL_TEXTURE_2D);
+
         glClearColor(backgroundColor.getX(), backgroundColor.getY(), backgroundColor.getZ(), 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//        glFrontFace(GL_CW);
-//        glCullFace(GL_BACK);
-//        glEnable(GL_CULL_FACE);
-//        glEnable(GL_DEPTH_TEST);
-//
-//        glEnable(GL_DEPTH_CLAMP);
-//
-//        glEnable(GL_TEXTURE_2D);
-    }
-
-    public void render()
-    {
-        //TODO: THIS
     }
 
     public void setBackgroundColor(float r, float g, float b)
@@ -52,19 +51,20 @@ public class Renderer
         backgroundColor.set(r, g, b);
     }
 
-    public void renderMesh(Mesh mesh)
+    public void renderObject(GameObject object)
     {
-        glBindVertexArray(mesh.getVAO());
+        glBindVertexArray(object.getMesh().getVAO());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIBO());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getMesh().getIBO());
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh.getMaterial().getTextureID());
+        glBindTexture(GL_TEXTURE_2D, object.getMaterial().getTextureID());
         shader.start();
-        shader.setUniform("scale", 2.0f);
+        shader.setUniform("model", object.getTransform().getTransformation());
+        shader.setUniform("projection", instance.getCamera().getViewProjection());
 
-        glDrawElements(GL_TRIANGLES, mesh.getIndices().length, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, object.getMesh().getIndices().length, GL_UNSIGNED_INT, 0);
 
         shader.stop();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

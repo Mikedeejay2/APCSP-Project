@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Window
 {
     private Main instance = Main.getInstance();
-    private int width, height;
+    private static int width, height;
     private String title;
     private long window;
     public static int frames;
@@ -122,7 +122,7 @@ public class Window
         glfwTerminate();
     }
 
-    public int getWidth()
+    public static int getWidth()
     {
         return width;
     }
@@ -132,7 +132,7 @@ public class Window
         this.width = width;
     }
 
-    public int getHeight()
+    public static int getHeight()
     {
         return height;
     }

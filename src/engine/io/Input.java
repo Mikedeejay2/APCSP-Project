@@ -1,14 +1,21 @@
 package engine.io;
 
+import engine.maths.Vector2f;
+import main.Main;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
+import java.nio.DoubleBuffer;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Input
 {
+    private static Main instance = Main.getInstance();
+
     private static boolean[] keys = new boolean[GLFW_KEY_LAST];
     private static boolean[] buttons = new boolean[GLFW_MOUSE_BUTTON_LAST];
     private static double mouseX, mouseY;
@@ -116,5 +123,69 @@ public class Input
     public GLFWScrollCallback getMouseScrollCallback()
     {
         return mouseScroll;
+    }
+
+    public static void setMouseX(double mouseX)
+    {
+        Input.mouseX = mouseX;
+    }
+
+    public static void setMouseY(double mouseY)
+    {
+        Input.mouseY = mouseY;
+    }
+
+    public static void setScrollX(double scrollX)
+    {
+        Input.scrollX = scrollX;
+    }
+
+    public static void setScrollY(double scrollY)
+    {
+        Input.scrollY = scrollY;
+    }
+
+    public GLFWKeyCallback getKeyboard()
+    {
+        return keyboard;
+    }
+
+    public GLFWCursorPosCallback getMouseMove()
+    {
+        return mouseMove;
+    }
+
+    public GLFWMouseButtonCallback getMouseButtons()
+    {
+        return mouseButtons;
+    }
+
+    public GLFWScrollCallback getMouseScroll()
+    {
+        return mouseScroll;
+    }
+
+
+    public static Vector2f getMousePosition()
+    {
+        DoubleBuffer posX = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer posY = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(instance.getWindow().getWindow(), posX, posY);
+        return new Vector2f((float)posX.get(), (float)posY.get());
+    }
+
+    public static void setMousePosition(Vector2f pos)
+    {
+        glfwSetCursorPos(instance.getWindow().getWindow(), pos.getX(), pos.getY());
+    }
+
+    public static void setCursor(boolean enabled)
+    {
+        if(enabled)
+        {
+            glfwSetInputMode(instance.getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+        else
+            glfwSetInputMode(instance.getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 }
