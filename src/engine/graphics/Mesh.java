@@ -17,6 +17,7 @@ public class Mesh
 
     public Mesh(Vertex[] vertices, int[] indices)
     {
+        System.out.println("Mesh");
         this.vertices = vertices;
         this.indices = indices;
     }

@@ -3,10 +3,6 @@ package engine.io;
 import engine.maths.Vector2f;
 import main.Main;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.DoubleBuffer;
 
@@ -16,155 +12,57 @@ public class Input
 {
     private static Main instance = Main.getInstance();
 
-    private static boolean[] keys = new boolean[GLFW_KEY_LAST];
-    private static boolean[] buttons = new boolean[GLFW_MOUSE_BUTTON_LAST];
-    private static double mouseX, mouseY;
-    private static double scrollX, scrollY;
+    private static boolean[] lastKeys = new boolean[GLFW_KEY_LAST];
+    private static boolean[] lastMouse = new boolean[GLFW_MOUSE_BUTTON_LAST];
 
-    private GLFWKeyCallback keyboard;
-    private GLFWCursorPosCallback mouseMove;
-    private GLFWMouseButtonCallback mouseButtons;
-    private GLFWScrollCallback mouseScroll;
-
-    public Input()
+    public static void update(float delta)
     {
-        keyboard = new GLFWKeyCallback()
+        for(int i = 0; i < GLFW_KEY_LAST; i++)
         {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods)
-            {
-                if(key >= 0 && key < GLFW_KEY_LAST)
-                    keys[key] = (action != GLFW_RELEASE);
-            }
-        };
-        mouseMove = new GLFWCursorPosCallback()
+            lastKeys[i] = getKey(i);
+        }
+
+        for(int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
         {
-            @Override
-            public void invoke(long window, double xpos, double ypos)
-            {
-                mouseX = xpos;
-                mouseY = ypos;
-            }
-        };
-        mouseButtons = new GLFWMouseButtonCallback()
-        {
-            @Override
-            public void invoke(long window, int button, int action, int mods)
-            {
-                if(button >= 0 && button < GLFW_MOUSE_BUTTON_LAST)
-                buttons[button] = (action != GLFW_RELEASE);
-            }
-        };
-
-        mouseScroll = new GLFWScrollCallback()
-        {
-            @Override
-            public void invoke(long window, double xoffset, double yoffset)
-            {
-                scrollX += xoffset;
-                scrollY += yoffset;
-            }
-        };
+            lastMouse[i] = getMouse(i);
+        }
     }
 
-    public static boolean isKeyDown(int key)
+
+    public static boolean getKey(int keyCode)
     {
-        return keys[key];
+        if(keyCode > 31)
+            if(glfwGetKey(instance.getWindow().getWindow(), keyCode) == 1)
+                return true;
+        return false;
     }
 
-    public static boolean isButtonDown(int button)
+    public static boolean getKeyDown(int keyCode)
     {
-        return buttons[button];
+        return getKey(keyCode) && !lastKeys[keyCode];
     }
 
-    public void destroy()
+    public static boolean getKeyUp(int keyCode)
     {
-        keyboard.free();
-        mouseMove.free();
-        mouseButtons.free();
-        mouseScroll.free();
+        return !getKey(keyCode) && lastKeys[keyCode];
     }
 
-    public static double getMouseX()
+    public static boolean getMouse(int mouseButton)
     {
-        return mouseX;
+        if(glfwGetMouseButton(instance.getWindow().getWindow(), mouseButton) == 1)
+            return true;
+        return false;
     }
 
-    public static double getMouseY()
+    public static boolean getMouseDown(int mouseButton)
     {
-        return mouseY;
+        return getMouse(mouseButton) && !lastMouse[mouseButton];
     }
 
-    public static double getScrollX()
+    public static boolean getMouseUp(int mouseButton)
     {
-        return scrollX;
+        return !getMouse(mouseButton) && lastMouse[mouseButton];
     }
-
-    public static double getScrollY()
-    {
-        return scrollY;
-    }
-
-    public GLFWKeyCallback getKeyboardCallback()
-    {
-        return keyboard;
-    }
-
-    public GLFWCursorPosCallback getMouseMoveCallback()
-    {
-        return mouseMove;
-    }
-
-    public GLFWMouseButtonCallback getMouseButtonCallback()
-    {
-        return mouseButtons;
-    }
-
-    public GLFWScrollCallback getMouseScrollCallback()
-    {
-        return mouseScroll;
-    }
-
-    public static void setMouseX(double mouseX)
-    {
-        Input.mouseX = mouseX;
-    }
-
-    public static void setMouseY(double mouseY)
-    {
-        Input.mouseY = mouseY;
-    }
-
-    public static void setScrollX(double scrollX)
-    {
-        Input.scrollX = scrollX;
-    }
-
-    public static void setScrollY(double scrollY)
-    {
-        Input.scrollY = scrollY;
-    }
-
-    public GLFWKeyCallback getKeyboard()
-    {
-        return keyboard;
-    }
-
-    public GLFWCursorPosCallback getMouseMove()
-    {
-        return mouseMove;
-    }
-
-    public GLFWMouseButtonCallback getMouseButtons()
-    {
-        return mouseButtons;
-    }
-
-    public GLFWScrollCallback getMouseScroll()
-    {
-        return mouseScroll;
-    }
-
 
     public static Vector2f getMousePosition()
     {

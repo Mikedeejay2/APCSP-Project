@@ -1,8 +1,8 @@
 package main;
 
+import debug.DebugScreen;
+import engine.CoreEngine;
 import engine.font.TextMaster;
-import engine.font.creator.FontType;
-import engine.font.creator.GUIText;
 import engine.graphics.*;
 import engine.graphics.shaders.StaticShader;
 import engine.io.Input;
@@ -13,25 +13,17 @@ import engine.maths.Vector3f;
 import engine.objects.Camera;
 import engine.objects.GameObject;
 import engine.renderers.Renderer;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
-
-import java.io.File;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Main implements Runnable
+public class Main
 {
     public static Main instance;
-    public Thread game;
-    public Window window;
     public Renderer renderer;
     public StaticShader shader;
-    public TextMaster textMaster;
     public Loader loader;
-
-    FontType font;
-    GUIText text;
+    public DebugScreen debugScreen;
+    public CoreEngine coreEngine;
 
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
@@ -91,8 +83,8 @@ public class Main implements Runnable
     public void start()
     {
         instance = this;
-        game = new Thread(this, "game");
-        game.start();
+        coreEngine = new CoreEngine(1920, 1080, 240, this);
+        coreEngine.start();
     }
 
     public void init()
@@ -100,13 +92,11 @@ public class Main implements Runnable
         System.out.println("Initializing game!");
         loader = new Loader();
 
-        window = new Window(WIDTH, HEIGHT, "Voxel Engine");
-        window.create();
-
         shader = new StaticShader();
-        renderer = new Renderer(shader);
 
-        camera = new Camera(70f, (float)window.getWidth() / window.getHeight(), 0.01f, 1000, 0.3f, 0.2f);
+        camera = new Camera(70f, (float)Window.getWidth() / Window.getHeight(), 0.01f, 1000, 0.3f, 10f);
+
+        renderer = new Renderer(shader);
 
         instance.getRenderer().setBackgroundColor(0.6f, 0.8f, 1f); //Sky Background color.
 
@@ -115,50 +105,36 @@ public class Main implements Runnable
 
         object = new GameObject(new Vector3f(0, 0, 2), new Quaternion(new Vector3f(0, 1, 0), (float) Math.toRadians(0f)), new Vector3f(1, 1, 1), blockMesh, material);
         object.create();
-//
+
         TextMaster.init(loader);
 
-        font = new FontType(new Texture("fonts/ascii.png").getId(), new File("res/fonts/ascii.fnt"));
-        text = new GUIText("This is a test tefwefewfwefe fweoifj wefiojweofi ewjofi jewofiewj foiwej foiewj foiwjfoi ewjfoi wxt!", 1, font, new Vector2f(0, 0), 1f, true);
+        debugScreen = new DebugScreen();
+        debugScreen.init();
     }
 
-    public void run()
+    public void update(float delta)
     {
-        init();
-        while(!window.shouldClose())
-        {
-            update();
-            render();
-        }
-        close();
+        object.update(delta);
+        camera.update(delta);
+        debugScreen.update(delta);
     }
 
-    private void update()
+    public void input(float delta)
     {
-        //System.out.println("Updating game!");
-        if(Input.isKeyDown(GLFW_KEY_F11))
-        {
-            window.setFullscreen(!window.isFullscreen());
-        }
-        object.update();
-        camera.update();
-        GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-        TextMaster.render();
-
-        window.update();
+        if(Input.getKeyDown(GLFW_KEY_F11)) coreEngine.getWindow().setFullscreen(!coreEngine.getWindow().isFullscreen());
+        if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();
     }
 
-    private void render()
+    public void render()
     {
         renderer.renderObject(object);
 
-        window.swapBuffers();
+        TextMaster.render();
     }
 
-    private void close()
+    public void close()
     {
         TextMaster.cleanUp();
-        window.destroy();
         object.destroy();
         blockMesh.destroy();
         shader.destroy();
@@ -186,6 +162,11 @@ public class Main implements Runnable
 
     public Window getWindow()
     {
-        return window;
+        return coreEngine.getWindow();
+    }
+
+    public DebugScreen getDebugScreen()
+    {
+        return debugScreen;
     }
 }

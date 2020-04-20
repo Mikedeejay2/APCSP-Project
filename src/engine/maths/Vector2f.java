@@ -7,6 +7,7 @@ public class Vector2f
 
     public Vector2f(float x, float y)
     {
+        System.out.println("Vector2f");
         this.x = x;
         this.y = y;
     }

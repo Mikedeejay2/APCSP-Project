@@ -19,6 +19,7 @@ public class Word {
 	 * @param fontSize - the font size of the text which this word is in.
 	 */
 	protected Word(double fontSize){
+		System.out.println("Word");
 		this.fontSize = fontSize;
 	}
 	

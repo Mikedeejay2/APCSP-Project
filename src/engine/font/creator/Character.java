@@ -49,6 +49,7 @@ public class Character {
 	 */
 	protected Character(int id, double xTextureCoord, double yTextureCoord, double xTexSize, double yTexSize,
 			double xOffset, double yOffset, double sizeX, double sizeY, double xAdvance) {
+		System.out.println("Character");
 		this.id = id;
 		this.xTextureCoord = xTextureCoord;
 		this.yTextureCoord = yTextureCoord;

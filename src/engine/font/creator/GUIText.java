@@ -17,7 +17,7 @@ public class GUIText {
 
 	private int textMeshVao;
 	private int vertexCount;
-	private Vector3f colour = new Vector3f(0f, 0f, 0f);
+	private Vector3f color = new Vector3f(0f, 0f, 0f);
 
 	private Vector2f position;
 	private float lineMaxSize;
@@ -54,13 +54,19 @@ public class GUIText {
 	 */
 	public GUIText(String text, float fontSize, FontType font, Vector2f position, float maxLineLength,
 				   boolean centered) {
+		System.out.println("GUIText");
 		this.textString = text;
 		this.fontSize = fontSize;
 		this.font = font;
 		this.position = position;
 		this.lineMaxSize = maxLineLength;
 		this.centerText = centered;
-		TextMaster.loadText(this);;
+		TextMaster.loadText(this);
+	}
+
+	public void setText(String s)
+	{
+		textString = s;
 	}
 
 	/**
@@ -78,7 +84,7 @@ public class GUIText {
 	}
 
 	/**
-	 * Set the colour of the text.
+	 * Set the color of the text.
 	 *
 	 * @param r
 	 *            - red value, between 0 and 1.
@@ -87,15 +93,15 @@ public class GUIText {
 	 * @param b
 	 *            - blue value, between 0 and 1.
 	 */
-	public void setColour(float r, float g, float b) {
-		colour.set(r, g, b);
+	public void setcolor(float r, float g, float b) {
+		color.set(r, g, b);
 	}
 
 	/**
-	 * @return the colour of the text.
+	 * @return the color of the text.
 	 */
 	public Vector3f getColor() {
-		return colour;
+		return color;
 	}
 
 	/**

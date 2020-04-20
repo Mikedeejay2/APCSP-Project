@@ -7,17 +7,13 @@ public class Material
 
     public Material(String path)
     {
+        System.out.println("Material");
         this.path = path;
     }
 
     public void create()
     {
         texture = new Texture(path);
-    }
-
-    public void destroy()
-    {
-        texture.finalize();
     }
 
     public int getWidth()

@@ -6,6 +6,7 @@ public class RawModel {
     private int vertexCount;
 
     public RawModel(int vaoID, int vertexCount){
+        System.out.println("RawModel");
         this.vaoID = vaoID;
         this.vertexCount = vertexCount;
     }

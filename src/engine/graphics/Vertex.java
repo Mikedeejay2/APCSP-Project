@@ -10,6 +10,7 @@ public class Vertex
 
     public Vertex(Vector3f position, Vector2f textureCoord)
     {
+        System.out.println("Vertex");
         this.position = position;
         this.textureCoord = textureCoord;
     }

@@ -28,6 +28,7 @@ public class Line {
 	 *            - the screen-space maximum length of a line.
 	 */
 	protected Line(double spaceWidth, double fontSize, double maxLength) {
+		System.out.println("Line");
 		this.spaceSize = spaceWidth * fontSize;
 		this.maxLength = maxLength;
 	}

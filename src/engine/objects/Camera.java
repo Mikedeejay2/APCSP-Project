@@ -13,16 +13,17 @@ public class Camera
 
     public Camera(float fov, float aspect, float zNear, float zFar, float sensitivity, float speed)
     {
+        System.out.println("Camera");
         transform = new Transform();
         this.projection = new Matrix4f().initPerspective(fov, aspect, zNear, zFar);
         this.freeLook = new FreeLook(this, sensitivity);
         this.freeMove = new FreeMove(this, speed);
     }
 
-    public void update()
+    public void update(float delta)
     {
-        freeLook.input();
-        freeMove.input();
+        freeLook.input(delta);
+        freeMove.input(delta);
     }
 
     public Matrix4f getViewProjection()

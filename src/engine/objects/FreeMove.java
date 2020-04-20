@@ -21,6 +21,7 @@ public class FreeMove
 
     public FreeMove(Camera camera, float speed, int forwardKey, int backKey, int leftKey, int rightKey)
     {
+        System.out.println("FreeMove");
         this.speed = speed;
         this.forwardKey = forwardKey;
         this.backKey = backKey;
@@ -29,22 +30,22 @@ public class FreeMove
         this.camera = camera;
     }
 
-    public void input()
+    public void input(float delta)
     {
-        float movAmt = speed; //* delta
+        float movAmt = speed * delta;
 
-        if(Input.isKeyDown(GLFW.GLFW_KEY_ESCAPE))
+        if(Input.getKey(GLFW.GLFW_KEY_ESCAPE))
         {
             Input.setCursor(true);
         }
 
-        if(Input.isKeyDown(forwardKey))
+        if(Input.getKey(forwardKey))
             move(camera.getTransform().getRot().getForward(), movAmt);
-        if(Input.isKeyDown(backKey))
+        if(Input.getKey(backKey))
             move(camera.getTransform().getRot().getForward(), -movAmt);
-        if(Input.isKeyDown(leftKey))
+        if(Input.getKey(leftKey))
             move(camera.getTransform().getRot().getLeft(), movAmt);
-        if(Input.isKeyDown(rightKey))
+        if(Input.getKey(rightKey))
             move(camera.getTransform().getRot().getRight(), movAmt);
     }
 

@@ -12,6 +12,7 @@ public class TextMeshCreator
 	private MetaFile metaData;
 
 	protected TextMeshCreator(File metaFile) {
+		System.out.println("TextMeshCreator");
 		metaData = new MetaFile(metaFile);
 	}
 
@@ -70,9 +71,9 @@ public class TextMeshCreator
 					addVerticesForCharacter(curserX, curserY, letter, text.getFontSize(), vertices);
 					addTexCoords(textureCoords, letter.getxTextureCoord(), letter.getyTextureCoord(),
 							letter.getXMaxTextureCoord(), letter.getYMaxTextureCoord());
-					curserX += letter.getxAdvance() * text.getFontSize();
+					curserX += letter.getxAdvance()+0.003333333333f * text.getFontSize();
 				}
-				curserX += metaData.getSpaceWidth() * text.getFontSize();
+				curserX += metaData.getSpaceWidth()+0.004f * text.getFontSize();
 			}
 			curserX = 0;
 			curserY += LINE_HEIGHT * text.getFontSize();

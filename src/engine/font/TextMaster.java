@@ -6,6 +6,7 @@ import engine.font.creator.TextMeshData;
 import engine.font.rendering.FontRenderer;
 import engine.graphics.Loader;
 import engine.graphics.Mesh;
+import org.lwjgl.opengl.GL30;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,11 +42,32 @@ public class TextMaster
         textBatch.add(text);
     }
 
+    public static void loadTextUseVAO(GUIText text){
+        FontType font = text.getFont();
+        TextMeshData data = font.loadText(text);
+        int vao = text.getMesh();
+        text.setMeshInfo(vao, data.getVertexCount());
+        List<GUIText> textBatch = texts.get(font);
+        if(textBatch == null){
+            textBatch = new ArrayList<GUIText>();
+            texts.put(font, textBatch);
+        }
+        textBatch.add(text);
+    }
+
+    public static void editText(GUIText text, String newText)
+    {
+        removeText(text);
+        text.setText(newText);
+        loadText(text);
+    }
+
     public static void removeText(GUIText text){
         List<GUIText> textBatch = texts.get(text.getFont());
         textBatch.remove(text);
         if(textBatch.isEmpty()){
             texts.remove(texts.get(text.getFont()));
+            GL30.glDeleteVertexArrays(text.getMesh());
         }
     }
 

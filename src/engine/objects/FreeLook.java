@@ -24,19 +24,21 @@ public class FreeLook
 
     public FreeLook(Camera camera, float sensitivity, int unlockMouseKey)
     {
+        System.out.println("Freelook");
         this.sensitivity = sensitivity;
         this.unlockMouseKey = unlockMouseKey;
         this.camera = camera;
     }
 
-    public void input()
+    public void input(float delta)
     {
-        if (Input.isKeyDown(unlockMouseKey))
+        System.out.println("TO IMPUT OF FREELOOK OF CAMERA");
+        if (Input.getKey(unlockMouseKey))
         {
             Input.setCursor(true);
             mouseLocked = false;
         }
-        if (Input.isButtonDown(0))
+        if (Input.getMouse(0))
         {
             Input.setMousePosition(centerPosition);
             Input.setCursor(false);
@@ -46,14 +48,20 @@ public class FreeLook
         if (mouseLocked)
         {
             Vector2f deltaPos = Input.getMousePosition().sub(centerPosition);
+            System.out.println("deltaPos " + deltaPos.getX() + " " + deltaPos.getY());
 
             boolean rotY = deltaPos.getX() != 0;
             boolean rotX = deltaPos.getY() != 0;
+            System.out.println("roty " + rotY + " rotX " + rotX);
 
             if (rotY)
+            {
                 camera.getTransform().rotate(yAxis, (float) Math.toRadians(deltaPos.getX() * sensitivity));
+            }
             if (rotX)
+            {
                 camera.getTransform().rotate(camera.getTransform().getRot().getRight(), (float) Math.toRadians(deltaPos.getY() * sensitivity));
+            }
 
             if (rotY || rotX)
                 Input.setMousePosition(new Vector2f(Window.getWidth() / 2, Window.getHeight() / 2));

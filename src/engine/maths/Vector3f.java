@@ -8,6 +8,7 @@ public class Vector3f
 
     public Vector3f(float x, float y, float z)
     {
+        System.out.println("Vector3f");
         this.x = x;
         this.y = y;
         this.z = z;

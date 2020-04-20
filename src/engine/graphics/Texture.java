@@ -21,6 +21,7 @@ public class Texture
 
     public Texture(String fileName)
     {
+        System.out.println("Texture");
         this.fileName = fileName;
         TextureResource oldResource = loadedTextures.get(fileName);
 

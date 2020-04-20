@@ -7,7 +7,8 @@ public class StaticShader extends ShaderProgram
 
     public StaticShader()
     {
-        super(vertexFile, fragmentFIle);
+        super(vertexFile, fragmentFIle);        System.out.println("StaticShader");
+
     }
 
     @Override

@@ -22,6 +22,11 @@ public class Loader {
     private List<Integer> vbos = new ArrayList<Integer>();
     private List<Integer> textures = new ArrayList<Integer>();
 
+    public Loader()
+    {
+        System.out.println("Loader");
+    }
+
     public int loadToVAO(float[] positions, float[] textureCoords) {
         int vaoID = createVAO();
         storeDataInAttributeList(0, 2, positions);

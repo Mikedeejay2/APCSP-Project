@@ -6,6 +6,7 @@ public class Matrix4f
 
     public Matrix4f()
     {
+        System.out.println("Matrix4f");
         m = new float[4][4];
     }
 

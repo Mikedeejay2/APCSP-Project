@@ -15,6 +15,7 @@ public class FontRenderer {
 	private FontShader shader;
 
 	public FontRenderer() {
+		System.out.println("FontRenderer");
 		shader = new FontShader();
 	}
 
@@ -51,7 +52,6 @@ public class FontRenderer {
 		GL20.glEnableVertexAttribArray(1);
 		shader.loadColor(text.getColor());
 		shader.loadTranslation(text.getPosition());
-		System.out.println("Printing Text! " + text.getFont().getTextureAtlas());
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 		GL20.glDisableVertexAttribArray(0);
 		GL20.glDisableVertexAttribArray(1);

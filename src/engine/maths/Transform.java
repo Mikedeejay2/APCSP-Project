@@ -15,6 +15,7 @@ public class Transform
 
     public Transform()
     {
+        System.out.println("Transform");
         pos = new Vector3f(0,0,0);
         rot = new Quaternion(0,0,0,1);
         scale = new Vector3f(1,1,1);
@@ -40,6 +41,7 @@ public class Transform
 
     public void rotate(Vector3f axis, float angle)
     {
+        System.out.println("We should be rotating the thing by " + angle);
         rot = new Quaternion(axis, angle).mul(rot).normalized();
     }
 

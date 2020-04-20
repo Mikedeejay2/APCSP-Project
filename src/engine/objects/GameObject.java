@@ -14,6 +14,7 @@ public class GameObject
 
     public GameObject(Vector3f position, Quaternion quaternion, Vector3f scale, Mesh mesh, Material material)
     {
+        System.out.println("GameObject");
         transform = new Transform();
         transform.setPos(position);
         transform.setRot(quaternion);
@@ -29,10 +30,10 @@ public class GameObject
 
     public void destroy()
     {
-        material.destroy();
+
     }
 
-    public void update()
+    public void update(float delta)
     {
         //transform.setRot(transform.getRot().addDegrees(0, 0, 1, 1));
         //transform.setPos(transform.getPos().add(0, 0, 0.01f));

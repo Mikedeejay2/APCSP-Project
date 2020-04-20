@@ -2,6 +2,7 @@ package engine.renderers;
 
 import engine.graphics.Mesh;
 import engine.graphics.shaders.ShaderProgram;
+import engine.maths.Matrix4f;
 import engine.maths.Vector3f;
 import engine.objects.GameObject;
 import main.Main;
@@ -25,14 +26,11 @@ public class Renderer
 
     private ShaderProgram shader;
 
+    private Matrix4f viewProjection;
+
     public Renderer(ShaderProgram shader)
     {
-        this.shader = shader;
-        backgroundColor = new Vector3f(0, 0, 0);
-    }
-
-    public void prepare()
-    {
+        System.out.println("Renderer");
         glFrontFace(GL_CW);
         glCullFace(GL_BACK);
         glEnable(GL_DEPTH_TEST);
@@ -41,7 +39,12 @@ public class Renderer
         glEnable(GL_DEPTH_CLAMP);
 
         glEnable(GL_TEXTURE_2D);
+        this.shader = shader;
+        backgroundColor = new Vector3f(0, 0, 0);
+    }
 
+    public void prepare()
+    {
         glClearColor(backgroundColor.getX(), backgroundColor.getY(), backgroundColor.getZ(), 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }

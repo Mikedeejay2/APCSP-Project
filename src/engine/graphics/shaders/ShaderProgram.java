@@ -22,6 +22,7 @@ public abstract class ShaderProgram
 
     public ShaderProgram(String vertexFile, String fragmentFile)
     {
+        System.out.println("ShaderProgram");
         programID = GL20.glCreateProgram();
         vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
         fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
@@ -31,6 +32,7 @@ public abstract class ShaderProgram
         bindAttributes();
         GL20.glLinkProgram(programID);
         GL20.glValidateProgram(programID);
+        getAllUniformLocations();
     }
 
     protected abstract void getAllUniformLocations();

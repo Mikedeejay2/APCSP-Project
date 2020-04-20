@@ -22,7 +22,7 @@ public class MetaFile {
 	private static final int PAD_BOTTOM = 2;
 	private static final int PAD_RIGHT = 3;
 
-	private static final int DESIRED_PADDING = 3;
+	private static final int DESIRED_PADDING = 1;
 
 	private static final String SPLITTER = " ";
 	private static final String NUMBER_SEPARATOR = ",";
@@ -48,6 +48,7 @@ public class MetaFile {
 	 *            - the font file.
 	 */
 	protected MetaFile(File file) {
+		System.out.println("MetaFile");
 		this.aspectRatio = (double) Window.getWidth() / (double) Window.getHeight();
 		openFile(file);
 		loadPaddingData();

@@ -14,6 +14,7 @@ public class FontShader extends ShaderProgram{
 
 	public FontShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
+		System.out.println("FontShader");
 	}
 
 	@Override

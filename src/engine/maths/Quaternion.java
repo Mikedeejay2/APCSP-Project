@@ -14,6 +14,7 @@ public class Quaternion
 
     public Quaternion(float x, float y, float z, float w)
     {
+        System.out.println("Quaternion");
         this.x = x;
         this.y = y;
         this.z = z;

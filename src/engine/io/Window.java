@@ -16,14 +16,14 @@ public class Window
     private long window;
     public static int frames;
     public static long time;
-    public Input input;
-    private GLFWWindowSizeCallback sizeCallback;
     private boolean isResized;
     private boolean isFullscreen;
     private int[] windowPosX = new int[1], windowPosY = new int[1];
+    private static int fps;
 
     public Window(int width, int height, String title)
     {
+        System.out.println("Window");
         this.width = width;
         this.height = height;
         this.title = title;
@@ -38,7 +38,6 @@ public class Window
             return;
         }
 
-        input = new Input();
         window = glfwCreateWindow(width, height, title, isFullscreen ? glfwGetPrimaryMonitor() : 0, 0);
 
         if(window == 0)
@@ -55,31 +54,9 @@ public class Window
         createCapabilities();
         glEnable(GL_DEPTH_TEST);
 
-        createCallbacks();
-
         glfwShowWindow(window);
 
-        glfwSwapInterval(1);
-    }
-
-    private void createCallbacks()
-    {
-        sizeCallback = new GLFWWindowSizeCallback()
-        {
-            @Override
-            public void invoke(long window, int w, int h)
-            {
-                width = w;
-                height = h;
-                isResized = true;
-            }
-        };
-
-        glfwSetKeyCallback(window, input.getKeyboardCallback());
-        glfwSetCursorPosCallback(window, input.getMouseMoveCallback());
-        glfwSetMouseButtonCallback(window, input.getMouseButtonCallback());
-        glfwSetScrollCallback(window, input.getMouseScrollCallback());
-        glfwSetWindowSizeCallback(window, sizeCallback);
+        //glfwSwapInterval(2);
     }
 
     public void update()
@@ -92,14 +69,18 @@ public class Window
 
         instance.getRenderer().prepare();
 
+        instance.render();
         glfwPollEvents();
+
         frames++;
         if(System.currentTimeMillis() > time + 1000)
         {
             glfwSetWindowTitle(window, title + " | FPS: " + frames);
             time = System.currentTimeMillis();
+            fps = frames;
             frames = 0;
         }
+        swapBuffers();
     }
 
     public void swapBuffers()
@@ -114,9 +95,7 @@ public class Window
 
     public void destroy()
     {
-        input.destroy();
         instance.shader.destroy();
-        sizeCallback.free();
         glfwWindowShouldClose(window);
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -180,5 +159,15 @@ public class Window
         {
             glfwSetWindowMonitor(window, 0, windowPosX[0], windowPosY[0], width, height,0 );
         }
+    }
+
+    public static int getFrames()
+    {
+        return frames;
+    }
+
+    public static int getFps()
+    {
+        return fps;
     }
 }

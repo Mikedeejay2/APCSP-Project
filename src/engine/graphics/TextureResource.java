@@ -10,6 +10,7 @@ public class TextureResource
 
     public TextureResource()
     {
+        System.out.println("TextureResource");
         this.id = glGenTextures();
         this.refCount = 1;
     }
@@ -18,7 +19,7 @@ public class TextureResource
     protected void finalize() throws Throwable
     {
         super.finalize();
-        glDeleteBuffers(id);
+        //glDeleteBuffers(id); //TODO: HUH? WHY THIS BROKEN?
     }
 
     public void addReference()

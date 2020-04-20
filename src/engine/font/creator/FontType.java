@@ -24,6 +24,7 @@ public class FontType {
 	 *            the texture atlas.
 	 */
 	public FontType(int textureAtlas, File fontFile) {
+		System.out.println("FontType");
 		this.textureAtlas = textureAtlas;
 		this.loader = new TextMeshCreator(fontFile);
 	}
