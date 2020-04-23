@@ -2,6 +2,7 @@ package com.mikedeejay2.voxel.game;
 
 import com.mikedeejay2.voxel.engine.core.CoreEngine;
 import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
+import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import com.mikedeejay2.voxel.engine.graphics.renderers.Renderer;
 import com.mikedeejay2.voxel.engine.graphics.shaders.StaticShader;
 import com.mikedeejay2.voxel.engine.io.Input;
@@ -56,7 +57,7 @@ public class Main
     public TexturedModel testingTM;
     public Entity testing;
 
-    //public Camera camera;
+    public Camera camera;
 
     public void start()
     {
@@ -68,22 +69,23 @@ public class Main
     public void init()
     {
         System.out.println("Initializing game!");
-        //shader = new StaticShader();
-        //camera = new Camera(70f, (float)Window.getWidth() / Window.getHeight(), 0.01f, 1000, 0.3f, 10f);
+        //shader = new StaticShader();'
 
         loader = new Loader();
-        renderer = new Renderer();
         staticShader = new StaticShader();
+        renderer = new Renderer(staticShader);
+
+        camera = new Camera();
 
         voxelM = loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices());
         voxelT = new ModelTexture(loader.loadTexture("block/diamond_block.png"));
         voxelTM = new TexturedModel(voxelM, voxelT);
-        voxel = new Entity(voxelTM, new Vector3f(0, 0,0), 0, 0, 0, 1);
+        voxel = new Entity(voxelTM, new Vector3f(0, 0,-4), 0, 0, 0, 1);
 
         testingM = loader.loadToVAO(vertices, textureCoords,indices);
         testingT = new ModelTexture(loader.loadTexture("block/stone.png"));
         testingTM = new TexturedModel(testingM, testingT);
-        testing = new Entity(testingTM, new Vector3f(0, 0,0), 0, 0, 0, 1);
+        testing = new Entity(testingTM, new Vector3f(0, 0,-4), 0, 0, 0, 1);
 
 //        material = new Material("block/dirt.png");
 //        blockMesh.create();
@@ -98,6 +100,7 @@ public class Main
     {
         voxel.increasePosition(0, 0, 0, delta);
         voxel.increaseRotation(100, 100, 100, delta);
+        camera.update(delta);
         //object.update(delta);
         //camera.update(delta);
 //        debugScreen.update(delta);
@@ -106,6 +109,7 @@ public class Main
     public void input(float delta)
     {
         if(Input.getKeyDown(GLFW_KEY_F11)) coreEngine.getWindow().setFullscreen(!coreEngine.getWindow().isFullscreen());
+        camera.input(delta);
 //        if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();
     }
 
@@ -113,6 +117,7 @@ public class Main
     {
         renderer.prepare();
         staticShader.start();
+        staticShader.loadViewMatrix(camera);
         renderer.render(voxel, staticShader);
         staticShader.stop();
         //TextMaster.render();

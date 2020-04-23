@@ -1,5 +1,6 @@
 package com.mikedeejay2.voxel.engine.utils;
 
+import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -13,6 +14,15 @@ public class Maths
         matrix.rotate((float)Math.toRadians(ry), new Vector3f(0, 1, 0));
         matrix.rotate((float)Math.toRadians(rz), new Vector3f(0, 0, 1));
         matrix.scale(new Vector3f(scale, scale, scale));
+        return matrix;
+    }
+
+    public static Matrix4f createViewMatrix(Camera camera, Matrix4f matrix)
+    {
+        matrix.identity();
+        matrix.rotate((float) Math.toRadians(camera.getPitch()), 1, 0, 0);
+        matrix.rotate((float) Math.toRadians(camera.getYaw()), 0, 1, 0);
+        matrix.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
         return matrix;
     }
 }

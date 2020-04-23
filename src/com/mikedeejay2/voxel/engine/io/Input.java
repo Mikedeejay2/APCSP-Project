@@ -15,6 +15,9 @@ public class Input
     private static boolean[] lastKeys = new boolean[GLFW_KEY_LAST];
     private static boolean[] lastMouse = new boolean[GLFW_MOUSE_BUTTON_LAST];
 
+    private static double[] cursorX = new double[1];
+    private static double[] cursorY = new double[1];
+
     public static void update(float delta)
     {
         for(int i = 0; i < GLFW_KEY_LAST; i++)
@@ -72,9 +75,21 @@ public class Input
         return new Vector2f((float)posX.get(), (float)posY.get());
     }
 
-    public static void setMousePosition(Vector2f pos)
+    public static int getMousePositionX()
     {
-        glfwSetCursorPos(instance.getWindow().getWindow(), pos.x, pos.y);
+        glfwGetCursorPos(instance.getWindow().getWindow(), cursorX, cursorY);
+        return (int) cursorX[0];
+    }
+
+    public static int getMousePositionY()
+    {
+        glfwGetCursorPos(instance.getWindow().getWindow(), cursorX, cursorY);
+        return (int) cursorY[0];
+    }
+
+    public static void setMousePosition(float x, float y)
+    {
+        glfwSetCursorPos(instance.getWindow().getWindow(), x, y);
     }
 
     public static void setCursor(boolean enabled)
