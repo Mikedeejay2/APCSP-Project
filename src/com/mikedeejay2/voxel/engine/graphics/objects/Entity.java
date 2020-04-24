@@ -20,6 +20,16 @@ public class Entity
         this.scale = scale;
     }
 
+    public Entity(TexturedModel model, Vector3f position)
+    {
+        this.model = model;
+        this.position = position;
+        this.rotX = 0;
+        this.rotY = 0;
+        this.rotZ = 0;
+        this.scale = 1;
+    }
+
     public void increasePosition(float dx, float dy, float dz, float delta)
     {
         this.position.x += (dx * delta);

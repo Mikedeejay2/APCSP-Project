@@ -6,14 +6,15 @@ import com.mikedeejay2.voxel.engine.graphics.font.TextMaster;
 import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import com.mikedeejay2.voxel.engine.graphics.renderers.MasterRenderer;
-import com.mikedeejay2.voxel.engine.graphics.renderers.Renderer;
-import com.mikedeejay2.voxel.engine.graphics.shaders.StaticShader;
 import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.loaders.Loader;
 import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
+import com.mikedeejay2.voxel.game.voxel.VoxelShape;
+import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
+import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -26,6 +27,8 @@ public class Main
     public CoreEngine coreEngine;
     public MasterRenderer renderer;
 
+    Thread worldThread;
+
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
 
@@ -34,12 +37,9 @@ public class Main
     public TexturedModel voxelTM;
     public Entity voxel;
 
-    public RawModel testingM;
-    public ModelTexture testingT;
-    public TexturedModel testingTM;
-    public Entity testing;
-
     public Camera camera;
+
+    public World world;
 
     public void start()
     {
@@ -60,7 +60,12 @@ public class Main
         voxelM = loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices());
         voxelT = new ModelTexture(loader.loadTexture("block/diamond_block.png"));
         voxelTM = new TexturedModel(voxelM, voxelT);
-        voxel = new Entity(voxelTM, new Vector3f(0, 0,-4), 0, 0, 0, 1);
+        voxel = new Entity(VoxelTypes.dirt, new Vector3f(0, 0,-4));
+
+        world = new World();
+
+        this.worldThread = new Thread(world, "world");
+        worldThread.start();
 
         TextMaster.init(loader);
         debugScreen = new DebugScreen();
@@ -88,6 +93,7 @@ public class Main
 
     public void close()
     {
+        worldThread.stop();
         renderer.cleanUp();
         TextMaster.cleanUp();
         loader.cleanUp();

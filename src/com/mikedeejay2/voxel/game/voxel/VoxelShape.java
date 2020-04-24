@@ -1,4 +1,8 @@
-package com.mikedeejay2.voxel.game;
+package com.mikedeejay2.voxel.game.voxel;
+
+import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
+
+import static com.mikedeejay2.voxel.game.Main.loader;
 
 public class VoxelShape
 {
@@ -39,14 +43,19 @@ public class VoxelShape
             {
                     3,1,0,
                     2,1,3,
+
                     4,5,7,
                     7,5,6,
+
                     11,9,8,
                     10,9,11,
+
                     12,13,15,
                     15,13,14,
+
                     19,17,16,
                     18,17,19,
+
                     20,21,23,
                     23,21,22
             };
@@ -57,27 +66,34 @@ public class VoxelShape
                     0, 1,
                     1, 1,
                     1, 0,
+
                     0, 0,
                     0, 1,
                     1, 1,
                     1, 0,
+
                     0, 0,
                     0, 1,
                     1, 1,
                     1, 0,
+
                     0, 0,
                     0, 1,
                     1, 1,
                     1, 0,
+
                     0, 0,
                     0, 1,
                     1, 1,
                     1, 0,
+
                     0, 0,
                     0, 1,
                     1, 1,
                     1, 0
             };
+
+    public static RawModel voxelModel = loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices());
 
 
 
@@ -97,5 +113,10 @@ public class VoxelShape
     public static float[] getTextureCoords()
     {
         return textureCoords;
+    }
+
+    public static RawModel getVoxelModel()
+    {
+        return voxelModel;
     }
 }

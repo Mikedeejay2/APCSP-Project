@@ -3,6 +3,7 @@ package com.mikedeejay2.voxel.engine.core;
 import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.game.Main;
+import com.mikedeejay2.voxel.game.TimeLoop;
 
 public class CoreEngine implements Runnable
 {
@@ -62,6 +63,7 @@ public class CoreEngine implements Runnable
 
         while (isRunning)
         {
+            TimeLoop.update();
             double startTime = Time.getTime();
             double passedTime = startTime - lastTime;
             lastTime = startTime;
