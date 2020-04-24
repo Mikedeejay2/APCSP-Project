@@ -8,6 +8,9 @@ import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.utils.Maths;
 import org.joml.Matrix4f;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
@@ -17,12 +20,23 @@ public class Renderer
 
     private Matrix4f projectionMatrix;
 
+    private StaticShader shader;
+
     private static final float FOV = 80;
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000;
 
     public Renderer(StaticShader shader)
     {
+        glEnable(GL_CW);
+        glCullFace(GL_BACK);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+
+        glEnable(GL_DEPTH_CLAMP);
+
+        glEnable(GL_TEXTURE_2D);
+        this.shader = shader;
         transformationMatrix = new Matrix4f();
         projectionMatrix = new Matrix4f();
         createProjectionMatrix();
@@ -33,33 +47,45 @@ public class Renderer
 
     public void prepare()
     {
-        glEnable(GL_CW);
-        glCullFace(GL_BACK);
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-
-        glEnable(GL_DEPTH_CLAMP);
-
-        glEnable(GL_TEXTURE_2D);
         glClearColor(0.6f, 0.8f, 1.0f, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Entity entity, StaticShader shader)
+    public void render(Map<TexturedModel, List<Entity>> entities)
     {
-        TexturedModel texturedModel = entity.getModel();
+        for(TexturedModel model : entities.keySet())
+        {
+            prepareTexturedModel(model);
+            List<Entity> batch = entities.get(model);
+            for(Entity entity : batch)
+            {
+                prepareInstance(entity);
+                glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+            }
+            unbindTexturedModel();
+        }
+    }
+
+    private void prepareTexturedModel(TexturedModel texturedModel)
+    {
         RawModel model = texturedModel.getRawModel();
         glBindVertexArray(model.getVaoID());
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale(), transformationMatrix);
-        shader.loadTransformationMatrix(transformationMatrix);
-        glActiveTexture(GL_TEXTURE0);
+        glEnableVertexAttribArray(1);glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getID());
-        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+    }
+
+    private void unbindTexturedModel()
+    {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glBindVertexArray(0);
+    }
+
+    private void prepareInstance(Entity entity)
+    {
+        Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale(), transformationMatrix);
+        shader.loadTransformationMatrix(transformationMatrix);
     }
 
     private void createProjectionMatrix()

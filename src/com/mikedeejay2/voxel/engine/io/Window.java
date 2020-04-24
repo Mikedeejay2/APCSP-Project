@@ -67,9 +67,6 @@ public class Window
             isResized = false;
         }
 
-        instance.getRenderer().prepare();
-
-        instance.render();
         glfwPollEvents();
 
         frames++;
