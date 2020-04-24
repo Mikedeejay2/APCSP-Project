@@ -43,7 +43,6 @@ public class Camera
     {
         viewMatrix.positiveZ(forward).negate().mul(speed * delta);
         viewMatrix.positiveX(right).mul(speed * delta);
-        System.out.println(right);
         if(Input.getKey(GLFW_KEY_W)) position.add(forward.x, 0, forward.z);
         if(Input.getKey(GLFW_KEY_S)) position.sub(forward.x, 0, forward.z);
         if(Input.getKey(GLFW_KEY_D)) position.add(right);
@@ -75,15 +74,12 @@ public class Camera
             {
                 yaw += deltaPosX * sensitivity;
             }
-                //getTransform().rotate(yAxis, (float) Math.toRadians(deltaPos.getX() * sensitivity));
             if (rotX)
             {
                 pitch += deltaPosY * sensitivity;
                 if(pitch > 90) pitch = 90;
                 if(pitch < -90) pitch = -90;
-                System.out.println("PITCH " + pitch);
             }
-                //getTransform().rotate(getTransform().getRot().getRight(), (float) Math.toRadians(deltaPos.getY() * sensitivity));
 
             if (rotY || rotX)
                 Input.setMousePosition(Window.getWidth() / 2, Window.getHeight() / 2);

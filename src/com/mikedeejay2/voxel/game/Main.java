@@ -1,6 +1,8 @@
 package com.mikedeejay2.voxel.game;
 
 import com.mikedeejay2.voxel.engine.core.CoreEngine;
+import com.mikedeejay2.voxel.engine.debug.DebugScreen;
+import com.mikedeejay2.voxel.engine.graphics.font.TextMaster;
 import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import com.mikedeejay2.voxel.engine.graphics.renderers.Renderer;
@@ -19,8 +21,8 @@ public class Main
 {
     public static Main instance;
     public Renderer renderer;
-    public Loader loader;
-    //public DebugScreen debugScreen;
+    public static Loader loader;
+    public DebugScreen debugScreen;
     public CoreEngine coreEngine;
 
     public StaticShader staticShader;
@@ -69,8 +71,6 @@ public class Main
     public void init()
     {
         System.out.println("Initializing game!");
-        //shader = new StaticShader();'
-
         loader = new Loader();
         staticShader = new StaticShader();
         renderer = new Renderer(staticShader);
@@ -87,30 +87,21 @@ public class Main
         testingTM = new TexturedModel(testingM, testingT);
         testing = new Entity(testingTM, new Vector3f(0, 0,-4), 0, 0, 0, 1);
 
-//        material = new Material("block/dirt.png");
-//        blockMesh.create();
-//        object = new GameObject(new Vector3f(0, 0, 2), new Quaternion(new Vector3f(0, 1, 0), (float) Math.toRadians(0f)), new Vector3f(1, 1, 1), blockMesh, material);
-//        object.create();
-        //TextMaster.init(loader);
-//        debugScreen = new DebugScreen();
-//        debugScreen.init();
+        TextMaster.init(loader);
+        debugScreen = new DebugScreen();
+        debugScreen.init();
     }
 
     public void update(float delta)
     {
-//        voxel.increasePosition(0, 0, 0, delta);
-//        voxel.increaseRotation(100, 100, 100, delta);
         camera.update(delta);
-        //object.update(delta);
-        //camera.update(delta);
-//        debugScreen.update(delta);
     }
 
     public void input(float delta)
     {
         if(Input.getKeyDown(GLFW_KEY_F11)) coreEngine.getWindow().setFullscreen(!coreEngine.getWindow().isFullscreen());
         camera.input(delta);
-//        if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();
+        if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();
     }
 
     public void render()
@@ -120,15 +111,13 @@ public class Main
         staticShader.loadViewMatrix(camera);
         renderer.render(voxel, staticShader);
         staticShader.stop();
-        //TextMaster.render();
+        TextMaster.render();
     }
 
     public void close()
     {
-        //TextMaster.cleanUp();
-        //object.destroy();
-        //blockMesh.destroy();
-        //shader.destroy();
+        TextMaster.cleanUp();
+        loader.cleanUp();
     }
 
     public static void main(String[] args)
@@ -146,18 +135,23 @@ public class Main
         return renderer;
     }
 
-//    public Camera getCamera()
-//    {
-//        return camera;
-//    }
+    public Camera getCamera()
+    {
+        return camera;
+    }
 
     public Window getWindow()
     {
         return coreEngine.getWindow();
     }
 
-//    public DebugScreen getDebugScreen()
-//    {
-//        return debugScreen;
-//    }
+    public DebugScreen getDebugScreen()
+    {
+        return debugScreen;
+    }
+
+    public static Loader getLoader()
+    {
+        return loader;
+    }
 }

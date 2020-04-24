@@ -1,6 +1,7 @@
 package com.mikedeejay2.voxel.engine.graphics.shaders;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
@@ -88,6 +89,11 @@ public abstract class ShaderProgram
         matrix.get(matrixBuffer);
         glUniformMatrix4fv(location, false, matrixBuffer);
     }
+
+    protected void load2DVector(int location, Vector2f vector){
+        glUniform2f(location,vector.x,vector.y);
+    }
+
 
     private static int loadShader(String file, int type)
     {

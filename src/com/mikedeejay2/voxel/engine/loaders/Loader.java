@@ -20,6 +20,22 @@ public class Loader
     private List<Integer> vbos = new ArrayList<Integer>();
     private List<Integer> textures = new ArrayList<Integer>();
 
+    public int loadToVAO(float[] positions, float[] textureCoords) {
+        int vaoID = createVAO();
+        storeDataInAttributeList(0, 2, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        unbindVAO();
+        return vaoID;
+    }
+
+    public int loadToVAOUseExisting(int vaoID, float[] positions, float[] textureCoords) {
+        glBindVertexArray(vaoID);
+        storeDataInAttributeList(0, 2, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        unbindVAO();
+        return vaoID;
+    }
+
     public RawModel loadToVAO(float[] positions, float[] textureCoords, int[] indices) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
@@ -148,5 +164,20 @@ public class Loader
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
         IntBuffer buffer = storeDataInIntBuffer(indices);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+    }
+
+    public List<Integer> getVaos()
+    {
+        return vaos;
+    }
+
+    public List<Integer> getVbos()
+    {
+        return vbos;
+    }
+
+    public List<Integer> getTextures()
+    {
+        return textures;
     }
 }

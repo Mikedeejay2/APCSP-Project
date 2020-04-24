@@ -18,7 +18,8 @@ public class Window
     private boolean isResized;
     private boolean isFullscreen;
     private int[] windowPosX = new int[1], windowPosY = new int[1];
-    private static int fps;
+    private static int FPS;
+    private static int oldFPS;
 
     public Window(int width, int height, String title)
     {
@@ -76,7 +77,7 @@ public class Window
         {
             glfwSetWindowTitle(window, title + " | FPS: " + frames);
             time = System.currentTimeMillis();
-            fps = frames;
+            FPS = frames;
             frames = 0;
         }
         swapBuffers();
@@ -165,8 +166,8 @@ public class Window
         return frames;
     }
 
-    public static int getFps()
+    public static int getFPS()
     {
-        return fps;
+        return FPS;
     }
 }

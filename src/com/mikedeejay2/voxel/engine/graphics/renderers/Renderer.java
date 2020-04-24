@@ -33,6 +33,7 @@ public class Renderer
 
     public void prepare()
     {
+        glEnable(GL_CW);
         glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);

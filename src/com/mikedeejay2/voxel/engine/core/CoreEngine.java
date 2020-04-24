@@ -48,6 +48,8 @@ public class CoreEngine implements Runnable
     {
         boolean render = false;
 
+        double time = System.currentTimeMillis();
+
         isRunning = true;
 
         int frames = 0;
@@ -94,6 +96,11 @@ public class CoreEngine implements Runnable
                 main.render();
                 window.update();
                 frames++;
+            }
+            if(System.currentTimeMillis() >= time + 50)
+            {
+                main.getDebugScreen().update();
+                time = System.currentTimeMillis();
             }
         }
 
