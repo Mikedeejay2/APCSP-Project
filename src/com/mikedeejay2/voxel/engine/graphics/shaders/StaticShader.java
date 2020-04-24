@@ -3,6 +3,7 @@ package com.mikedeejay2.voxel.engine.graphics.shaders;
 import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import com.mikedeejay2.voxel.engine.utils.Maths;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class StaticShader extends ShaderProgram
 {
@@ -12,6 +13,7 @@ public class StaticShader extends ShaderProgram
     private int location_transformationMatrix;
     private int location_projectionMatrix;
     private int location_viewMatrix;
+    private int location_skyColor;
 
     public StaticShader()
     {
@@ -31,6 +33,12 @@ public class StaticShader extends ShaderProgram
         location_transformationMatrix = super.getUniformLocation("transformationMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
+        location_skyColor = super.getUniformLocation("skyColor");
+    }
+
+    public void loadSkyColor(float r, float g, float b)
+    {
+        super.loadVector(location_skyColor, new Vector3f(r, g, b));
     }
 
     public void loadTransformationMatrix(Matrix4f matrix)

@@ -21,6 +21,7 @@ public class MasterRenderer
     {
         renderer.prepare();
         shader.start();
+        shader.loadSkyColor(Renderer.RED, Renderer.GREEN, Renderer.BLUE);
         shader.loadViewMatrix(camera);
         renderer.render(entities);
         shader.stop();

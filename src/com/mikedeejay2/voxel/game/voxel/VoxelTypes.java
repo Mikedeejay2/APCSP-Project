@@ -5,16 +5,35 @@ import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 
+import java.util.HashMap;
+
 import static com.mikedeejay2.voxel.game.Main.loader;
 
 public class VoxelTypes
 {
+    public static HashMap<String, TexturedModel> allVoxelTypes = new HashMap<String, TexturedModel>();
+
     public static final TexturedModel dirt = loadVoxel("dirt");
+    public static final TexturedModel stone = loadVoxel("stone");
+
+
+
+
+
+
 
     public static TexturedModel loadVoxel(String name)
     {
         ModelTexture voxelT = new ModelTexture(loader.loadTexture("block/" + name + ".png"));
-        System.out.println("wqeoifjweoif");
-        return new TexturedModel(VoxelShape.getVoxelModel(), voxelT);
+        TexturedModel voxel = new TexturedModel(VoxelShape.getVoxelModel(), voxelT);
+        allVoxelTypes.put(name, voxel);
+        return voxel;
+    }
+
+    public static TexturedModel getFromName(String voxelName)
+    {
+        if(allVoxelTypes.containsKey(voxelName))
+            return allVoxelTypes.get(voxelName);
+        return null;
     }
 }

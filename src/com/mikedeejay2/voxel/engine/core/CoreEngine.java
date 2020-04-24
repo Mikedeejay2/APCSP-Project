@@ -3,7 +3,6 @@ package com.mikedeejay2.voxel.engine.core;
 import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.game.Main;
-import com.mikedeejay2.voxel.game.TimeLoop;
 
 public class CoreEngine implements Runnable
 {
@@ -19,14 +18,14 @@ public class CoreEngine implements Runnable
     public CoreEngine(int width, int height, double framerate, Main game)
     {
         System.out.println("CoreEngine");
+        window = new Window(width, height, "Mikedeejay2 Voxel Engine");
+        window.create();
         this.game = new Thread(this, "game");
         isRunning = false;
         this.main = game;
         this.width = width;
         this.height = height;
         this.frameTime = 1.0 / framerate;
-        window = new Window(width, height, "Mikedeejay2 Voxel Engine");
-        window.create();
     }
 
     public void start()
@@ -63,7 +62,6 @@ public class CoreEngine implements Runnable
 
         while (isRunning)
         {
-            TimeLoop.update();
             double startTime = Time.getTime();
             double passedTime = startTime - lastTime;
             lastTime = startTime;

@@ -22,9 +22,13 @@ public class Renderer
 
     private StaticShader shader;
 
-    private static final float FOV = 80;
+    private static final float FOV = 100;
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000;
+
+    public static final float RED = 0.6f;
+    public static final float GREEN = 0.8f;
+    public static final float BLUE = 1.0f;
 
     public Renderer(StaticShader shader)
     {
@@ -47,7 +51,7 @@ public class Renderer
 
     public void prepare()
     {
-        glClearColor(0.6f, 0.8f, 1.0f, 1);
+        glClearColor(RED, GREEN, BLUE, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 

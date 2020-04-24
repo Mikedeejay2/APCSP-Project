@@ -2,12 +2,15 @@
 
 in vec3 color;
 in vec2 pass_textureCoords;
+in float visibility;
 
 out vec4 out_Color;
 
 uniform sampler2D textureSampler;
+uniform vec3 skyColor;
 
 void main(void)
 {
     out_Color = texture(textureSampler, pass_textureCoords);
+    out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
 }

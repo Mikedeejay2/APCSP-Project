@@ -51,21 +51,20 @@ public class Main
     public void init()
     {
         System.out.println("Initializing game!");
+
         loader = new Loader();
 
         renderer = new MasterRenderer();
 
         camera = new Camera();
 
-        voxelM = loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices());
-        voxelT = new ModelTexture(loader.loadTexture("block/diamond_block.png"));
-        voxelTM = new TexturedModel(voxelM, voxelT);
         voxel = new Entity(VoxelTypes.dirt, new Vector3f(0, 0,-4));
 
         world = new World();
 
         this.worldThread = new Thread(world, "world");
         worldThread.start();
+        System.out.println("At this point, world thread should have started");
 
         TextMaster.init(loader);
         debugScreen = new DebugScreen();
@@ -86,7 +85,7 @@ public class Main
 
     public void render()
     {
-        renderer.processEntity(voxel);
+        world.render();
         renderer.render(camera);
         TextMaster.render();
     }
@@ -127,5 +126,10 @@ public class Main
     public static Loader getLoader()
     {
         return loader;
+    }
+
+    public MasterRenderer getRenderer()
+    {
+        return renderer;
     }
 }
