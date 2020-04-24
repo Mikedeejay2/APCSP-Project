@@ -98,8 +98,8 @@ public class Main
 
     public void update(float delta)
     {
-        voxel.increasePosition(0, 0, 0, delta);
-        voxel.increaseRotation(100, 100, 100, delta);
+//        voxel.increasePosition(0, 0, 0, delta);
+//        voxel.increaseRotation(100, 100, 100, delta);
         camera.update(delta);
         //object.update(delta);
         //camera.update(delta);

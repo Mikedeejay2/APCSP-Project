@@ -25,6 +25,7 @@ public class Camera
     Vector3f right;
 
     private float speed = 10f;
+    private float sensitivity = 0.3f;
 
     public Camera()
     {
@@ -33,14 +34,20 @@ public class Camera
         this.forward = new Vector3f();
         this.right = new Vector3f();
         mouseLocked = false;
+        pitch = 0;
+        yaw = 0;
+        roll = 0;
     }
 
     public void input(float delta)
     {
-        if(Input.getKey(GLFW_KEY_W)) position.z += -(speed * delta);
-        if(Input.getKey(GLFW_KEY_S)) position.z += (speed * delta);
-        if(Input.getKey(GLFW_KEY_D)) position.x += (speed * delta);
-        if(Input.getKey(GLFW_KEY_A)) position.x += -(speed * delta);
+        viewMatrix.positiveZ(forward).negate().mul(speed * delta);
+        viewMatrix.positiveX(right).mul(speed * delta);
+        System.out.println(right);
+        if(Input.getKey(GLFW_KEY_W)) position.add(forward.x, 0, forward.z);
+        if(Input.getKey(GLFW_KEY_S)) position.sub(forward.x, 0, forward.z);
+        if(Input.getKey(GLFW_KEY_D)) position.add(right);
+        if(Input.getKey(GLFW_KEY_A)) position.sub(right);
         if(Input.getKey(GLFW_KEY_SPACE)) position.y += (speed * delta);
         if(Input.getKey(GLFW_KEY_LEFT_SHIFT)) position.y += -(speed * delta);
 
@@ -58,19 +65,28 @@ public class Camera
 
         if (mouseLocked)
         {
-            deltaPosX = Input.getMousePositionX().sub(Window.getWidth() / 2, Window.getHeight() / 2);
-            deltaPosY = Input.getMousePosition().sub(Window.getWidth() / 2, Window.getHeight() / 2);
+            deltaPosX = Input.getMousePositionX() - (Window.getWidth() / 2);
+            deltaPosY = Input.getMousePositionY() - (Window.getHeight() / 2);
 
-            boolean rotY = deltaPos.getX() != 0;
-            boolean rotX = deltaPos.getY() != 0;
+            boolean rotY = deltaPosX != 0;
+            boolean rotX = deltaPosY!= 0;
 
             if (rotY)
-                getTransform().rotate(yAxis, (float) Math.toRadians(deltaPos.getX() * sensitivity));
+            {
+                yaw += deltaPosX * sensitivity;
+            }
+                //getTransform().rotate(yAxis, (float) Math.toRadians(deltaPos.getX() * sensitivity));
             if (rotX)
-                getTransform().rotate(getTransform().getRot().getRight(), (float) Math.toRadians(deltaPos.getY() * sensitivity));
+            {
+                pitch += deltaPosY * sensitivity;
+                if(pitch > 90) pitch = 90;
+                if(pitch < -90) pitch = -90;
+                System.out.println("PITCH " + pitch);
+            }
+                //getTransform().rotate(getTransform().getRot().getRight(), (float) Math.toRadians(deltaPos.getY() * sensitivity));
 
             if (rotY || rotX)
-                Input.setMousePosition(new Vector2f(Window.getWidth() / 2, Window.getHeight() / 2));
+                Input.setMousePosition(Window.getWidth() / 2, Window.getHeight() / 2);
         }
     }
 
