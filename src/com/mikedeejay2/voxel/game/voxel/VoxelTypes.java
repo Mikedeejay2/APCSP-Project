@@ -15,6 +15,8 @@ public class VoxelTypes
 
     public static final TexturedModel dirt = loadVoxel("dirt");
     public static final TexturedModel stone = loadVoxel("stone");
+    public static final TexturedModel diamond_block = loadVoxel("diamond_block");
+    public static final TexturedModel gold_block = loadVoxel("gold_block");
 
 
 

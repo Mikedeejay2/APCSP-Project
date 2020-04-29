@@ -7,15 +7,16 @@ import java.util.HashMap;
 
 public class Chunk
 {
-    HashMap<Vector3f, Voxel> voxels = new HashMap<Vector3f, Voxel>();
+    public Voxel[][][] voxels;
 
-    Vector3f chunkLoc;
-    Vector3f chunkCoords;
+    public Vector3f chunkLoc;
+    public Vector3f chunkCoords;
 
     public Chunk(Vector3f chunkLoc)
     {
         this.chunkLoc = chunkLoc;
-        this.chunkCoords = new Vector3f(chunkLoc.x * 16, chunkLoc.y * 16, chunkLoc.z * 16);
+        this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE, chunkLoc.y * World.CHUNK_SIZE, chunkLoc.z * World.CHUNK_SIZE);
+        this.voxels = new Voxel[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
     }
 
     public void populate()
@@ -25,7 +26,14 @@ public class Chunk
             for(int z = 0; z < World.CHUNK_SIZE; z++)
             {
                 Vector3f position = new Vector3f(chunkCoords.x + x, 0, chunkCoords.z + z);
-                voxels.put(position, new Voxel("stone", position));
+                if(Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 0)
+                    voxels[x][0][z] = new Voxel("diamond_block", position);
+                if(Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 1)
+                    voxels[x][0][z] = new Voxel("gold_block", position);
+                if(Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 1)
+                    voxels[x][0][z] = new Voxel("diamond_block", position);
+                if(Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 0)
+                    voxels[x][0][z] = new Voxel("gold_block", position);
             }
         }
     }
@@ -39,9 +47,9 @@ public class Chunk
                 for(int z = 0; z < World.CHUNK_SIZE; z++)
                 {
                     Vector3f position = new Vector3f(chunkCoords.x + x, chunkCoords.y + y, chunkCoords.z + z);
-                    if(containsVoxelAtOffset(position))
+                    if(containsVoxelAtOffset(x, y, z))
                     {
-                        getVoxelAtOffset(position).render();
+                        getVoxelAtOffset(x, y, z).render();
                     }
                     position = null;
                 }
@@ -49,14 +57,14 @@ public class Chunk
         }
     }
 
-    public boolean containsVoxelAtOffset(Vector3f location)
+    public boolean containsVoxelAtOffset(int x, int y, int z)
     {
-        return voxels.containsKey(location);
+            return voxels[x][y][z] != null;
     }
 
-    public Voxel getVoxelAtOffset(Vector3f location)
+    public Voxel getVoxelAtOffset(int x, int y, int z)
     {
-        return voxels.get(location);
+        return voxels[x][y][z];
     }
 
     public Vector3f getChunkLoc()

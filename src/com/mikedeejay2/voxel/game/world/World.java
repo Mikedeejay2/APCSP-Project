@@ -25,7 +25,6 @@ public class World implements Runnable
 
     public World()
     {
-        System.out.println("BOIU");
         playerPosition = new Vector3f(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
         allChunks = new HashMap<Vector3f, Chunk>();
@@ -87,11 +86,11 @@ public class World implements Runnable
 
     public void updateChunks()
     {
-        for (int x = (int) (playerChunk.x - renderDistance); x <= playerChunk.x + renderDistance; x++)
+        for (int x = (int) (playerChunk.x - renderDistance); x < playerChunk.x + renderDistance + 1; x++)
         {
-            for (int y = (int) (playerChunk.y - renderDistance); y <= playerChunk.y + renderDistance; y++)
+            for (int y = (int) (playerChunk.y - renderDistance); y < playerChunk.y + renderDistance + 1; y++)
             {
-                for (int z = (int) (playerChunk.z - renderDistance); z <= playerChunk.z + renderDistance; z++)
+                for (int z = (int) (playerChunk.z - renderDistance); z < playerChunk.z + renderDistance + 1; z++)
                 {
                     Vector3f currentChunkLoc = new Vector3f(x, y, z);
                     if (!chunkAtChunkLoc(currentChunkLoc))
@@ -103,11 +102,11 @@ public class World implements Runnable
             }
         }
         chunksToRender = new HashMap<Vector3f, Chunk>();
-        for (int x = (int) (playerChunk.x - renderDistance); x <= playerChunk.x + renderDistance; x++)
+        for (int x = (int) (playerChunk.x - renderDistance); x < playerChunk.x + renderDistance + 1; x++)
         {
-            for (int y = (int) (playerChunk.y - renderDistance); y <= playerChunk.y + renderDistance; y++)
+            for (int y = (int) (playerChunk.y - renderDistance); y <  playerChunk.y + renderDistance + 1; y++)
             {
-                for (int z = (int) (playerChunk.z - renderDistance); z <= playerChunk.z + renderDistance; z++)
+                for (int z = (int) (playerChunk.z - renderDistance); z < playerChunk.z + renderDistance + 1; z++)
                 {
                     Vector3f currentChunkLoc = new Vector3f(x, y, z);
                     if(allChunks.containsKey(currentChunkLoc))
