@@ -73,6 +73,8 @@ public class Camera
             if (rotY)
             {
                 yaw += deltaPosX * sensitivity;
+                if(yaw >= 360) yaw = 0;
+                if(yaw < 0) yaw = 360;
             }
             if (rotX)
             {

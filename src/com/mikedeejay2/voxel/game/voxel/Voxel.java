@@ -2,7 +2,6 @@ package com.mikedeejay2.voxel.game.voxel;
 
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.game.Main;
-import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import org.joml.Vector3f;
 
 public class Voxel

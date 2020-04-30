@@ -43,7 +43,7 @@ public class DebugScreen
         {
             TextMaster.editText(fpsText, Window.getFPS() + " fps");
             TextMaster.editText(locationText, "X: " + Math.round(main.getCamera().getPosition().x * 100) / 100f + ", Y: " + Math.round(main.getCamera().getPosition().y * 100) / 100f + ", Z: " + Math.round(main.getCamera().getPosition().z * 100) / 100f +
-                    " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")");
+                    " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")" + getDirection());
         }
     }
 
@@ -57,7 +57,7 @@ public class DebugScreen
             fpsText = new GUIText(Window.getFPS() + " fps", fontSize, font, new Vector2f(0.003f, 0.03f), 1f, false);
             fpsText.setcolor(1, 1, 1);
             locationText = new GUIText("X: " + Math.round(main.getCamera().getPosition().x * 100) / 100f + ", Y: " + Math.round(main.getCamera().getPosition().y * 100) / 100f + ", Z: " + Math.round(main.getCamera().getPosition().z * 100) / 100f +
-                    " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")", fontSize, font, new Vector2f(0.003f, 0.06f), 1f, false);
+                    " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")" + getDirection(), fontSize, font, new Vector2f(0.003f, 0.06f), 1f, false);
             locationText.setcolor(1, 1, 1);
         }
         else
@@ -66,5 +66,14 @@ public class DebugScreen
             fpsText.remove();
             locationText.remove();
         }
+    }
+
+    private String getDirection()
+    {
+        if(main.getCamera().getYaw() >= 315 || (main.getCamera().getYaw() >= 0 && main.getCamera().getYaw() <= 45)) return " Facing: South";
+        if((main.getCamera().getYaw() >= 45 && main.getCamera().getYaw() <= 135)) return " Facing: West";
+        if((main.getCamera().getYaw() >= 135 && main.getCamera().getYaw() <= 225)) return " Facing: North";
+        if((main.getCamera().getYaw() >= 225 && main.getCamera().getYaw() <= 315)) return " Facing: East";
+        else return " Facing: Unknown";
     }
 }
