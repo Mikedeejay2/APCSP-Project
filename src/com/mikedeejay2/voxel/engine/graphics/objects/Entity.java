@@ -103,4 +103,12 @@ public class Entity
     {
         this.scale = scale;
     }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        super.finalize();
+        model = null;
+        position = null;
+    }
 }

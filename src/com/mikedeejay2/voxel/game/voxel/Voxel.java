@@ -8,8 +8,6 @@ public class Voxel
 {
     Entity voxelEntity;
 
-    Main main = Main.getInstance();
-
     public Voxel(String voxelName, Vector3f location)
     {
         voxelEntity = new Entity(VoxelTypes.getFromName(voxelName), location);
@@ -17,7 +15,15 @@ public class Voxel
 
     public void render()
     {
-        main.getRenderer().processEntity(voxelEntity);
+        Main.getInstance().getRenderer().processEntity(voxelEntity);
+    }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        super.finalize();
+        voxelEntity = null;
+
     }
 
     public Entity getVoxelEntity()

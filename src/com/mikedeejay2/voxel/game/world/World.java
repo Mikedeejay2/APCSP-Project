@@ -1,18 +1,24 @@
 package com.mikedeejay2.voxel.game.world;
 
 import com.mikedeejay2.voxel.game.Main;
+import com.mikedeejay2.voxel.game.world.generators.OverworldGenerator;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World implements Runnable
 {
     public static final int CHUNK_SIZE = 16;
+    public static final int CHUNKS_TO_PROCESS_PER_TICK = 100;
+    public int chunksProcessedThisTick = 0;
 
-    public static int renderDistance = 2;
+    public static int renderDistance = 8;
 
     public static World world;
 
@@ -20,15 +26,16 @@ public class World implements Runnable
     Vector3f playerPosition;
     Vector3f playerChunk;
 
+    OverworldGenerator overworldGenerator;
+
     HashMap<Vector3f, Chunk> allChunks;
-    HashMap<Vector3f, Chunk> chunksToRender;
 
     public World()
     {
         playerPosition = new Vector3f(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
         allChunks = new HashMap<Vector3f, Chunk>();
-        chunksToRender = new HashMap<Vector3f, Chunk>();
+        overworldGenerator = new OverworldGenerator(this);
     }
 
     @Override
@@ -38,15 +45,40 @@ public class World implements Runnable
         {
             updatePlayerLoc();
             updateChunks();
+            unloadOldChunks();
             try
             {
                 Thread.sleep(50);
+                chunksProcessedThisTick = 0;
             }
             catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void unloadOldChunks()
+    {
+        ArrayList<Vector3f> locs = new ArrayList<>(allChunks.keySet());
+        for(Vector3f loc : locs)
+        {
+            if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
+            {
+                if (playerChunk.x - loc.x > World.renderDistance || playerChunk.y - loc.y > World.renderDistance || playerChunk.z - loc.z > World.renderDistance ||
+                        playerChunk.x - loc.x < -World.renderDistance || playerChunk.y - loc.y < -World.renderDistance || playerChunk.z - loc.z < -World.renderDistance)
+                {
+                    Chunk chunk = getChunkFromChunkLoc(loc);
+                    chunk.chunkCoords = null;
+                    chunk.voxels = null;
+                    chunk.chunkEntity = null;
+                    allChunks.remove(loc);
+                    loc = null;
+                }
+            }
+        }
+        locs.clear();
+        locs = null;
     }
 
     public boolean chunkAtChunkLoc(Vector3f loc)
@@ -92,46 +124,30 @@ public class World implements Runnable
             {
                 for (int z = (int) (playerChunk.z - renderDistance); z < playerChunk.z + renderDistance + 1; z++)
                 {
-                    Vector3f currentChunkLoc = new Vector3f(x, y, z);
-                    if (!chunkAtChunkLoc(currentChunkLoc))
+                    if(chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
                     {
-                        Chunk chunk = generateChunk(currentChunkLoc);
-                        chunk.populate();
-                    }
-                }
-            }
-        }
-        chunksToRender = new HashMap<Vector3f, Chunk>();
-        for (int x = (int) (playerChunk.x - renderDistance); x < playerChunk.x + renderDistance + 1; x++)
-        {
-            for (int y = (int) (playerChunk.y - renderDistance); y <  playerChunk.y + renderDistance + 1; y++)
-            {
-                for (int z = (int) (playerChunk.z - renderDistance); z < playerChunk.z + renderDistance + 1; z++)
-                {
-                    Vector3f currentChunkLoc = new Vector3f(x, y, z);
-                    if(allChunks.containsKey(currentChunkLoc))
-                    {
-                        chunksToRender.put(currentChunkLoc, allChunks.get(currentChunkLoc));
+                        Vector3f currentChunkLoc = new Vector3f(x, y, z);
+                        if (!chunkAtChunkLoc(currentChunkLoc))
+                        {
+                            Chunk chunk = generateChunk(currentChunkLoc);
+                            chunk.populate();
+                            chunksProcessedThisTick++;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
             }
         }
     }
 
-    public void render()
+    public void renderChunk(float x, float y, float z)
     {
-        try
-        {
-            ArrayList<Chunk> chunksToProcess = new ArrayList<>(chunksToRender.values());
-            for (Chunk chunk : chunksToProcess)
-            {
-                chunk.render();
-            }
-        }
-        catch (ConcurrentModificationException e)
-        {
-            render();
-        }
+        Chunk chunk = getChunkFromChunkLoc(new Vector3f(x, y, z));
+        if(chunk != null)
+        chunk.render();
     }
 
     public void updatePlayerLoc()
@@ -144,13 +160,46 @@ public class World implements Runnable
 
     public Chunk generateChunk(Vector3f currentChunkLoc)
     {
-        Chunk chunk = new Chunk(currentChunkLoc);
+        Chunk chunk = new Chunk(currentChunkLoc, this);
         allChunks.put(currentChunkLoc, chunk);
         return chunk;
+    }
+
+    public void populateChunk(Chunk chunk)
+    {
+        if(chunk != null)
+        {
+            overworldGenerator.populate(chunk);
+        }
     }
 
     public static World getWorld()
     {
         return world;
+    }
+
+    public static int getChunkSize()
+    {
+        return CHUNK_SIZE;
+    }
+
+    public static int getRenderDistance()
+    {
+        return renderDistance;
+    }
+
+    public Vector3f getPlayerPosition()
+    {
+        return playerPosition;
+    }
+
+    public Vector3f getPlayerChunk()
+    {
+        return playerChunk;
+    }
+
+    public HashMap<Vector3f, Chunk> getAllChunks()
+    {
+        return allChunks;
     }
 }

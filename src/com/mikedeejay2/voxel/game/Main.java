@@ -16,6 +16,7 @@ import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
+import static com.mikedeejay2.voxel.game.world.World.renderDistance;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Main
@@ -84,7 +85,21 @@ public class Main
 
     public void render()
     {
-        world.render();
+        Vector3f playerChunk = world.getPlayerChunk();
+        for (int x = (int) (world.getPlayerChunk().x - renderDistance); x < playerChunk.x + renderDistance + 1; x++)
+        {
+            for (int y = (int) (playerChunk.y - renderDistance); y <  playerChunk.y + renderDistance + 1; y++)
+            {
+                for (int z = (int) (playerChunk.z - renderDistance); z < playerChunk.z + renderDistance + 1; z++)
+                {
+                    Vector3f currentChunkLoc = new Vector3f(x, y, z);
+                    if(world.getAllChunks().containsKey(currentChunkLoc))
+                    {
+                       world.renderChunk(x, y, z);
+                    }
+                }
+            }
+        }
         renderer.render(camera);
         TextMaster.render();
     }

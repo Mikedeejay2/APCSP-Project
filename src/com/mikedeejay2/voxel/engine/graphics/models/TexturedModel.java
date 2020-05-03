@@ -22,4 +22,12 @@ public class TexturedModel
     {
         return texture;
     }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        super.finalize();
+        rawModel = null;
+        texture = null;
+    }
 }
