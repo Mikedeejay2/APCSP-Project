@@ -6,7 +6,7 @@ import static com.mikedeejay2.voxel.game.Main.loader;
 
 public class VoxelShape
 {
-    private static final float VOXEL_SIZE = 1f;
+    public static final float VOXEL_SIZE = 1f;
 
     private static float[] vertices = new float[]
             {

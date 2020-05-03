@@ -1,6 +1,7 @@
 package com.mikedeejay2.voxel.game.world;
 
 import com.mikedeejay2.voxel.game.Main;
+import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.world.generators.OverworldGenerator;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
@@ -17,7 +18,7 @@ public class World implements Runnable
 
     public int chunkUpdates = 0;
 
-    public static int renderDistance = 12;
+    public static int renderDistance = 8;
 
     public static World world;
 
@@ -114,7 +115,7 @@ public class World implements Runnable
 
     public Vector3f coordsToChunkLoc(Vector3f loc)
     {
-        return new Vector3f((float)Math.floor(loc.x/CHUNK_SIZE), (float)Math.floor(loc.y/CHUNK_SIZE), (float)Math.floor(loc.z/CHUNK_SIZE));
+        return new Vector3f((float)Math.floor(loc.x/CHUNK_SIZE* VoxelShape.VOXEL_SIZE), (float)Math.floor(loc.y/CHUNK_SIZE* VoxelShape.VOXEL_SIZE), (float)Math.floor(loc.z/CHUNK_SIZE* VoxelShape.VOXEL_SIZE));
     }
 
     public void updateChunks()
@@ -153,9 +154,9 @@ public class World implements Runnable
     public void updatePlayerLoc()
     {
         playerPosition = instance.getCamera().getPosition();
-        playerChunk.x = (float)Math.floor(playerPosition.x/CHUNK_SIZE);
-        playerChunk.y = (float)Math.floor(playerPosition.y/CHUNK_SIZE);
-        playerChunk.z = (float)Math.floor(playerPosition.z/CHUNK_SIZE);
+        playerChunk.x = (float)Math.floor(playerPosition.x/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
+        playerChunk.y = (float)Math.floor(playerPosition.y/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
+        playerChunk.z = (float)Math.floor(playerPosition.z/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
     }
 
     public Chunk generateChunk(Vector3f currentChunkLoc)

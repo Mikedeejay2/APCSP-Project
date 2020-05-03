@@ -14,7 +14,7 @@ public class PerlinNoiseGenerator {
     private int zOffset = 0;
 
     public PerlinNoiseGenerator() {
-        this.seed = 0;
+        this.seed = 392874598;
     }
 
     //only works with POSITIVE gridX and gridZ values!
