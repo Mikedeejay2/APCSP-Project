@@ -21,14 +21,6 @@ public class Voxel
         Main.getInstance().getRenderer().processEntity(entity);
     }
 
-    @Override
-    protected void finalize() throws Throwable
-    {
-        super.finalize();
-        entity = null;
-
-    }
-
     public Entity getEntity()
     {
         return entity;

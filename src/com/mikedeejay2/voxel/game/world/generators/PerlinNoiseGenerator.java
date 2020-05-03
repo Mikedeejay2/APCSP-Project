@@ -1,10 +1,10 @@
-package com.mikedeejay2.voxel.engine.utils;
+package com.mikedeejay2.voxel.game.world.generators;
 
 import java.util.Random;
 
 public class PerlinNoiseGenerator {
 
-    public static float AMPLITUDE = 800f;
+    public static float AMPLITUDE = 200f;
     public static int OCTAVES = 7;
     public static float ROUGHNESS = 0.3f;
 

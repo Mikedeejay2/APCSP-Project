@@ -63,6 +63,7 @@ public class Main
         world = new World();
 
         this.worldThread = new Thread(world, "world");
+        worldThread.setPriority(Thread.MIN_PRIORITY);
         worldThread.start();
         System.out.println("At this point, world thread should have started");
 
@@ -92,11 +93,7 @@ public class Main
             {
                 for (int z = (int) (playerChunk.z - renderDistance); z < playerChunk.z + renderDistance + 1; z++)
                 {
-                    Vector3f currentChunkLoc = new Vector3f(x, y, z);
-                    if(world.getAllChunks().containsKey(currentChunkLoc))
-                    {
-                       world.renderChunk(x, y, z);
-                    }
+                   world.renderChunk(x, y, z);
                 }
             }
         }

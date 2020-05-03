@@ -4,6 +4,10 @@ import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 public class Maths
 {
     public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry, float rz, float scale, Matrix4f matrix)
@@ -24,5 +28,11 @@ public class Maths
         matrix.rotate((float) Math.toRadians(camera.getYaw()), 0, 1, 0);
         matrix.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
         return matrix;
+    }
+
+    public static <T> int getLength(T[][][] arr){
+        ArrayList l = new ArrayList(Arrays.asList(arr));
+        l.removeAll(Collections.singleton(null));
+        return l.size();
     }
 }

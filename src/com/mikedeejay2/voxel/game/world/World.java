@@ -14,14 +14,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World implements Runnable
 {
-    public static final int CHUNK_SIZE = 16;
-    public static final int CHUNKS_TO_PROCESS_PER_TICK = 1;
+    public static final int CHUNK_SIZE = 32;
+    public static final int CHUNKS_TO_PROCESS_PER_TICK = 10;
     public int chunksProcessedThisTick = 0;
 
     public int chunkUpdates = 0;
     public int chunkUpdateCount = 0;
 
-    public static int renderDistance = 8;
+    public static int renderDistance = 4;
 
     public static World world;
 
@@ -65,8 +65,9 @@ public class World implements Runnable
     private void unloadOldChunks()
     {
         ArrayList<Vector3f> locs = new ArrayList<>(allChunks.keySet());
-        for(Vector3f loc : locs)
+        for(int i = 0; i < locs.size(); i++)
         {
+            Vector3f loc = locs.get(i);
             if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
             {
                 if (playerChunk.x - loc.x > World.renderDistance || playerChunk.y - loc.y > World.renderDistance || playerChunk.z - loc.z > World.renderDistance ||
@@ -103,9 +104,7 @@ public class World implements Runnable
 
     public Chunk getChunkFromChunkLoc(Vector3f loc)
     {
-        if(allChunks.containsKey(loc))
-            return allChunks.get(loc);
-        return null;
+        return allChunks.get(loc);
     }
 
     public Chunk getChunkFromCoordinates(Vector3f loc)
@@ -168,10 +167,7 @@ public class World implements Runnable
 
     public void populateChunk(Chunk chunk)
     {
-        if(chunk != null)
-        {
-            overworldGenerator.populate(chunk);
-        }
+        overworldGenerator.populate(chunk);
     }
 
     public static World getWorld()
