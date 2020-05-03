@@ -6,38 +6,41 @@ import org.joml.Vector3f;
 
 public class Voxel
 {
-    Entity voxelEntity;
+    Entity entity;
+    String name;
 
     public Voxel(String voxelName, Vector3f location)
     {
-        voxelEntity = new Entity(VoxelTypes.getFromName(voxelName), location);
+        entity = new Entity(VoxelTypes.getFromName(voxelName), location);
+        this.name = voxelName;
     }
 
+    @Deprecated
     public void render()
     {
-        Main.getInstance().getRenderer().processEntity(voxelEntity);
+        Main.getInstance().getRenderer().processEntity(entity);
     }
 
     @Override
     protected void finalize() throws Throwable
     {
         super.finalize();
-        voxelEntity = null;
+        entity = null;
 
     }
 
-    public Entity getVoxelEntity()
+    public Entity getEntity()
     {
-        return voxelEntity;
+        return entity;
     }
 
-    public void setVoxelEntity(Entity voxelEntity)
+    public void setEntity(Entity entity)
     {
-        this.voxelEntity = voxelEntity;
+        this.entity = entity;
     }
 
     public Vector3f getLocation()
     {
-        return voxelEntity.getPosition();
+        return entity.getPosition();
     }
 }

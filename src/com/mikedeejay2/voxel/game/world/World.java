@@ -15,8 +15,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class World implements Runnable
 {
     public static final int CHUNK_SIZE = 16;
-    public static final int CHUNKS_TO_PROCESS_PER_TICK = 100;
+    public static final int CHUNKS_TO_PROCESS_PER_TICK = 1;
     public int chunksProcessedThisTick = 0;
+
+    public int chunkUpdates = 0;
+    public int chunkUpdateCount = 0;
 
     public static int renderDistance = 8;
 
@@ -49,6 +52,7 @@ public class World implements Runnable
             try
             {
                 Thread.sleep(50);
+                chunkUpdates += chunksProcessedThisTick;
                 chunksProcessedThisTick = 0;
             }
             catch (InterruptedException e)
@@ -74,6 +78,7 @@ public class World implements Runnable
                     chunk.chunkEntity = null;
                     allChunks.remove(loc);
                     loc = null;
+                    chunksProcessedThisTick++;
                 }
             }
         }
@@ -132,10 +137,6 @@ public class World implements Runnable
                             Chunk chunk = generateChunk(currentChunkLoc);
                             chunk.populate();
                             chunksProcessedThisTick++;
-                        }
-                        else
-                        {
-                            break;
                         }
                     }
                 }
@@ -201,5 +202,26 @@ public class World implements Runnable
     public HashMap<Vector3f, Chunk> getAllChunks()
     {
         return allChunks;
+    }
+
+    public static int getChunksToProcessPerTick()
+    {
+        return CHUNKS_TO_PROCESS_PER_TICK;
+    }
+
+    public int getChunksProcessedThisTick()
+    {
+        return chunksProcessedThisTick;
+    }
+
+    public int getChunkUpdates()
+    {
+        return chunkUpdateCount;
+    }
+
+    public void resetChunkUpdateCount()
+    {
+        chunkUpdateCount = chunkUpdates;
+        chunkUpdates = 0;
     }
 }

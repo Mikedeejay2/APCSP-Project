@@ -41,7 +41,7 @@ public class DebugScreen
     {
         if (isEnabled)
         {
-            TextMaster.editText(fpsText, Window.getFPS() + " fps");
+            TextMaster.editText(fpsText, Window.getFPS() + " fps, " + main.getWorld().getChunkUpdates() + " chunk updates");
             TextMaster.editText(locationText, "X: " + Math.round(main.getCamera().getPosition().x * 100) / 100f + ", Y: " + Math.round(main.getCamera().getPosition().y * 100) / 100f + ", Z: " + Math.round(main.getCamera().getPosition().z * 100) / 100f +
                     " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")" + getDirection());
         }

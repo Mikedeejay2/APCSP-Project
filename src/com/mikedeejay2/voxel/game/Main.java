@@ -146,4 +146,9 @@ public class Main
     {
         return renderer;
     }
+
+    public World getWorld()
+    {
+        return world;
+    }
 }
