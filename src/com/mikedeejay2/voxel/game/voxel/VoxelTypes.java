@@ -17,6 +17,9 @@ public class VoxelTypes
     public static final TexturedModel stone = loadVoxel("stone");
     public static final TexturedModel diamond_block = loadVoxel("diamond_block");
     public static final TexturedModel gold_block = loadVoxel("gold_block");
+    public static final TexturedModel white_concrete = loadVoxel("white_concrete");
+    public static final TexturedModel black_concrete = loadVoxel("black_concrete");
+    public static final TexturedModel light_gray_concrete = loadVoxel("light_gray_concrete");
 
 
 

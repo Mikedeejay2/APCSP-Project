@@ -121,6 +121,24 @@ public class Loader
         }
     }
 
+    public void deleteVAO(int vao)
+    {
+        glDeleteVertexArrays(vao);
+        vaos.remove((Object)vao);
+    }
+
+    public void deleteVBO(int vbo)
+    {
+        glDeleteBuffers(vbo);
+        vbos.remove((Object)vbo);
+    }
+
+    public void deleteTexture(int texture)
+    {
+        glDeleteTextures(texture);
+        textures.remove((Object)texture);
+    }
+
     private int createVAO()
     {
         int vaoID = glGenVertexArrays();

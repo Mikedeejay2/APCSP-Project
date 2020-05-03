@@ -84,21 +84,21 @@ public class Chunk
 
         String name = "";
         if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "dirt";
+            name = "white_concrete";
         else if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "stone";
+            name = "black_concrete";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "dirt";
+            name = "white_concrete";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "stone";
+            name = "black_concrete";
         else if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "stone";
+            name = "black_concrete";
         else if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "dirt";
+            name = "white_concrete";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "stone";
+            name = "black_concrete";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "dirt";
+            name = "white_concrete";
 
         ModelTexture modelTexture = VoxelTypes.getFromName(name).getTexture();
 
@@ -569,5 +569,19 @@ public class Chunk
     public void setContainsVoxels(boolean containsVoxels)
     {
         this.containsVoxels = containsVoxels;
+    }
+
+    public void destroy()
+    {
+        voxels = null;
+        chunkEntity.destroy();
+        chunkLoc = null;
+        chunkCoords = null;
+        verticesTemp = null;
+        textureCoordsTemp = null;
+        indicesTemp = null;
+        instanceWorld = null;
+        hasLoaded = false;
+        containsVoxels = false;
     }
 }

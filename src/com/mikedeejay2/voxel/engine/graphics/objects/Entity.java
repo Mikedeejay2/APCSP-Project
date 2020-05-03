@@ -2,6 +2,7 @@ package com.mikedeejay2.voxel.engine.graphics.objects;
 
 import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL30;
 
 public class Entity
 {
@@ -104,10 +105,9 @@ public class Entity
         this.scale = scale;
     }
 
-    @Override
-    protected void finalize() throws Throwable
+    public void destroy()
     {
-        super.finalize();
+        model.destroy();
         model = null;
         position = null;
     }

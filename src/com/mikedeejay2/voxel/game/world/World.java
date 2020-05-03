@@ -5,17 +5,14 @@ import com.mikedeejay2.voxel.game.world.generators.OverworldGenerator;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World implements Runnable
 {
     public static final int CHUNK_SIZE = 32;
-    public static final int CHUNKS_TO_PROCESS_PER_TICK = 10000;
+    public static final int CHUNKS_TO_PROCESS_PER_TICK = 100;
     public int chunksProcessedThisTick = 0;
 
     public int chunkUpdates = 0;
@@ -31,13 +28,13 @@ public class World implements Runnable
 
     OverworldGenerator overworldGenerator;
 
-    HashMap<Vector3f, Chunk> allChunks;
+    ConcurrentHashMap<Vector3f, Chunk> allChunks;
 
     public World()
     {
         playerPosition = new Vector3f(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
-        allChunks = new HashMap<Vector3f, Chunk>();
+        allChunks = new ConcurrentHashMap<Vector3f, Chunk>();
         overworldGenerator = new OverworldGenerator(this);
     }
 
@@ -48,7 +45,6 @@ public class World implements Runnable
         {
             updatePlayerLoc();
             updateChunks();
-            unloadOldChunks();
             try
             {
                 Thread.sleep(50);
@@ -62,26 +58,23 @@ public class World implements Runnable
         }
     }
 
-    private void unloadOldChunks()
+    public void unloadOldChunks()
     {
-        ArrayList<Vector3f> locs = new ArrayList<>(allChunks.keySet());
+        List<Vector3f> locs = new CopyOnWriteArrayList<>(allChunks.keySet());
         for(int i = 0; i < locs.size(); i++)
         {
             Vector3f loc = locs.get(i);
-            if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
-            {
                 if (playerChunk.x - loc.x > World.renderDistance || playerChunk.y - loc.y > World.renderDistance || playerChunk.z - loc.z > World.renderDistance ||
                         playerChunk.x - loc.x < -World.renderDistance || playerChunk.y - loc.y < -World.renderDistance || playerChunk.z - loc.z < -World.renderDistance)
                 {
                     Chunk chunk = getChunkFromChunkLoc(loc);
+                    chunk.destroy();
                     chunk.chunkCoords = null;
                     chunk.voxels = null;
                     chunk.chunkEntity = null;
                     allChunks.remove(loc);
                     loc = null;
-                    chunksProcessedThisTick++;
                 }
-            }
         }
         locs.clear();
         locs = null;
@@ -198,7 +191,7 @@ public class World implements Runnable
         return playerChunk;
     }
 
-    public HashMap<Vector3f, Chunk> getAllChunks()
+    public Map<Vector3f, Chunk> getAllChunks()
     {
         return allChunks;
     }

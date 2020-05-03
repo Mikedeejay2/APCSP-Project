@@ -1,6 +1,7 @@
 package com.mikedeejay2.voxel.engine.graphics.models;
 
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
+import org.lwjgl.opengl.GL30;
 
 public class TexturedModel
 {
@@ -27,6 +28,13 @@ public class TexturedModel
     protected void finalize() throws Throwable
     {
         super.finalize();
+        rawModel = null;
+        texture = null;
+    }
+
+    public void destroy()
+    {
+        rawModel.destroy();
         rawModel = null;
         texture = null;
     }

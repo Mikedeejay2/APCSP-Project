@@ -1,5 +1,7 @@
 package com.mikedeejay2.voxel.engine.graphics.textures;
 
+import org.lwjgl.opengl.GL30;
+
 public class ModelTexture
 {
     private int textureID;
@@ -12,5 +14,10 @@ public class ModelTexture
     public int getID()
     {
         return textureID;
+    }
+
+    public void destroy()
+    {
+        GL30.glDeleteTextures(textureID);
     }
 }
