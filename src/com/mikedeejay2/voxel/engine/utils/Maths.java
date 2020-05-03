@@ -35,4 +35,9 @@ public class Maths
         l.removeAll(Collections.singleton(null));
         return l.size();
     }
+
+    public static float lerp(float a, float b, float f)
+    {
+        return a + f * (b - a);
+    }
 }

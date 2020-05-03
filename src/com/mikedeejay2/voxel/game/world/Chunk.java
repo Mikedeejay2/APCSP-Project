@@ -530,6 +530,12 @@ public class Chunk
         return indices;
     }
 
+    public void addVoxel(int x, int y, int z, String name)
+    {
+        voxels[x][y][z] = name;
+        setContainsVoxels(true);
+    }
+
     public boolean containsVoxelAtOffset(int x, int y, int z)
     {
         if(x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1) return false;

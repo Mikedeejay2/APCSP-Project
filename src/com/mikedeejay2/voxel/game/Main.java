@@ -75,6 +75,11 @@ public class Main
     public void update(float delta)
     {
         camera.update(delta);
+    }
+
+    public void update50ms(float delta)
+    {
+        debugScreen.update();
         world.unloadOldChunks();
     }
 

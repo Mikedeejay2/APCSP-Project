@@ -33,8 +33,7 @@ public class OverworldGenerator
                 {
                     for(int i = height; i >= 0; i--)
                     {
-                        chunk.voxels[x][height - i][z] = "dirt";
-                        chunk.setContainsVoxels(true);
+                        chunk.addVoxel(x, height - i, z, "dirt");
                     }
 
                 }
@@ -42,8 +41,7 @@ public class OverworldGenerator
                 {
                     for(int y = 0; y < World.CHUNK_SIZE; y++)
                     {
-                        chunk.voxels[x][y][z] = "stone";
-                        chunk.setContainsVoxels(true);
+                        chunk.addVoxel(x, y, z, "stone");
                     }
                 }
             }

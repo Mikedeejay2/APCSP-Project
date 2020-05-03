@@ -99,7 +99,7 @@ public class CoreEngine implements Runnable
             }
             if(System.currentTimeMillis() >= time + 50)
             {
-                main.getDebugScreen().update();
+                main.update50ms((float)frameTime);
                 time = System.currentTimeMillis();
             }
         }
