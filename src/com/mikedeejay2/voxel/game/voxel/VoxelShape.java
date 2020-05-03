@@ -187,7 +187,48 @@ public class VoxelShape
                     1, 0
             };
 
-    public static RawModel voxelModel = loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices());
+    private static float[] brightness = new float[]
+            {
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1
+            };
+
+    private static float[] brightnessSingleSide = new float[]
+            {
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1
+            };
+
+    public static RawModel voxelModel = loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices(), VoxelShape.getBrightness());
 
 
 
@@ -282,5 +323,15 @@ public class VoxelShape
     public static float getVoxelSize()
     {
         return VOXEL_SIZE;
+    }
+
+    public static float[] getBrightness()
+    {
+        return brightness;
+    }
+
+    public static float[] getBrightnessSingleSide()
+    {
+        return brightnessSingleSide;
     }
 }

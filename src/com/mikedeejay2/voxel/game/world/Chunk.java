@@ -25,6 +25,7 @@ public class Chunk
     private float[] verticesTemp;
     private float[] textureCoordsTemp;
     private int[] indicesTemp;
+    private float[] brightnessTemp;
 
     World instanceWorld;
 
@@ -47,6 +48,7 @@ public class Chunk
         verticesTemp = createVertices();
         textureCoordsTemp = createTextureCoords();
         indicesTemp = createIndices();
+        brightnessTemp = createBrightness();
         hasLoaded = true;
     }
 
@@ -75,8 +77,8 @@ public class Chunk
 
     public Entity createChunkEntity()
     {
-        if(verticesTemp == null || textureCoordsTemp == null || indicesTemp == null) return null;
-        RawModel model = Main.getLoader().loadToVAO(verticesTemp, textureCoordsTemp, indicesTemp);
+        if(verticesTemp == null || textureCoordsTemp == null || indicesTemp == null || brightnessTemp == null) return null;
+        RawModel model = Main.getLoader().loadToVAO(verticesTemp, textureCoordsTemp, indicesTemp, brightnessTemp);
 
         verticesTemp = null;
         textureCoordsTemp = null;
@@ -278,9 +280,10 @@ public class Chunk
 //
 //        return chunkEntity;
 //    }
-    public float[] createVertices()
+
+    public float[] createBrightness()
     {
-        List<Float> verticesList = new ArrayList<Float>();
+        List<Float> brightnessList = new ArrayList<Float>();
         for(int x = 0; x < World.CHUNK_SIZE; x++)
         {
             for (int y = 0; y < World.CHUNK_SIZE; y++)
@@ -291,74 +294,44 @@ public class Chunk
                     {
                         if(!containsVoxelAtOffset(x+1, y, z))
                         {
-                            for (int i = 0; i < VoxelShape.getVerticesFaceWest().length; i++)
+                            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
                             {
-                                switch (i % 3)
-                                {
-                                    case 0: verticesList.add(VoxelShape.getVerticesFaceWest()[i]+x); break;
-                                    case 1: verticesList.add(VoxelShape.getVerticesFaceWest()[i]+y); break;
-                                    case 2: verticesList.add(VoxelShape.getVerticesFaceWest()[i]+z); break;
-                                }
+                                brightnessList.add(0.9f);
                             }
                         }
                         if(!containsVoxelAtOffset(x-1, y, z))
                         {
-                            for (int i = 0; i < VoxelShape.getVerticesFaceEast().length; i++)
+                            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
                             {
-                                switch (i % 3)
-                                {
-                                    case 0: verticesList.add(VoxelShape.getVerticesFaceEast()[i]+x); break;
-                                    case 1: verticesList.add(VoxelShape.getVerticesFaceEast()[i]+y); break;
-                                    case 2: verticesList.add(VoxelShape.getVerticesFaceEast()[i]+z); break;
-                                }
+                                brightnessList.add(0.8f);
                             }
                         }
                         if(!containsVoxelAtOffset(x, y+1, z))
                         {
-                            for (int i = 0; i < VoxelShape.getVerticesFaceUp().length; i++)
+                            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
                             {
-                                switch (i % 3)
-                                {
-                                    case 0: verticesList.add(VoxelShape.getVerticesFaceUp()[i]+x); break;
-                                    case 1: verticesList.add(VoxelShape.getVerticesFaceUp()[i]+y); break;
-                                    case 2: verticesList.add(VoxelShape.getVerticesFaceUp()[i]+z); break;
-                                }
+                                brightnessList.add(1.0f);
                             }
                         }
                         if(!containsVoxelAtOffset(x, y-1, z))
                         {
-                            for (int i = 0; i < VoxelShape.getVerticesFaceDown().length; i++)
+                            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
                             {
-                                switch (i % 3)
-                                {
-                                    case 0: verticesList.add(VoxelShape.getVerticesFaceDown()[i]+x); break;
-                                    case 1: verticesList.add(VoxelShape.getVerticesFaceDown()[i]+y); break;
-                                    case 2: verticesList.add(VoxelShape.getVerticesFaceDown()[i]+z); break;
-                                }
+                                brightnessList.add(0.7f);
                             }
                         }
                         if(!containsVoxelAtOffset(x, y, z+1))
                         {
-                            for (int i = 0; i < VoxelShape.getVerticesFaceSouth().length; i++)
+                            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
                             {
-                                switch (i % 3)
-                                {
-                                    case 0: verticesList.add(VoxelShape.getVerticesFaceSouth()[i]+x); break;
-                                    case 1: verticesList.add(VoxelShape.getVerticesFaceSouth()[i]+y); break;
-                                    case 2: verticesList.add(VoxelShape.getVerticesFaceSouth()[i]+z); break;
-                                }
+                                brightnessList.add(0.7f);
                             }
                         }
                         if(!containsVoxelAtOffset(x, y, z-1))
                         {
-                            for (int i = 0; i < VoxelShape.getVerticesFaceNorth().length; i++)
+                            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
                             {
-                                switch (i % 3)
-                                {
-                                    case 0: verticesList.add(VoxelShape.getVerticesFaceNorth()[i]+x); break;
-                                    case 1: verticesList.add(VoxelShape.getVerticesFaceNorth()[i]+y); break;
-                                    case 2: verticesList.add(VoxelShape.getVerticesFaceNorth()[i]+z); break;
-                                }
+                                brightnessList.add(0.7f);
                             }
                         }
                     }
@@ -366,14 +339,14 @@ public class Chunk
             }
         }
 
-        float[] vertices = new float[verticesList.size()];
+        float[] brightness = new float[brightnessList.size()];
 
-        for(int i = 0; i < vertices.length; i++) vertices[i] = verticesList.get(i);
+        for(int i = 0; i < brightness.length; i++) brightness[i] = brightnessList.get(i);
 
-        verticesList.clear();
-        verticesList = null;
+        brightnessList.clear();
+        brightnessList = null;
 
-        return vertices;
+        return brightness;
     }
 
     public float[] createTextureCoords()
@@ -528,6 +501,104 @@ public class Chunk
         indicesList = null;
 
         return indices;
+    }
+
+    public float[] createVertices()
+    {
+        List<Float> verticesList = new ArrayList<Float>();
+        for(int x = 0; x < World.CHUNK_SIZE; x++)
+        {
+            for (int y = 0; y < World.CHUNK_SIZE; y++)
+            {
+                for (int z = 0; z < World.CHUNK_SIZE; z++)
+                {
+                    if(containsVoxelAtOffset(x, y, z))
+                    {
+                        if(!containsVoxelAtOffset(x+1, y, z))
+                        {
+                            for (int i = 0; i < VoxelShape.getVerticesFaceWest().length; i++)
+                            {
+                                switch (i % 3)
+                                {
+                                    case 0: verticesList.add(VoxelShape.getVerticesFaceWest()[i]+x); break;
+                                    case 1: verticesList.add(VoxelShape.getVerticesFaceWest()[i]+y); break;
+                                    case 2: verticesList.add(VoxelShape.getVerticesFaceWest()[i]+z); break;
+                                }
+                            }
+                        }
+                        if(!containsVoxelAtOffset(x-1, y, z))
+                        {
+                            for (int i = 0; i < VoxelShape.getVerticesFaceEast().length; i++)
+                            {
+                                switch (i % 3)
+                                {
+                                    case 0: verticesList.add(VoxelShape.getVerticesFaceEast()[i]+x); break;
+                                    case 1: verticesList.add(VoxelShape.getVerticesFaceEast()[i]+y); break;
+                                    case 2: verticesList.add(VoxelShape.getVerticesFaceEast()[i]+z); break;
+                                }
+                            }
+                        }
+                        if(!containsVoxelAtOffset(x, y+1, z))
+                        {
+                            for (int i = 0; i < VoxelShape.getVerticesFaceUp().length; i++)
+                            {
+                                switch (i % 3)
+                                {
+                                    case 0: verticesList.add(VoxelShape.getVerticesFaceUp()[i]+x); break;
+                                    case 1: verticesList.add(VoxelShape.getVerticesFaceUp()[i]+y); break;
+                                    case 2: verticesList.add(VoxelShape.getVerticesFaceUp()[i]+z); break;
+                                }
+                            }
+                        }
+                        if(!containsVoxelAtOffset(x, y-1, z))
+                        {
+                            for (int i = 0; i < VoxelShape.getVerticesFaceDown().length; i++)
+                            {
+                                switch (i % 3)
+                                {
+                                    case 0: verticesList.add(VoxelShape.getVerticesFaceDown()[i]+x); break;
+                                    case 1: verticesList.add(VoxelShape.getVerticesFaceDown()[i]+y); break;
+                                    case 2: verticesList.add(VoxelShape.getVerticesFaceDown()[i]+z); break;
+                                }
+                            }
+                        }
+                        if(!containsVoxelAtOffset(x, y, z+1))
+                        {
+                            for (int i = 0; i < VoxelShape.getVerticesFaceSouth().length; i++)
+                            {
+                                switch (i % 3)
+                                {
+                                    case 0: verticesList.add(VoxelShape.getVerticesFaceSouth()[i]+x); break;
+                                    case 1: verticesList.add(VoxelShape.getVerticesFaceSouth()[i]+y); break;
+                                    case 2: verticesList.add(VoxelShape.getVerticesFaceSouth()[i]+z); break;
+                                }
+                            }
+                        }
+                        if(!containsVoxelAtOffset(x, y, z-1))
+                        {
+                            for (int i = 0; i < VoxelShape.getVerticesFaceNorth().length; i++)
+                            {
+                                switch (i % 3)
+                                {
+                                    case 0: verticesList.add(VoxelShape.getVerticesFaceNorth()[i]+x); break;
+                                    case 1: verticesList.add(VoxelShape.getVerticesFaceNorth()[i]+y); break;
+                                    case 2: verticesList.add(VoxelShape.getVerticesFaceNorth()[i]+z); break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        float[] vertices = new float[verticesList.size()];
+
+        for(int i = 0; i < vertices.length; i++) vertices[i] = verticesList.get(i);
+
+        verticesList.clear();
+        verticesList = null;
+
+        return vertices;
     }
 
     public void addVoxel(int x, int y, int z, String name)

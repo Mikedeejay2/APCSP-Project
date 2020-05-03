@@ -24,7 +24,7 @@ public class Camera
     Vector3f forward;
     Vector3f right;
 
-    private float speed = 200;
+    private float speed = 20;
     private float sensitivity = 0.3f;
 
     public Camera()

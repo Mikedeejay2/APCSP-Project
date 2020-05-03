@@ -16,9 +16,8 @@ public class World implements Runnable
     public int chunksProcessedThisTick = 0;
 
     public int chunkUpdates = 0;
-    public int chunkUpdateCount = 0;
 
-    public static int renderDistance = 8;
+    public static int renderDistance = 12;
 
     public static World world;
 
@@ -28,13 +27,13 @@ public class World implements Runnable
 
     OverworldGenerator overworldGenerator;
 
-    ConcurrentHashMap<Vector3f, Chunk> allChunks;
+    Map<Vector3f, Chunk> allChunks;
 
     public World()
     {
         playerPosition = new Vector3f(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
-        allChunks = new ConcurrentHashMap<Vector3f, Chunk>();
+        allChunks = new HashMap<>();
         overworldGenerator = new OverworldGenerator(this);
     }
 
@@ -48,7 +47,7 @@ public class World implements Runnable
             try
             {
                 Thread.sleep(50);
-                chunkUpdates += chunksProcessedThisTick;
+                chunkUpdates = chunksProcessedThisTick;
                 chunksProcessedThisTick = 0;
             }
             catch (InterruptedException e)
@@ -60,7 +59,12 @@ public class World implements Runnable
 
     public void unloadOldChunks()
     {
-        List<Vector3f> locs = new CopyOnWriteArrayList<>(allChunks.keySet());
+        List<Vector3f> locs = new ArrayList<>();
+        try
+        {
+            locs = new ArrayList<>(allChunks.keySet());
+        }
+        catch (ConcurrentModificationException e) {}
         for(int i = 0; i < locs.size(); i++)
         {
             Vector3f loc = locs.get(i);
@@ -208,12 +212,16 @@ public class World implements Runnable
 
     public int getChunkUpdates()
     {
-        return chunkUpdateCount;
+        return chunkUpdates;
     }
 
     public void resetChunkUpdateCount()
     {
-        chunkUpdateCount = chunkUpdates;
         chunkUpdates = 0;
+    }
+
+    public int getAllChunksSize()
+    {
+        return allChunks.size();
     }
 }

@@ -76,7 +76,6 @@ public class Window
             time = System.currentTimeMillis();
             FPS = frames;
             frames = 0;
-            instance.getWorld().resetChunkUpdateCount();
         }
         swapBuffers();
     }

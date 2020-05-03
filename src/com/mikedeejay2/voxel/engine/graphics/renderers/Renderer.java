@@ -77,7 +77,9 @@ public class Renderer
         RawModel model = texturedModel.getRawModel();
         glBindVertexArray(model.getVaoID());
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);glActiveTexture(GL_TEXTURE0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getID());
     }
 
@@ -85,6 +87,7 @@ public class Renderer
     {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
     }
 

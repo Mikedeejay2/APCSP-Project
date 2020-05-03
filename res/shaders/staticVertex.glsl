@@ -2,9 +2,11 @@
 
 in vec3 position;
 in vec2 textureCoords;
+in vec3 brightness;
 
 out vec3 color;
 out vec2 pass_textureCoords;
+out vec3 pass_brightness;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
@@ -26,4 +28,6 @@ void main(void)
     float distance = length(positionRelativeToCam.xyz);
     visibility = exp(-pow((distance * density), gradient));
     visibility = clamp(visibility, 0.0, 1.0);
+
+    pass_brightness = brightness;
 }
