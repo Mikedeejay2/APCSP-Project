@@ -87,7 +87,7 @@ public class Main
     public void render()
     {
         Vector3f playerChunk = world.getPlayerChunk();
-        for (int x = (int) (world.getPlayerChunk().x - renderDistance); x < playerChunk.x + renderDistance + 1; x++)
+        for (int x = (int) (playerChunk.x - renderDistance); x < playerChunk.x + renderDistance + 1; x++)
         {
             for (int y = (int) (playerChunk.y - renderDistance); y <  playerChunk.y + renderDistance + 1; y++)
             {
@@ -97,6 +97,7 @@ public class Main
                 }
             }
         }
+
         renderer.render(camera);
         TextMaster.render();
     }

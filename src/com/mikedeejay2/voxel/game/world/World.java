@@ -15,13 +15,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class World implements Runnable
 {
     public static final int CHUNK_SIZE = 32;
-    public static final int CHUNKS_TO_PROCESS_PER_TICK = 10;
+    public static final int CHUNKS_TO_PROCESS_PER_TICK = 10000;
     public int chunksProcessedThisTick = 0;
 
     public int chunkUpdates = 0;
     public int chunkUpdateCount = 0;
 
-    public static int renderDistance = 4;
+    public static int renderDistance = 8;
 
     public static World world;
 
@@ -122,20 +122,23 @@ public class World implements Runnable
 
     public void updateChunks()
     {
-        for (int x = (int) (playerChunk.x - renderDistance); x < playerChunk.x + renderDistance + 1; x++)
+        for(int rd = 0; rd < renderDistance; rd++)
         {
-            for (int y = (int) (playerChunk.y - renderDistance); y < playerChunk.y + renderDistance + 1; y++)
+            for (int x = (int) (playerChunk.x - rd); x < playerChunk.x + rd + 1; x++)
             {
-                for (int z = (int) (playerChunk.z - renderDistance); z < playerChunk.z + renderDistance + 1; z++)
+                for (int y = (int) (playerChunk.y - rd); y < playerChunk.y + rd + 1; y++)
                 {
-                    if(chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
+                    for (int z = (int) (playerChunk.z - rd); z < playerChunk.z + rd + 1; z++)
                     {
-                        Vector3f currentChunkLoc = new Vector3f(x, y, z);
-                        if (!chunkAtChunkLoc(currentChunkLoc))
+                        if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
                         {
-                            Chunk chunk = generateChunk(currentChunkLoc);
-                            chunk.populate();
-                            chunksProcessedThisTick++;
+                            Vector3f currentChunkLoc = new Vector3f(x, y, z);
+                            if (!chunkAtChunkLoc(currentChunkLoc))
+                            {
+                                Chunk chunk = generateChunk(currentChunkLoc);
+                                chunk.populate();
+                                chunksProcessedThisTick++;
+                            }
                         }
                     }
                 }

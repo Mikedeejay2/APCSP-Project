@@ -12,7 +12,7 @@ uniform mat4 viewMatrix;
 
 out float visibility;
 
-const float density = 0.007;
+const float density = 0.004;
 const float gradient = 1.5;
 
 void main(void)

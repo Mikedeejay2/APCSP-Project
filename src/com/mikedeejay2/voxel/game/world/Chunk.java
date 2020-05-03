@@ -15,7 +15,7 @@ import java.util.*;
 
 public class Chunk
 {
-    public Voxel[][][] voxels;
+    public String[][][] voxels;
 
     Entity chunkEntity;
 
@@ -35,7 +35,7 @@ public class Chunk
     {
         this.chunkLoc = chunkLoc;
         this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE, chunkLoc.y * World.CHUNK_SIZE, chunkLoc.z * World.CHUNK_SIZE);
-        this.voxels = new Voxel[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
+        this.voxels = new String[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
         instanceWorld = world;
         hasLoaded = false;
         containsVoxels = false;
@@ -84,21 +84,21 @@ public class Chunk
 
         String name = "";
         if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "diamond_block";
+            name = "dirt";
         else if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "gold_block";
+            name = "stone";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "diamond_block";
+            name = "dirt";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 0)
-            name = "gold_block";
+            name = "stone";
         else if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "gold_block";
+            name = "stone";
         else if (Math.abs(chunkLoc.x) % 2 == 0 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "diamond_block";
+            name = "dirt";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 1 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "gold_block";
+            name = "stone";
         else if (Math.abs(chunkLoc.x) % 2 == 1 && Math.abs(chunkLoc.z) % 2 == 0 && Math.abs(chunkLoc.y) % 2 == 1)
-            name = "diamond_block";
+            name = "dirt";
 
         ModelTexture modelTexture = VoxelTypes.getFromName(name).getTexture();
 
@@ -278,7 +278,6 @@ public class Chunk
 //
 //        return chunkEntity;
 //    }
-//TODO: AYYYY YOU NEED TO CHANGE THE FOR EACH LOOPS INTO REGULAR FOR LOOPS FOR PERFORMANCE!!!!!!!!!!
     public float[] createVertices()
     {
         List<Float> verticesList = new ArrayList<Float>();
@@ -390,33 +389,51 @@ public class Chunk
                     {
                         if(!containsVoxelAtOffset(x+1, y, z))
                         {
-                            for (float texCoord : VoxelShape.getTextureCoordsSingleSide())
+                            for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
+                            {
+                                float texCoord = VoxelShape.getTextureCoordsSingleSide()[i];
                                 textureCoordsList.add(texCoord);
+                            }
                         }
                         if(!containsVoxelAtOffset(x-1, y, z))
                         {
-                            for (float texCoord : VoxelShape.getTextureCoordsSingleSide())
+                            for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
+                            {
+                                float texCoord = VoxelShape.getTextureCoordsSingleSide()[i];
                                 textureCoordsList.add(texCoord);
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y+1, z))
                         {
-                            for (float texCoord : VoxelShape.getTextureCoordsSingleSide())
+                            for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
+                            {
+                                float texCoord = VoxelShape.getTextureCoordsSingleSide()[i];
                                 textureCoordsList.add(texCoord);
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y-1, z))
                         {
-                            for (float texCoord : VoxelShape.getTextureCoordsSingleSide())
+                            for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
+                            {
+                                float texCoord = VoxelShape.getTextureCoordsSingleSide()[i];
                                 textureCoordsList.add(texCoord);
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y, z+1))
                         {
-                            for (float texCoord : VoxelShape.getTextureCoordsSingleSide())
+                            for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
+                            {
+                                float texCoord = VoxelShape.getTextureCoordsSingleSide()[i];
                                 textureCoordsList.add(texCoord);
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y, z-1))
                         {
-                            for (float texCoord : VoxelShape.getTextureCoordsSingleSide())
+                            for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
+                            {
+                                float texCoord = VoxelShape.getTextureCoordsSingleSide()[i];
                                 textureCoordsList.add(texCoord);
+                            }
                         }
                     }
                 }
@@ -447,38 +464,56 @@ public class Chunk
                         if(!containsVoxelAtOffset(x+1, y, z))
                         {
                             int indicesSize = indicesList.size();
-                            for (int index : VoxelShape.getIndicesFaceWest())
+                            for (int i = 0; i < VoxelShape.getIndicesFaceWest().length; i++)
+                            {
+                                int index = VoxelShape.getIndicesFaceWest()[i];
                                 indicesList.add((int)Math.ceil(index + indicesSize/1.5));
+                            }
                         }
                         if(!containsVoxelAtOffset(x-1, y, z))
                         {
                             int indicesSize = indicesList.size();
-                            for (int index : VoxelShape.getIndicesFaceEast())
+                            for (int i = 0; i < VoxelShape.getIndicesFaceEast().length; i++)
+                            {
+                                int index = VoxelShape.getIndicesFaceEast()[i];
                                 indicesList.add((int)Math.ceil(index + indicesSize/1.5));
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y+1, z))
                         {
                             int indicesSize = indicesList.size();
-                            for (int index : VoxelShape.getIndicesFaceUp())
+                            for (int i = 0; i < VoxelShape.getIndicesFaceUp().length; i++)
+                            {
+                                int index = VoxelShape.getIndicesFaceUp()[i];
                                 indicesList.add((int)Math.ceil(index + indicesSize/1.5));
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y-1, z))
                         {
                             int indicesSize = indicesList.size();
-                            for (int index : VoxelShape.getIndicesFaceDown())
+                            for (int i = 0; i < VoxelShape.getIndicesFaceDown().length; i++)
+                            {
+                                int index = VoxelShape.getIndicesFaceDown()[i];
                                 indicesList.add((int)Math.ceil(index + indicesSize/1.5));
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y, z+1))
                         {
                             int indicesSize = indicesList.size();
-                            for (int index : VoxelShape.getIndicesFaceSouth())
+                            for (int i = 0; i < VoxelShape.getIndicesFaceSouth().length; i++)
+                            {
+                                int index = VoxelShape.getIndicesFaceSouth()[i];
                                 indicesList.add((int)Math.ceil(index + indicesSize/1.5));
+                            }
                         }
                         if(!containsVoxelAtOffset(x, y, z-1))
                         {
                             int indicesSize = indicesList.size();
-                            for (int index : VoxelShape.getIndicesFaceNorth())
+                            for (int i = 0; i < VoxelShape.getIndicesFaceNorth().length; i++)
+                            {
+                                int index = VoxelShape.getIndicesFaceNorth()[i];
                                 indicesList.add((int)Math.ceil(index + indicesSize/1.5));
+                            }
                         }
                     }
                 }
@@ -502,6 +537,11 @@ public class Chunk
     }
 
     public Voxel getVoxelAtOffset(int x, int y, int z)
+    {
+        return new Voxel(voxels[x][y][z], new Vector3f(chunkCoords.x + x, chunkCoords.y + y, chunkCoords.z + z));
+    }
+
+    public String getVoxelNameAtOffset(int x, int y, int z)
     {
         return voxels[x][y][z];
     }
