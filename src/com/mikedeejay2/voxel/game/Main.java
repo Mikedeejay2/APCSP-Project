@@ -12,6 +12,8 @@ import com.mikedeejay2.voxel.engine.loaders.Loader;
 import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
+import com.mikedeejay2.voxel.game.voxel.Voxel;
+import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
@@ -32,11 +34,6 @@ public class Main
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
 
-    public RawModel voxelM;
-    public ModelTexture voxelT;
-    public TexturedModel voxelTM;
-    public Entity voxel;
-
     public Camera camera;
 
     public World world;
@@ -53,12 +50,11 @@ public class Main
         System.out.println("Initializing game!");
 
         loader = new Loader();
+        ModelTexture loadData = VoxelTypes.getTexture("diamond_block");
 
         renderer = new MasterRenderer();
 
         camera = new Camera();
-
-        voxel = new Entity(VoxelTypes.dirt, new Vector3f(0, 0,-4));
 
         world = new World();
 
@@ -67,8 +63,8 @@ public class Main
         worldThread.start();
         System.out.println("At this point, world thread should have started");
 
-        TextMaster.init(loader);
-        debugScreen = new DebugScreen();
+        TextMaster.init(loader, this);
+        debugScreen = new DebugScreen(this);
         debugScreen.init();
     }
 

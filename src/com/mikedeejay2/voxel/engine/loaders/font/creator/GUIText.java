@@ -28,6 +28,7 @@ public class GUIText {
 	private TextMeshData textMeshData;
 
 	private boolean centerText = false;
+	private int[] vbos;
 
 	/**
 	 * Creates a new text, loads the text's quads into a VAO, and adds the text
@@ -141,9 +142,10 @@ public class GUIText {
 	 * @param verticesCount
 	 *            - the total number of vertices in all of the quads.
 	 */
-	public void setMeshInfo(int vao, int verticesCount) {
+	public void setMeshInfo(int vao, int verticesCount, int[] vbos) {
 		this.textMeshVao = vao;
 		this.vertexCount = verticesCount;
+		this.vbos = vbos;
 	}
 
 	/**
@@ -259,5 +261,10 @@ public class GUIText {
 	public void setTextMeshData(TextMeshData textMeshData)
 	{
 		this.textMeshData = textMeshData;
+	}
+
+	public int[] getVbos()
+	{
+		return vbos;
 	}
 }

@@ -1,17 +1,25 @@
 package com.mikedeejay2.voxel.engine.graphics.models;
 
 import com.mikedeejay2.voxel.game.Main;
-import org.lwjgl.opengl.GL30;
 
 public class RawModel {
 
     private int vaoID;
+
+    private int[] vbos;
+
     private int vertexCount;
 
-    public RawModel(int vaoID, int vertexCount){
-        //System.out.println("RawModel");
+    public RawModel(int vaoID, int vertexCount, int[] vbos){
         this.vaoID = vaoID;
         this.vertexCount = vertexCount;
+        this.vbos = vbos;
+    }
+
+    public RawModel(int vaoID, int vertexCount){
+        this.vaoID = vaoID;
+        this.vertexCount = vertexCount;
+        vbos = new int[0];
     }
 
     public int getVaoID() {
@@ -25,6 +33,8 @@ public class RawModel {
     public void destroy()
     {
         Main.getLoader().deleteVAO(vaoID);
+        for(int i = 0; i < vbos.length; i++)
+            Main.getLoader().deleteVBO(vbos[i]);
         vertexCount = 0;
     }
 }

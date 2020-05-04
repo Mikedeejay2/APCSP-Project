@@ -1,38 +1,66 @@
 package com.mikedeejay2.voxel.game.voxel;
 
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
+import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 import com.mikedeejay2.voxel.game.Main;
 import org.joml.Vector3f;
 
+import static com.mikedeejay2.voxel.game.Main.loader;
+
 public class Voxel
 {
-    Entity entity;
-    String name;
+    private ModelTexture texture;
 
-    public Voxel(String voxelName, Vector3f location)
-    {
-        entity = new Entity(VoxelTypes.getFromName(voxelName), location);
-        this.name = voxelName;
-    }
+    private String name;
+    private int ID;
+
+    private Vector3f position;
 
     @Deprecated
-    public void render()
+    public Voxel(String name)
     {
-        Main.getInstance().getRenderer().processEntity(entity);
+        Voxel parentVoxel = VoxelTypes.getFromName(name);
+        this.texture = parentVoxel.texture;
+        this.name = parentVoxel.name;
+        this.ID = parentVoxel.ID;
+        this.position = parentVoxel.position;
     }
 
-    public Entity getEntity()
+    public Voxel(int ID, Vector3f position)
     {
-        return entity;
+        Voxel parentVoxel = VoxelTypes.getFromID(ID);
+        this.texture = parentVoxel.texture;
+        this.name = parentVoxel.name;
+        this.ID = parentVoxel.ID;
+        this.position = position;
     }
 
-    public void setEntity(Entity entity)
+    //Original
+    public Voxel(String name, int ID)
     {
-        this.entity = entity;
+        this.texture = new ModelTexture(loader.loadTexture("block/" + name + ".png"));
+        this.name = name;
+        this.ID = ID;
+        this.position = null;
     }
 
-    public Vector3f getLocation()
+    public Vector3f getPosition()
     {
-        return entity.getPosition();
+        return position;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public int getID()
+    {
+        return ID;
+    }
+
+    public ModelTexture getTexture()
+    {
+        return texture;
     }
 }

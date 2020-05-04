@@ -1,4 +1,4 @@
-package com.mikedeejay2.voxel.game.world.generators;
+package com.mikedeejay2.voxel.engine.voxel.generators;
 
 import java.util.Random;
 

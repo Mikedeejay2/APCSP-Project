@@ -26,6 +26,11 @@ public class DebugScreen
 
     Main main;
 
+    public DebugScreen(Main main)
+    {
+        this.main = main;
+    }
+
     public void init()
     {
         main = Main.getInstance();

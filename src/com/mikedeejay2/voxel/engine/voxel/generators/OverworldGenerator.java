@@ -1,12 +1,9 @@
-package com.mikedeejay2.voxel.game.world.generators;
+package com.mikedeejay2.voxel.engine.voxel.generators;
 
-import com.mikedeejay2.voxel.game.voxel.Voxel;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.world.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
-
-import java.util.Arrays;
 
 public class OverworldGenerator
 {

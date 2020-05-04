@@ -2,13 +2,10 @@ package com.mikedeejay2.voxel.game.world;
 
 import com.mikedeejay2.voxel.game.Main;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
-import com.mikedeejay2.voxel.game.world.generators.OverworldGenerator;
+import com.mikedeejay2.voxel.engine.voxel.generators.OverworldGenerator;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World implements Runnable
 {

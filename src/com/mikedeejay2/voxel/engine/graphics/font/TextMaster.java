@@ -20,9 +20,12 @@ public class TextMaster
     private static Map<FontType, List<GUIText>> texts = new HashMap<FontType, List<GUIText>>();
     private static FontRenderer renderer;
 
-    public static void init(Loader theLoader){
+    private static Main instance;
+
+    public static void init(Loader theLoader, Main main){
         renderer = new FontRenderer();
         loader = theLoader;
+        instance = main;
     }
 
     public static void render(){
@@ -32,21 +35,9 @@ public class TextMaster
     public static void loadText(GUIText text){
         FontType font = text.getFont();
         TextMeshData data = font.loadText(text);
-        int vao = loader.loadToVAO(data.getVertexPositions(), data.getTextureCoords());
-        text.setMeshInfo(vao, data.getVertexCount());
-        List<GUIText> textBatch = texts.get(font);
-        if(textBatch == null){
-            textBatch = new ArrayList<GUIText>();
-            texts.put(font, textBatch);
-        }
-        textBatch.add(text);
-    }
-
-    public static void loadTextUseVAO(GUIText text){
-        FontType font = text.getFont();
-        TextMeshData data = font.loadText(text);
-        int vao = loader.loadToVAOUseExisting(text.getTextMeshVao(), data.getVertexPositions(), data.getTextureCoords());
-        text.setMeshInfo(vao, data.getVertexCount());
+        int[] vaovbo = loader.loadToVAO(data.getVertexPositions(), data.getTextureCoords());
+        int vao = vaovbo[0];
+        text.setMeshInfo(vao, data.getVertexCount(), new int[] {vaovbo[1], vaovbo[2]});
         List<GUIText> textBatch = texts.get(font);
         if(textBatch == null){
             textBatch = new ArrayList<GUIText>();
@@ -62,11 +53,16 @@ public class TextMaster
         loadText(text);
     }
 
-    public static void removeText(GUIText text){
+    public static void removeText(GUIText text)
+    {
         List<GUIText> textBatch = texts.get(text.getFont());
         textBatch.remove(text);
         texts.remove(texts.get(text.getFont()));
-        GL30.glDeleteVertexArrays(text.getTextMeshVao());
+        loader.deleteVAO(text.getTextMeshVao());
+        for (int i = 0; i < text.getVbos().length; i++)
+        {
+            loader.deleteVBO(text.getVbos()[i]);
+        }
     }
 
     public static void cleanUp(){

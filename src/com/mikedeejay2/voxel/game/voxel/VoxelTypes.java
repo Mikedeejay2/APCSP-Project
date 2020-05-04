@@ -1,44 +1,70 @@
 package com.mikedeejay2.voxel.game.voxel;
 
-import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
-import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
-import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.mikedeejay2.voxel.game.Main.loader;
 
 public class VoxelTypes
 {
-    public static HashMap<String, TexturedModel> allVoxelTypes = new HashMap<String, TexturedModel>();
+    public static HashMap<String, Voxel> voxelsByName = new HashMap<String, Voxel>();
+    public static HashMap<Integer, Voxel> voxelsByID = new HashMap<Integer, Voxel>();
 
-    public static final TexturedModel dirt = loadVoxel("dirt");
-    public static final TexturedModel stone = loadVoxel("stone");
-    public static final TexturedModel diamond_block = loadVoxel("diamond_block");
-    public static final TexturedModel gold_block = loadVoxel("gold_block");
-    public static final TexturedModel white_concrete = loadVoxel("white_concrete");
-    public static final TexturedModel black_concrete = loadVoxel("black_concrete");
-    public static final TexturedModel light_gray_concrete = loadVoxel("light_gray_concrete");
-
-
-
+    public static final Voxel dirt = loadVoxel("dirt", 1);
+    public static final Voxel stone = loadVoxel("stone", 2);
+    public static final Voxel diamond_block = loadVoxel("diamond_block", 3);
+    public static final Voxel gold_block = loadVoxel("gold_block", 4);
+    public static final Voxel white_concrete = loadVoxel("white_concrete", 5);
+    public static final Voxel black_concrete = loadVoxel("black_concrete", 6);
+    public static final Voxel light_gray_concrete = loadVoxel("light_gray_concrete", 7);
 
 
 
 
-    public static TexturedModel loadVoxel(String name)
+
+
+
+    private static Voxel loadVoxel(String name, int ID)
     {
-        ModelTexture voxelT = new ModelTexture(loader.loadTexture("block/" + name + ".png"));
-        TexturedModel voxel = new TexturedModel(VoxelShape.getVoxelModel(), voxelT);
-        allVoxelTypes.put(name, voxel);
+        Voxel voxel = new Voxel(name, ID);
+        voxelsByName.put(name, voxel);
+        voxelsByID.put(ID, voxel);
         return voxel;
     }
 
-    public static TexturedModel getFromName(String voxelName)
+    public static Voxel getFromName(String voxelName)
     {
-        if(allVoxelTypes.containsKey(voxelName))
-            return allVoxelTypes.get(voxelName);
+        if(voxelsByName.containsKey(voxelName))
+            return voxelsByName.get(voxelName);
+        return null;
+    }
+
+    public static Voxel getFromID(int ID)
+    {
+        if(voxelsByID.containsKey(ID))
+            return voxelsByID.get(ID);
+        return null;
+    }
+
+    public static ModelTexture getTexture(String voxelName)
+    {
+        return getFromName(voxelName).getTexture();
+    }
+
+    public static int getIDFromName(String voxelName)
+    {
+        if(voxelsByName.containsKey(voxelName))
+            return voxelsByName.get(voxelName).getID();
+        return 0;
+    }
+
+    public static String getNameFromID(int ID)
+    {
+        if(voxelsByID.containsKey(ID))
+            return voxelsByID.get(ID).getName();
         return null;
     }
 }

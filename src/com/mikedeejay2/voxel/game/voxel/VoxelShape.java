@@ -228,9 +228,6 @@ public class VoxelShape
                     1, 1, 1
             };
 
-    public static RawModel voxelModel = loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices(), VoxelShape.getBrightness());
-
-
 
 
 
@@ -248,11 +245,6 @@ public class VoxelShape
     public static float[] getTextureCoords()
     {
         return textureCoords;
-    }
-
-    public static RawModel getVoxelModel()
-    {
-        return voxelModel;
     }
 
     public static float[] getVerticesFaceNorth()

@@ -20,30 +20,22 @@ public class Loader
     private List<Integer> vbos = new ArrayList<Integer>();
     private List<Integer> textures = new ArrayList<Integer>();
 
-    public int loadToVAO(float[] positions, float[] textureCoords) {
+    public int[] loadToVAO(float[] positions, float[] textureCoords) {
         int vaoID = createVAO();
-        storeDataInAttributeList(0, 2, positions);
-        storeDataInAttributeList(1, 2, textureCoords);
+        int vboID1 = storeDataInAttributeList(0, 2, positions);
+        int vboID2 = storeDataInAttributeList(1, 2, textureCoords);
         unbindVAO();
-        return vaoID;
-    }
-
-    public int loadToVAOUseExisting(int vaoID, float[] positions, float[] textureCoords) {
-        glBindVertexArray(vaoID);
-        storeDataInAttributeList(0, 2, positions);
-        storeDataInAttributeList(1, 2, textureCoords);
-        unbindVAO();
-        return vaoID;
+        return new int[] {vaoID, vboID1, vboID2};
     }
 
     public RawModel loadToVAO(float[] positions, float[] textureCoords, int[] indices, float[] brightness) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
-        storeDataInAttributeList(0, 3, positions);
-        storeDataInAttributeList(1, 2, textureCoords);
-        storeDataInAttributeList(2, 3, brightness);
+        int positionsVBO = storeDataInAttributeList(0, 3, positions);
+        int textureCoordsVBO = storeDataInAttributeList(1, 2, textureCoords);
+        int brightnessVBO = storeDataInAttributeList(2, 3, brightness);
         unbindVAO();
-        return new RawModel(vaoID, indices.length);
+        return new RawModel(vaoID, indices.length, new int[] {positionsVBO, textureCoordsVBO, brightnessVBO});
     }
 
     public RawModel loadToVAO(float[] positions, int dimensions) {
@@ -125,19 +117,19 @@ public class Loader
     public void deleteVAO(int vao)
     {
         glDeleteVertexArrays(vao);
-        vaos.remove((Object)vao);
+        vaos.remove(Integer.valueOf(vao));
     }
 
     public void deleteVBO(int vbo)
     {
         glDeleteBuffers(vbo);
-        vbos.remove((Object)vbo);
+        vbos.remove(Integer.valueOf(vbo));
     }
 
     public void deleteTexture(int texture)
     {
         glDeleteTextures(texture);
-        textures.remove((Object)texture);
+        textures.remove(Integer.valueOf(texture));
     }
 
     private int createVAO()
@@ -148,7 +140,7 @@ public class Loader
         return vaoID;
     }
 
-    private void storeDataInAttributeList(int attributeNumber, int coordinateSize, float[] data) {
+    private int storeDataInAttributeList(int attributeNumber, int coordinateSize, float[] data) {
         int vboID = glGenBuffers();
         vbos.add(vboID);
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
@@ -156,6 +148,7 @@ public class Loader
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
         glVertexAttribPointer(attributeNumber, coordinateSize, GL_FLOAT, false, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        return vboID;
     }
 
     private IntBuffer storeDataInIntBuffer(int[] data) {
