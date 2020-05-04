@@ -6,7 +6,7 @@ public class PerlinNoiseGenerator {
 
     public static float AMPLITUDE = 200f;
     public static int OCTAVES = 7;
-    public static float ROUGHNESS = 0.3f;
+    public static float ROUGHNESS = 0.1f;
 
     private Random random = new Random();
     private int seed;

@@ -10,12 +10,13 @@ import java.util.*;
 public class World implements Runnable
 {
     public static final int CHUNK_SIZE = 32;
-    public static final int CHUNKS_TO_PROCESS_PER_TICK = 100;
+    public static final int CHUNKS_TO_PROCESS_PER_TICK = 10;
     public int chunksProcessedThisTick = 0;
 
     public int chunkUpdates = 0;
 
-    public static int renderDistance = 8;
+    public static int renderDistanceHorizontal = 16;
+    public static int renderDistanceVertical = 8;
 
     public static World world;
 
@@ -42,16 +43,7 @@ public class World implements Runnable
         {
             updatePlayerLoc();
             updateChunks();
-            try
-            {
-                Thread.sleep(50);
-                chunkUpdates = chunksProcessedThisTick;
-                chunksProcessedThisTick = 0;
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
+            chunksProcessedThisTick = 0;
         }
     }
 
@@ -66,8 +58,8 @@ public class World implements Runnable
         for(int i = 0; i < locs.size(); i++)
         {
             Vector3f loc = locs.get(i);
-                if (playerChunk.x - loc.x > World.renderDistance || playerChunk.y - loc.y > World.renderDistance || playerChunk.z - loc.z > World.renderDistance ||
-                        playerChunk.x - loc.x < -World.renderDistance || playerChunk.y - loc.y < -World.renderDistance || playerChunk.z - loc.z < -World.renderDistance)
+                if (playerChunk.x - loc.x > World.renderDistanceHorizontal || playerChunk.y - loc.y > World.renderDistanceVertical || playerChunk.z - loc.z > World.renderDistanceHorizontal ||
+                        playerChunk.x - loc.x < -World.renderDistanceHorizontal || playerChunk.y - loc.y < -World.renderDistanceVertical || playerChunk.z - loc.z < -World.renderDistanceHorizontal)
                 {
                     Chunk chunk = getChunkFromChunkLoc(loc);
                     chunk.destroy();
@@ -117,22 +109,25 @@ public class World implements Runnable
 
     public void updateChunks()
     {
-        for(int rd = 0; rd < renderDistance; rd++)
+        for (int rdh = 0; rdh < renderDistanceHorizontal; rdh++)
         {
-            for (int x = (int) (playerChunk.x - rd); x < playerChunk.x + rd + 1; x++)
+            for (int rdv = 0; rdv < renderDistanceVertical; rdv++)
             {
-                for (int y = (int) (playerChunk.y - rd); y < playerChunk.y + rd + 1; y++)
+                for (int x = (int) (playerChunk.x - rdh); x < playerChunk.x + rdh + 1; x++)
                 {
-                    for (int z = (int) (playerChunk.z - rd); z < playerChunk.z + rd + 1; z++)
+                    for (int y = (int) (playerChunk.y - rdv); y < playerChunk.y + rdv + 1; y++)
                     {
-                        if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
+                        for (int z = (int) (playerChunk.z - rdh); z < playerChunk.z + rdh + 1; z++)
                         {
-                            Vector3f currentChunkLoc = new Vector3f(x, y, z);
-                            if (!chunkAtChunkLoc(currentChunkLoc))
+                            if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
                             {
-                                Chunk chunk = generateChunk(currentChunkLoc);
-                                chunk.populate();
-                                chunksProcessedThisTick++;
+                                Vector3f currentChunkLoc = new Vector3f(x, y, z);
+                                if (!chunkAtChunkLoc(currentChunkLoc))
+                                {
+                                    Chunk chunk = generateChunk(currentChunkLoc);
+                                    chunk.populate();
+                                    chunksProcessedThisTick++;
+                                }
                             }
                         }
                     }
@@ -178,9 +173,14 @@ public class World implements Runnable
         return CHUNK_SIZE;
     }
 
-    public static int getRenderDistance()
+    public static int getRenderDistanceHorizontal()
     {
-        return renderDistance;
+        return renderDistanceHorizontal;
+    }
+
+    public static int getRenderDistanceVertical()
+    {
+        return renderDistanceVertical;
     }
 
     public Vector3f getPlayerPosition()
@@ -213,13 +213,18 @@ public class World implements Runnable
         return chunkUpdates;
     }
 
-    public void resetChunkUpdateCount()
+    public void updateChunkUpdates()
     {
-        chunkUpdates = 0;
+        chunkUpdates = chunksProcessedThisTick;
     }
 
     public int getAllChunksSize()
     {
         return allChunks.size();
+    }
+
+    public Chunk getChunk(Vector3f vector3f)
+    {
+        return allChunks.get(vector3f);
     }
 }

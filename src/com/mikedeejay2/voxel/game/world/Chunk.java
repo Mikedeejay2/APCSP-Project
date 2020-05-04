@@ -26,6 +26,9 @@ public class Chunk
 
     boolean hasLoaded;
     boolean containsVoxels;
+    public boolean shouldUpdateNeighbors;
+    public boolean entityShouldBeRemade;
+    public boolean shouldRender;
 
     public Chunk(Vector3f chunkLoc, World world)
     {
@@ -35,24 +38,75 @@ public class Chunk
         instanceWorld = world;
         hasLoaded = false;
         containsVoxels = false;
+        shouldRender = false;
     }
 
     public void populate()
     {
         instanceWorld.populateChunk(this);
-        verticesTemp = ChunkMeshGenerator.createVertices(this);
-        textureCoordsTemp = ChunkMeshGenerator.createTextureCoords(this);
-        indicesTemp = ChunkMeshGenerator.createIndices(this);
-        brightnessTemp = ChunkMeshGenerator.createBrightness(this);
+        try
+        {
+            float[] verticesTemp = ChunkMeshGenerator.createVertices(instanceWorld, this, true);
+            float[] textureCoordsTemp = ChunkMeshGenerator.createTextureCoords(instanceWorld, this, true);
+            int[] indicesTemp = ChunkMeshGenerator.createIndices(instanceWorld, this, true);
+            float[] brightnessTemp = ChunkMeshGenerator.createBrightness(instanceWorld, this, true);
+            this.verticesTemp = verticesTemp;
+            this.textureCoordsTemp = textureCoordsTemp;
+            this.indicesTemp = indicesTemp;
+            this.brightnessTemp = brightnessTemp;
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
         hasLoaded = true;
+        updateNeighbors();
+    }
+
+    public void updateNeighbors()
+    {
+        Vector3f nextChunkLoc;
+        nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        shouldUpdateNeighbors = false;
+    }
+
+    public void rebuildChunkMesh()
+    {
+        try
+        {
+            verticesTemp = ChunkMeshGenerator.createVertices(instanceWorld, this, false);
+            textureCoordsTemp = ChunkMeshGenerator.createTextureCoords(instanceWorld, this, false);
+            indicesTemp = ChunkMeshGenerator.createIndices(instanceWorld, this, false);
+            brightnessTemp = ChunkMeshGenerator.createBrightness(instanceWorld, this, false);
+        }
+            catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+        instanceWorld.chunksProcessedThisTick++;
+        entityShouldBeRemade = true;
     }
 
     public void render()
     {
         if(!hasLoaded) return;
-        if(chunkEntity == null) ChunkMeshGenerator.createChunkEntity(this);
-        if(containsVoxels)
-        Main.getInstance().getRenderer().processEntity(chunkEntity);
+        if(entityShouldBeRemade) ChunkMeshGenerator.createChunkEntity(this);
+        if(chunkEntity == null) return;
+        if(shouldRender)
+        {
+            Main.getInstance().getRenderer().processEntity(chunkEntity);
+        }
 //        for(int x = 0; x < World.CHUNK_SIZE; x++)
 //        {
 //            for(int y = 0; y < World.CHUNK_SIZE; y++)
@@ -85,6 +139,11 @@ public class Chunk
     public Voxel getVoxelAtOffset(int x, int y, int z)
     {
         return new Voxel(voxels[x][y][z], new Vector3f(chunkCoords.x + x, chunkCoords.y + y, chunkCoords.z + z));
+    }
+
+    public int getVoxelIDAtOffset(int x, int y, int z)
+    {
+        return voxels[x][y][z];
     }
 
     public String getVoxelNameAtOffset(int x, int y, int z)
@@ -120,7 +179,8 @@ public class Chunk
     public void destroy()
     {
         voxels = null;
-        chunkEntity.destroy();
+        if(chunkEntity != null)
+            chunkEntity.destroy();
         chunkLoc = null;
         chunkCoords = null;
         verticesTemp = null;
@@ -130,4 +190,6 @@ public class Chunk
         hasLoaded = false;
         containsVoxels = false;
     }
+
+
 }
