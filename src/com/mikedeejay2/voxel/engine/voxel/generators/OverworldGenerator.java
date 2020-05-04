@@ -39,7 +39,7 @@ public class OverworldGenerator
                 {
                     for(int y = 0; y < World.CHUNK_SIZE; y++)
                     {
-                        chunk.addVoxel(x, y, z, "stone");
+//                        chunk.addVoxel(x, y, z, "stone");
                     }
                 }
             }

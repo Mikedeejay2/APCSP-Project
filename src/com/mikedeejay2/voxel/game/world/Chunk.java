@@ -25,7 +25,7 @@ public class Chunk
     World instanceWorld;
 
     boolean hasLoaded;
-    boolean containsVoxels;
+    public boolean containsVoxels;
     public boolean shouldUpdateNeighbors;
     public boolean entityShouldBeRemade;
     public boolean shouldRender;

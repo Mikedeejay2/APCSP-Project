@@ -15,8 +15,8 @@ public class World implements Runnable
 
     public int chunkUpdates = 0;
 
-    public static int renderDistanceHorizontal = 16;
-    public static int renderDistanceVertical = 8;
+    public static int renderDistanceHorizontal = 12;
+    public static int renderDistanceVertical = 6;
 
     public static World world;
 

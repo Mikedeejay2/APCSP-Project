@@ -49,6 +49,7 @@ public class ChunkMeshGenerator
 
     public static float[] createVertices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
+        if(!chunk.containsVoxels) return new float[0];
         List<Float> verticesList = new ArrayList<Float>();
         for (int x = 0; x < World.CHUNK_SIZE; x++)
         {
@@ -82,6 +83,7 @@ public class ChunkMeshGenerator
 
     public static float[] createTextureCoords(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
+        if(!chunk.containsVoxels) return new float[0];
         List<Float> textureCoordsList = new ArrayList<Float>();
         for(int x = 0; x < World.CHUNK_SIZE; x++)
         {
@@ -109,6 +111,7 @@ public class ChunkMeshGenerator
 
     public static int[] createIndices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
+        if(!chunk.containsVoxels) return new int[0];
         List<Integer> indicesList = new ArrayList<Integer>();
         for(int x = 0; x < World.CHUNK_SIZE; x++)
         {
@@ -136,6 +139,7 @@ public class ChunkMeshGenerator
 
     public static float[] createBrightness(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
+        if(!chunk.containsVoxels) return new float[0];
         List<Float> brightnessList = new ArrayList<Float>();
         for(int x = 0; x < World.CHUNK_SIZE; x++)
         {

@@ -26,16 +26,16 @@ public class PerlinNoiseGenerator {
 
     public float generateHeight(int x, int z) {
 
-        x = x < 0 ? -x : x;
-        z = z < 0 ? -z : z;
+//        x = x < 0 ? -x : x;
+//        z = z < 0 ? -z : z;
 
         float total = 0;
-        float d = (float) Math.pow(2, OCTAVES-1);
-        for(int i=0;i<OCTAVES;i++){
-            float freq = (float) (Math.pow(2, i) / d);
-            float amp = (float) Math.pow(ROUGHNESS, i) * AMPLITUDE;
-            total += getInterpolatedNoise((x+xOffset)*freq, (z + zOffset)*freq) * amp;
-        }
+//        float d = (float) Math.pow(2, OCTAVES-1);
+//        for(int i=0;i<OCTAVES;i++){
+//            float freq = (float) (Math.pow(2, i) / d);
+//            float amp = (float) Math.pow(ROUGHNESS, i) * AMPLITUDE;
+//            total += getInterpolatedNoise((x+xOffset)*freq, (z + zOffset)*freq) * amp;
+//        }
 
         return (float) (int) total;
 
