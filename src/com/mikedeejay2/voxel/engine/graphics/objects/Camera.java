@@ -2,39 +2,37 @@ package com.mikedeejay2.voxel.engine.graphics.objects;
 
 import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera
 {
-    private Vector3f position;
-    private Matrix4f viewMatrix;
+    private Vector3d position;
+    private Matrix4d viewMatrix;
     private float pitch;
     private float yaw;
     private float roll;
 
     private double deltaPosX;
     private double deltaPosY;
-
     private boolean mouseLocked;
 
-    Vector3f forward;
-    Vector3f right;
+    Vector3d forward;
+    Vector3d right;
 
-    private final float SPEED_SPRINT_MULTIPLIER = 2;
+    private final float REG_SPEED = 20;
 
-    private float speed = 20;
+    private float speed = REG_SPEED;
     private float sensitivity = 0.3f;
 
     public Camera()
     {
-        position = new Vector3f(0, 0, 0);
-        viewMatrix = new Matrix4f();
-        this.forward = new Vector3f();
-        this.right = new Vector3f();
+        position = new Vector3d(0, 0, 0);
+        viewMatrix = new Matrix4d();
+        this.forward = new Vector3d();
+        this.right = new Vector3d();
         mouseLocked = false;
         pitch = 0;
         yaw = 0;
@@ -45,13 +43,14 @@ public class Camera
     {
         viewMatrix.positiveZ(forward).negate().mul(speed * delta);
         viewMatrix.positiveX(right).mul(speed * delta);
-        if(Input.getKey(GLFW_KEY_LEFT_CONTROL)) speed = 200;
+        if(Input.getKey(GLFW_KEY_LEFT_CONTROL)) speed = REG_SPEED;
         if(Input.getKey(GLFW_KEY_W)) position.add(forward.x, 0, forward.z);
         if(Input.getKey(GLFW_KEY_S)) position.sub(forward.x, 0, forward.z);
         if(Input.getKey(GLFW_KEY_D)) position.add(right);
         if(Input.getKey(GLFW_KEY_A)) position.sub(right);
         if(Input.getKey(GLFW_KEY_SPACE)) position.y += (speed * delta);
         if(Input.getKey(GLFW_KEY_LEFT_SHIFT)) position.y += -(speed * delta);
+        speed += Input.getScroll()*100;
 
         if (Input.getKey(GLFW_KEY_ESCAPE))
         {
@@ -95,7 +94,7 @@ public class Camera
 
     }
 
-    public Vector3f getPosition()
+    public Vector3d getPosition()
     {
         return position;
     }
@@ -115,7 +114,7 @@ public class Camera
         return roll;
     }
 
-    public Matrix4f getViewMatrix()
+    public Matrix4d getViewMatrix()
     {
         return viewMatrix;
     }

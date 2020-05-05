@@ -19,10 +19,9 @@ public class ChunkMeshGenerator
     public static Entity createChunkEntity(Chunk chunk)
     {
         if(chunk.verticesTemp == null || chunk.textureCoordsTemp == null || chunk.indicesTemp == null || chunk.brightnessTemp == null) return null;
-        if(chunk.verticesTemp.length == 0) return null;
-
         RawModel model = Main.getLoader().loadToVAO(chunk.verticesTemp, chunk.textureCoordsTemp, chunk.indicesTemp, chunk.brightnessTemp);
-        chunk.shouldRender = true;
+
+        chunk.shouldRender = chunk.verticesTemp.length >= 12;
 
         chunk.verticesTemp = null;
         chunk.textureCoordsTemp = null;
@@ -35,7 +34,7 @@ public class ChunkMeshGenerator
         TexturedModel texturedModel = new TexturedModel(model, modelTexture);
         Entity entity = new Entity(texturedModel, chunk.chunkCoords);
 
-        if (chunk.chunkEntity != null) chunk.chunkEntity.destroy();
+        if(chunk.chunkEntity != null) chunk.chunkEntity.destroy();
         chunk.chunkEntity = null;
         chunk.chunkEntity = entity;
         chunk.entityShouldBeRemade = false;

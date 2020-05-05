@@ -3,6 +3,7 @@ package com.mikedeejay2.voxel.game.world;
 import com.mikedeejay2.voxel.game.Main;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.engine.voxel.generators.OverworldGenerator;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.lang.reflect.Array;
@@ -16,13 +17,13 @@ public class World implements Runnable
 
     public int chunkUpdates = 0;
 
-    public static int renderDistanceHorizontal = 32;
+    public static int renderDistanceHorizontal = 12;
     public static int renderDistanceVertical = 6;
 
     public static World world;
 
     Main instance = Main.getInstance();
-    Vector3f playerPosition;
+    Vector3d playerPosition;
     Vector3f playerChunk;
 
     OverworldGenerator overworldGenerator;
@@ -31,7 +32,7 @@ public class World implements Runnable
 
     public World()
     {
-        playerPosition = new Vector3f(0, 0, 0);
+        playerPosition = new Vector3d(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
         allChunks = new HashMap<>();
         overworldGenerator = new OverworldGenerator(this);
@@ -134,11 +135,11 @@ public class World implements Runnable
         {
             for (int rdv = 0; rdv < renderDistanceVertical; rdv++)
             {
-                for (int x = (int) (playerChunk.x - rdh); x < playerChunk.x + rdh + 1; x++)
+                for (int x = (int) ((playerChunk.x) - rdh); x < (playerChunk.x) + rdh + 1; x++)
                 {
-                    for (int y = (int) (playerChunk.y - rdv); y < playerChunk.y + rdv + 1; y++)
+                    for (int y = (int) ((playerChunk.y) - rdv); y < (playerChunk.y) + rdv + 1; y++)
                     {
-                        for (int z = (int) (playerChunk.z - rdh); z < playerChunk.z + rdh + 1; z++)
+                        for (int z = (int) ((playerChunk.z) - rdh); z < (playerChunk.z) + rdh + 1; z++)
                         {
                             if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
                             {
@@ -149,7 +150,7 @@ public class World implements Runnable
                                     chunk.populate();
                                     chunksProcessedThisTick++;
                                 }
-                            }
+                            } else break;
                         }
                     }
                 }
@@ -204,7 +205,7 @@ public class World implements Runnable
         return renderDistanceVertical;
     }
 
-    public Vector3f getPlayerPosition()
+    public Vector3d getPlayerPosition()
     {
         return playerPosition;
     }

@@ -6,6 +6,7 @@ import com.mikedeejay2.voxel.engine.graphics.shaders.StaticShader;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.utils.Maths;
+import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -18,9 +19,9 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 public class Renderer
 {
-    private Matrix4f transformationMatrix;
+    private Matrix4d transformationMatrix;
 
-    private Matrix4f projectionMatrix;
+    private Matrix4d projectionMatrix;
 
     private StaticShader shader;
 
@@ -43,8 +44,8 @@ public class Renderer
 
         glEnable(GL_TEXTURE_2D);
         this.shader = shader;
-        transformationMatrix = new Matrix4f();
-        projectionMatrix = new Matrix4f();
+        transformationMatrix = new Matrix4d();
+        projectionMatrix = new Matrix4d();
         createProjectionMatrix();
         shader.start();
         shader.loadProjectionMatrix(projectionMatrix);

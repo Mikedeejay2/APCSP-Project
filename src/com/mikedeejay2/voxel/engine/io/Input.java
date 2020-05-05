@@ -6,6 +6,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.DoubleBuffer;
 
@@ -21,6 +22,7 @@ public class Input
     private static int[] mouse = new int[GLFW_MOUSE_BUTTON_LAST];
     private static double cursorX = 0;
     private static double cursorY = 0;
+    private static double scroll = 0;
 
     private static long window = instance.getWindow().getWindow();
 
@@ -54,6 +56,14 @@ public class Input
             {
                 cursorX = xpos;
                 cursorY = ypos;
+            }
+        });
+        glfwSetScrollCallback(window, new GLFWScrollCallback()
+        {
+            @Override
+            public void invoke(long window, double xoffset, double yoffset)
+            {
+                scroll = yoffset;
             }
         });
     }
@@ -93,7 +103,7 @@ public class Input
 
     public static boolean getKeyUp(int keyCode)
     {
-        if(keysLast[keyCode] == 1 && keys[keyCode] == 0)
+        if(keysLast[keyCode] == 2 && keys[keyCode] == 1)
         {
             keysLast[keyCode] = 0;
             keys[keyCode] = 0;
@@ -171,5 +181,12 @@ public class Input
         }
         else
             glfwSetInputMode(instance.getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    public static double getScroll()
+    {
+        double tempScroll = scroll;
+        scroll = 0;
+        return tempScroll;
     }
 }
