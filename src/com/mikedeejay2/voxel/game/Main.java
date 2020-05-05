@@ -10,8 +10,13 @@ import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.loaders.Loader;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
+import com.mikedeejay2.voxel.game.world.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.mikedeejay2.voxel.game.world.World.renderDistanceHorizontal;
 import static com.mikedeejay2.voxel.game.world.World.renderDistanceVertical;
@@ -34,6 +39,8 @@ public class Main
 
     public World world;
 
+    public ArrayList<Chunk> chunksToRender;
+
     public void start()
     {
         instance = this;
@@ -50,9 +57,13 @@ public class Main
 
         renderer = new MasterRenderer();
 
+        Input.init();
+
         camera = new Camera();
 
         world = new World();
+
+        chunksToRender = new ArrayList<Chunk>();
 
         this.worldThread = new Thread(world, "world");
         worldThread.start();
@@ -84,18 +95,11 @@ public class Main
 
     public void render()
     {
-        Vector3f playerChunk = world.getPlayerChunk();
-        for (int x = (int) (playerChunk.x - renderDistanceHorizontal); x < playerChunk.x + renderDistanceHorizontal + 1; x++)
+        for(Chunk chunk : chunksToRender)
         {
-            for (int y = (int) (playerChunk.y - renderDistanceVertical); y <  playerChunk.y + renderDistanceVertical + 1; y++)
-            {
-                for (int z = (int) (playerChunk.z - renderDistanceHorizontal); z < playerChunk.z + renderDistanceHorizontal + 1; z++)
-                {
-                   world.renderChunk(x, y, z);
-                }
-            }
+            if(chunk != null)
+            chunk.render();
         }
-
         renderer.render(camera);
         TextMaster.render();
     }

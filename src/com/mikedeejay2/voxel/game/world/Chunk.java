@@ -10,7 +10,7 @@ import org.joml.Vector3f;
 
 public class Chunk
 {
-    public int[][][] voxels;
+    public short[][][] voxels;
 
     public Entity chunkEntity;
 
@@ -34,7 +34,7 @@ public class Chunk
     {
         this.chunkLoc = chunkLoc;
         this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE* VoxelShape.VOXEL_SIZE, chunkLoc.y * World.CHUNK_SIZE* VoxelShape.VOXEL_SIZE, chunkLoc.z * World.CHUNK_SIZE* VoxelShape.VOXEL_SIZE);
-        this.voxels = new int[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
+        this.voxels = new short[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
         instanceWorld = world;
         hasLoaded = false;
         containsVoxels = false;
@@ -90,10 +90,7 @@ public class Chunk
             indicesTemp = ChunkMeshGenerator.createIndices(instanceWorld, this, false);
             brightnessTemp = ChunkMeshGenerator.createBrightness(instanceWorld, this, false);
         }
-            catch (NullPointerException e)
-        {
-            e.printStackTrace();
-        }
+            catch (NullPointerException e) {System.out.println("bruh");}
         instanceWorld.chunksProcessedThisTick++;
         entityShouldBeRemade = true;
     }
@@ -126,7 +123,7 @@ public class Chunk
 
     public void addVoxel(int x, int y, int z, String name)
     {
-        voxels[x][y][z] = VoxelTypes.getIDFromName(name);
+        voxels[x][y][z] = (short) VoxelTypes.getIDFromName(name);
         setContainsVoxels(true);
     }
 

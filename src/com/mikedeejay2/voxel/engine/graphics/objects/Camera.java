@@ -16,15 +16,17 @@ public class Camera
     private float yaw;
     private float roll;
 
-    private int deltaPosX;
-    private int deltaPosY;
+    private double deltaPosX;
+    private double deltaPosY;
 
     private boolean mouseLocked;
 
     Vector3f forward;
     Vector3f right;
 
-    private float speed = 200;
+    private final float SPEED_SPRINT_MULTIPLIER = 2;
+
+    private float speed = 20;
     private float sensitivity = 0.3f;
 
     public Camera()
@@ -43,6 +45,7 @@ public class Camera
     {
         viewMatrix.positiveZ(forward).negate().mul(speed * delta);
         viewMatrix.positiveX(right).mul(speed * delta);
+        if(Input.getKey(GLFW_KEY_LEFT_CONTROL)) speed = 200;
         if(Input.getKey(GLFW_KEY_W)) position.add(forward.x, 0, forward.z);
         if(Input.getKey(GLFW_KEY_S)) position.sub(forward.x, 0, forward.z);
         if(Input.getKey(GLFW_KEY_D)) position.add(right);
@@ -57,15 +60,15 @@ public class Camera
         }
         if (Input.getMouseDown(0))
         {
-            Input.setMousePosition(Window.getWidth() / 2, Window.getHeight() / 2);
+            Input.setMousePosition(Window.getWidth() / 2.0f, Window.getHeight() / 2.0f);
             Input.setCursor(false);
             mouseLocked = true;
         }
 
         if (mouseLocked)
         {
-            deltaPosX = Input.getMousePositionX() - (Window.getWidth() / 2);
-            deltaPosY = Input.getMousePositionY() - (Window.getHeight() / 2);
+            deltaPosX = Input.getMousePositionX() - (Window.getWidth() / 2.0f);
+            deltaPosY = Input.getMousePositionY() - (Window.getHeight() / 2.0f);
 
             boolean rotY = deltaPosX != 0;
             boolean rotX = deltaPosY!= 0;
@@ -83,8 +86,7 @@ public class Camera
                 if(pitch < -90) pitch = -90;
             }
 
-            if (rotY || rotX)
-                Input.setMousePosition(Window.getWidth() / 2, Window.getHeight() / 2);
+            Input.setMousePosition(Window.getWidth() / 2.0f, Window.getHeight() / 2.0f);
         }
     }
 

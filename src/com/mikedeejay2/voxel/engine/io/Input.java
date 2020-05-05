@@ -3,6 +3,9 @@ package com.mikedeejay2.voxel.engine.io;
 import com.mikedeejay2.voxel.game.Main;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
 import java.nio.DoubleBuffer;
 
@@ -12,59 +15,127 @@ public class Input
 {
     private static Main instance = Main.getInstance();
 
-    private static boolean[] lastKeys = new boolean[GLFW_KEY_LAST];
-    private static boolean[] lastMouse = new boolean[GLFW_MOUSE_BUTTON_LAST];
+    private static int[] keysLast = new int[GLFW_KEY_LAST];
+    private static int[] keys = new int[GLFW_KEY_LAST];
+    private static int[] mouseLast = new int[GLFW_MOUSE_BUTTON_LAST];
+    private static int[] mouse = new int[GLFW_MOUSE_BUTTON_LAST];
+    private static double cursorX = 0;
+    private static double cursorY = 0;
 
-    private static double[] cursorX = new double[1];
-    private static double[] cursorY = new double[1];
+    private static long window = instance.getWindow().getWindow();
+
+    public static void init()
+    {
+        glfwSetKeyCallback(window, new GLFWKeyCallback()
+        {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods)
+            {
+                if(key >= 0)
+                {
+                    keysLast[key] = keys[key];
+                    keys[key] = action;
+                }
+            }
+        });
+        glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback()
+        {
+            @Override
+            public void invoke(long window, int button, int action, int mods)
+            {
+                mouseLast[button] = mouse[button];
+                mouse[button] = action;
+            }
+        });
+        glfwSetCursorPosCallback(window, new GLFWCursorPosCallback()
+        {
+            @Override
+            public void invoke(long window, double xpos, double ypos)
+            {
+                cursorX = xpos;
+                cursorY = ypos;
+            }
+        });
+    }
 
     public static void update(float delta)
     {
-        for(int i = 0; i < GLFW_KEY_LAST; i++)
-        {
-            lastKeys[i] = getKey(i);
-        }
 
-        for(int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
-        {
-            lastMouse[i] = getMouse(i);
-        }
     }
 
 
     public static boolean getKey(int keyCode)
     {
         if(keyCode > 31)
-            if(glfwGetKey(instance.getWindow().getWindow(), keyCode) == 1)
+            if(keys[keyCode] == 1 || keys[keyCode] == 2)
+                return true;
+        return false;
+    }
+
+    public static boolean getLastKey(int keyCode)
+    {
+        if(keyCode > 31)
+            if(keysLast[keyCode] == 1 || keysLast[keyCode] == 2)
                 return true;
         return false;
     }
 
     public static boolean getKeyDown(int keyCode)
     {
-        return getKey(keyCode) && !lastKeys[keyCode];
+        if(keys[keyCode] == 1 && keysLast[keyCode] == 0)
+        {
+            keys[keyCode] = 2;
+            keysLast[keyCode] = 1;
+            return true;
+        }
+        return false;
     }
 
     public static boolean getKeyUp(int keyCode)
     {
-        return !getKey(keyCode) && lastKeys[keyCode];
+        if(keysLast[keyCode] == 1 && keys[keyCode] == 0)
+        {
+            keysLast[keyCode] = 0;
+            keys[keyCode] = 0;
+            return true;
+        }
+        return false;
     }
 
     public static boolean getMouse(int mouseButton)
     {
-        if(glfwGetMouseButton(instance.getWindow().getWindow(), mouseButton) == 1)
+        if(mouse[mouseButton] == 1)
+            return true;
+        return false;
+    }
+
+    public static boolean getLastMouse(int mouseButton)
+    {
+        if(mouseLast[mouseButton] == 1)
             return true;
         return false;
     }
 
     public static boolean getMouseDown(int mouseButton)
     {
-        return getMouse(mouseButton) && !lastMouse[mouseButton];
+        if(mouse[mouseButton] == 1 && mouseLast[mouseButton] == 0)
+        {
+            mouse[mouseButton] = 1;
+            mouseLast[mouseButton] = 1;
+            return true;
+        }
+        return false;
     }
 
     public static boolean getMouseUp(int mouseButton)
     {
-        return !getMouse(mouseButton) && lastMouse[mouseButton];
+        if(mouseLast[mouseButton] == 1 && mouse[mouseButton] == 0)
+        {
+            mouseLast[mouseButton] = 0;
+            mouse[mouseButton] = 0;
+            return true;
+        }
+        return false;
     }
 
     public static Vector2f getMousePosition()
@@ -75,21 +146,21 @@ public class Input
         return new Vector2f((float)posX.get(), (float)posY.get());
     }
 
-    public static int getMousePositionX()
+    public static double getMousePositionX()
     {
-        glfwGetCursorPos(instance.getWindow().getWindow(), cursorX, cursorY);
-        return (int) cursorX[0];
+        return cursorX;
     }
 
-    public static int getMousePositionY()
+    public static double getMousePositionY()
     {
-        glfwGetCursorPos(instance.getWindow().getWindow(), cursorX, cursorY);
-        return (int) cursorY[0];
+        return cursorY;
     }
 
     public static void setMousePosition(float x, float y)
     {
         glfwSetCursorPos(instance.getWindow().getWindow(), x, y);
+        cursorX = x;
+        cursorY = y;
     }
 
     public static void setCursor(boolean enabled)

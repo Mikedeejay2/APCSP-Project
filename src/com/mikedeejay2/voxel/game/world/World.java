@@ -5,6 +5,7 @@ import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.engine.voxel.generators.OverworldGenerator;
 import org.joml.Vector3f;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class World implements Runnable
@@ -15,7 +16,7 @@ public class World implements Runnable
 
     public int chunkUpdates = 0;
 
-    public static int renderDistanceHorizontal = 12;
+    public static int renderDistanceHorizontal = 32;
     public static int renderDistanceVertical = 6;
 
     public static World world;
@@ -43,8 +44,28 @@ public class World implements Runnable
         {
             updatePlayerLoc();
             updateChunks();
+            getRenderableChunks();
             chunksProcessedThisTick = 0;
         }
+    }
+
+    private void getRenderableChunks()
+    {
+        ArrayList<Chunk> chunksToRender = new ArrayList<Chunk>();
+        Vector3f playerChunk = getPlayerChunk();
+        for (int x = (int) (playerChunk.x - renderDistanceHorizontal); x < playerChunk.x + renderDistanceHorizontal + 1; x++)
+        {
+            for (int y = (int) (playerChunk.y - renderDistanceVertical); y <  playerChunk.y + renderDistanceVertical + 1; y++)
+            {
+                for (int z = (int) (playerChunk.z - renderDistanceHorizontal); z < playerChunk.z + renderDistanceHorizontal + 1; z++)
+                {
+                    Chunk chunk = getChunkFromChunkLoc(new Vector3f(x, y, z));
+                    chunksToRender.add(chunk);
+                    //world.renderChunk(x, y, z);
+                }
+            }
+        }
+        instance.chunksToRender = chunksToRender;
     }
 
     public void unloadOldChunks()
