@@ -2,7 +2,6 @@ package com.mikedeejay2.voxel.engine.graphics.shaders;
 
 import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import com.mikedeejay2.voxel.engine.utils.Maths;
-import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -43,7 +42,7 @@ public class StaticShader extends ShaderProgram
         super.loadVector(location_skyColor, new Vector3f(r, g, b));
     }
 
-    public void loadTransformationMatrix(Matrix4d matrix)
+    public void loadTransformationMatrix(Matrix4f matrix)
     {
         super.loadMatrix(location_transformationMatrix, matrix);
     }
@@ -54,7 +53,7 @@ public class StaticShader extends ShaderProgram
         super.loadMatrix(location_viewMatrix, camera.getViewMatrix());
     }
 
-    public void loadProjectionMatrix(Matrix4d projection)
+    public void loadProjectionMatrix(Matrix4f projection)
     {
         super.loadMatrix(location_projectionMatrix, projection);
     }

@@ -55,10 +55,7 @@ public class Chunk
             this.indicesTemp = indicesTemp;
             this.brightnessTemp = brightnessTemp;
         }
-        catch (NullPointerException e)
-        {
-            e.printStackTrace();
-        }
+        catch (NullPointerException e) {System.out.println("bruh2");}
         hasLoaded = true;
         updateNeighbors();
     }
@@ -102,6 +99,7 @@ public class Chunk
         if(chunkEntity == null) return;
         if(shouldRender)
         {
+            chunkEntity.setPosition(new Vector3f((float) (chunkCoords.x - instanceWorld.playerPosition.x), (float) (chunkCoords.y - instanceWorld.playerPosition.y), (float) (chunkCoords.z - instanceWorld.playerPosition.z)));
             Main.getInstance().getRenderer().processEntity(chunkEntity);
         }
 //        for(int x = 0; x < World.CHUNK_SIZE; x++)
@@ -187,6 +185,8 @@ public class Chunk
         hasLoaded = false;
         containsVoxels = false;
     }
+
+
 
 
 }

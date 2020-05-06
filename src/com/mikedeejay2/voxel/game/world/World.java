@@ -150,7 +150,7 @@ public class World implements Runnable
                                     chunk.populate();
                                     chunksProcessedThisTick++;
                                 }
-                            } else break;
+                            }
                         }
                     }
                 }
@@ -167,7 +167,7 @@ public class World implements Runnable
 
     public void updatePlayerLoc()
     {
-        playerPosition = instance.getCamera().getPosition();
+        playerPosition = instance.getCamera().getRealPos();
         playerChunk.x = (float)Math.floor(playerPosition.x/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
         playerChunk.y = (float)Math.floor(playerPosition.y/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
         playerChunk.z = (float)Math.floor(playerPosition.z/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);

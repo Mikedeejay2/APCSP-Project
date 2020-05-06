@@ -3,14 +3,18 @@ package com.mikedeejay2.voxel.engine.graphics.objects;
 import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
 import org.joml.*;
-import org.lwjgl.glfw.GLFW;
+
+import java.math.BigDecimal;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera
 {
-    private Vector3d position;
-    private Matrix4d viewMatrix;
+    private Vector3f position;
+
+    private Vector3d realPos;
+
+    private Matrix4f viewMatrix;
     private float pitch;
     private float yaw;
     private float roll;
@@ -19,8 +23,8 @@ public class Camera
     private double deltaPosY;
     private boolean mouseLocked;
 
-    Vector3d forward;
-    Vector3d right;
+    Vector3f forward;
+    Vector3f right;
 
     private final float REG_SPEED = 20;
 
@@ -29,10 +33,11 @@ public class Camera
 
     public Camera()
     {
-        position = new Vector3d(0, 0, 0);
-        viewMatrix = new Matrix4d();
-        this.forward = new Vector3d();
-        this.right = new Vector3d();
+        realPos = new Vector3d(0, 0, 0);
+        position = new Vector3f(0, 0, 0);
+        viewMatrix = new Matrix4f();
+        this.forward = new Vector3f();
+        this.right = new Vector3f();
         mouseLocked = false;
         pitch = 0;
         yaw = 0;
@@ -44,12 +49,30 @@ public class Camera
         viewMatrix.positiveZ(forward).negate().mul(speed * delta);
         viewMatrix.positiveX(right).mul(speed * delta);
         if(Input.getKey(GLFW_KEY_LEFT_CONTROL)) speed = REG_SPEED;
-        if(Input.getKey(GLFW_KEY_W)) position.add(forward.x, 0, forward.z);
-        if(Input.getKey(GLFW_KEY_S)) position.sub(forward.x, 0, forward.z);
-        if(Input.getKey(GLFW_KEY_D)) position.add(right);
-        if(Input.getKey(GLFW_KEY_A)) position.sub(right);
-        if(Input.getKey(GLFW_KEY_SPACE)) position.y += (speed * delta);
-        if(Input.getKey(GLFW_KEY_LEFT_SHIFT)) position.y += -(speed * delta);
+        if(Input.getKey(GLFW_KEY_W))
+        {
+            realPos.add(forward.x, 0, forward.z);
+        }
+        if(Input.getKey(GLFW_KEY_S))
+        {
+            realPos.sub(forward.x, 0, forward.z);
+        }
+        if(Input.getKey(GLFW_KEY_D))
+        {
+            realPos.add(right);
+        }
+        if(Input.getKey(GLFW_KEY_A))
+        {
+            realPos.sub(right);
+        }
+        if(Input.getKey(GLFW_KEY_SPACE))
+        {
+            realPos.y += (speed * delta);
+        }
+        if(Input.getKey(GLFW_KEY_LEFT_SHIFT))
+        {
+            realPos.y += -(speed * delta);
+        }
         speed += Input.getScroll()*100;
 
         if (Input.getKey(GLFW_KEY_ESCAPE))
@@ -94,7 +117,7 @@ public class Camera
 
     }
 
-    public Vector3d getPosition()
+    public Vector3f getPosition()
     {
         return position;
     }
@@ -114,8 +137,13 @@ public class Camera
         return roll;
     }
 
-    public Matrix4d getViewMatrix()
+    public Matrix4f getViewMatrix()
     {
         return viewMatrix;
+    }
+
+    public Vector3d getRealPos()
+    {
+        return realPos;
     }
 }
