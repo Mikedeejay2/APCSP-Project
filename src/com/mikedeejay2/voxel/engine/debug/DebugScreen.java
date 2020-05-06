@@ -23,6 +23,7 @@ public class DebugScreen
     GUIText versionText;
     GUIText fpsText;
     GUIText locationText;
+    GUIText chunkLocationText;
 
     Main main;
 
@@ -49,6 +50,7 @@ public class DebugScreen
             TextMaster.editText(fpsText, Window.getFPS() + " fps, " + main.getWorld().getChunkUpdates() + " chunk updates, " + main.getWorld().getAllChunksSize() + " chunks loaded");
             TextMaster.editText(locationText, "X: " + Math.round(main.getCamera().getPosition().x * 100) / 100f + ", Y: " + Math.round(main.getCamera().getPosition().y * 100) / 100f + ", Z: " + Math.round(main.getCamera().getPosition().z * 100) / 100f +
                     " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")" + getDirection());
+            TextMaster.editText(chunkLocationText, "Chunk Location " + main.getWorld().getPlayerChunk().x + ", " + main.getWorld().getPlayerChunk().y + ", " + main.getWorld().getPlayerChunk().z);
         }
     }
 
@@ -64,12 +66,15 @@ public class DebugScreen
             locationText = new GUIText("X: " + Math.round(main.getCamera().getPosition().x * 100) / 100f + ", Y: " + Math.round(main.getCamera().getPosition().y * 100) / 100f + ", Z: " + Math.round(main.getCamera().getPosition().z * 100) / 100f +
                     " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")" + getDirection(), fontSize, font, new Vector2f(0.003f, 0.06f), 1f, false);
             locationText.setcolor(1, 1, 1);
+            chunkLocationText = new GUIText("Chunk Location " + main.getWorld().getPlayerChunk().x + ", " + main.getWorld().getPlayerChunk().y + ", " + main.getWorld().getPlayerChunk().z, fontSize, font, new Vector2f(0.003f, 0.09f), 1f, false);
+            chunkLocationText.setcolor(1, 1, 1);
         }
         else
         {
             versionText.remove();
             fpsText.remove();
             locationText.remove();
+            chunkLocationText.remove();
         }
     }
 

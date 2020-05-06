@@ -3,12 +3,18 @@ package com.mikedeejay2.voxel.game;
 import com.mikedeejay2.voxel.engine.core.CoreEngine;
 import com.mikedeejay2.voxel.engine.debug.DebugScreen;
 import com.mikedeejay2.voxel.engine.graphics.font.TextMaster;
+import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
+import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
+import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.renderers.MasterRenderer;
+import com.mikedeejay2.voxel.engine.graphics.renderers.Renderer;
 import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.loaders.Loader;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
+import com.mikedeejay2.voxel.game.voxel.Voxel;
+import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import com.mikedeejay2.voxel.game.world.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
@@ -40,6 +46,8 @@ public class Main
     public World world;
 
     public ArrayList<Chunk> chunksToRender;
+
+    public CopyOnWriteArrayList<Vector3f> locsDebug = new CopyOnWriteArrayList<Vector3f>();
 
     public void start()
     {
@@ -99,6 +107,11 @@ public class Main
         {
             if(chunk != null)
             chunk.render();
+        }
+        for(Vector3f vector3f : locsDebug)
+        {
+            renderer.processEntity(new Entity(new TexturedModel(loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices(), VoxelShape.getBrightness()), VoxelTypes.gold_block.getTexture()), vector3f));
+            locsDebug.remove(vector3f);
         }
         renderer.render(camera);
         TextMaster.render();

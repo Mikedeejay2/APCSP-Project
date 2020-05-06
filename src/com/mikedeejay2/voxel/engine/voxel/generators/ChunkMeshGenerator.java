@@ -180,13 +180,15 @@ public class ChunkMeshGenerator
 
     private static final float AO_DEFAULT = 0.2f;
 
-    private static void createLightValue(World world, Chunk chunk, float value, List<Float> brightnessList, int x, int y, int z, Chunk neighborChunk, DirectionEnum direction)
+    private static void createLightValue(World world, Chunk chunk, float value, List<Float> brightnessList, int x, int y, int z, boolean edge, DirectionEnum direction)
     {
-        if(neighborChunk == null)
+        if(!edge)
         {
             for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
             {
-                genBrightness(chunk, value, x, y, z, i, brightnessList, direction, AO_DEFAULT);
+                //genBrightnessWithChunkLoc(world, chunk, value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, -5.5f);
+                genBrightness(chunk, value, x, y, z, i, brightnessList, direction, 0.2f);
+                //brightnessList.add((float)x/World.CHUNK_SIZE);
                 //brightnessList.add(value);
             }
         }
@@ -194,60 +196,190 @@ public class ChunkMeshGenerator
         {
             for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
             {
-                if(!genBrightnessWithChunkLoc(world, chunk, value, x, y, z, i, brightnessList, direction))
-                    genBrightness(neighborChunk, value, x, y, z, i, brightnessList, direction, AO_DEFAULT);
+                genBrightnessWithChunkLoc(world, chunk, value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, 0.2f);
             }
         }
     }
 
-    private static boolean genBrightnessWithChunkLoc(World world, Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction)
+    private static void genBrightnessWithChunkLoc(World world, Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction, float AO)
     {
-        int newX = x; int newY = y; int newZ = z;
-        Chunk newChunk = chunk;
-        Vector3f vector3f = new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z);
-        if(x == 0)
+        switch (direction)
         {
-            if(!world.chunkAtChunkLoc(vector3f)) return false;
-            newX = World.CHUNK_SIZE-1;
-            newChunk = world.getChunkFromChunkLoc(vector3f);
+            case WEST: //           X+1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case EAST: //         X-1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case UP: //          Y+1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case DOWN: //           Y-1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case NORTH: //          Z+1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case SOUTH: //         Z-1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
         }
-        vector3f.set(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z);
-        if(x == World.CHUNK_SIZE-1)
-        {
-            if(!world.chunkAtChunkLoc(vector3f)) return false;
-            newX = 0;
-            newChunk = world.getChunkFromChunkLoc(vector3f);
-        }
-        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z);
-        if(y == 0)
-        {
-            if(!world.chunkAtChunkLoc(vector3f)) return false;
-            newY = World.CHUNK_SIZE-1;
-            newChunk = world.getChunkFromChunkLoc(vector3f);
-        }
-        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z);
-        if(y == World.CHUNK_SIZE-1)
-        {
-            if(!world.chunkAtChunkLoc(vector3f)) return false;
-            newY = 0;
-            newChunk = world.getChunkFromChunkLoc(vector3f);
-        }
-        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1);
-        if(z == 0)
-        {
-            if(!world.chunkAtChunkLoc(vector3f)) return false;
-            newZ = World.CHUNK_SIZE-1;
-            newChunk = world.getChunkFromChunkLoc(vector3f);
-        }
-        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1);
-        if(z == World.CHUNK_SIZE-1)
-        {
-            if(!world.chunkAtChunkLoc(vector3f)) return false;
-            newZ = 0;
-            newChunk = world.getChunkFromChunkLoc(vector3f);
-        }
-        genBrightness(newChunk, value, newX, newY, newZ, index, brightnessList, direction, 0.7f);
-        return true;
     }
 
     private static void genBrightness(Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction, float AO)
@@ -438,74 +570,74 @@ public class ChunkMeshGenerator
 
     private static void createBrightnessSlice(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z)
     {
-        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, null, DirectionEnum.WEST);
-        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, null, DirectionEnum.EAST);
-        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, null, DirectionEnum.UP);
-        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.DOWN);
-        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.NORTH);
-        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.SOUTH);
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, false, DirectionEnum.WEST);
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, false, DirectionEnum.EAST);
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, false, DirectionEnum.UP);
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.DOWN);
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.NORTH);
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.SOUTH);
     }
 
     private static void createBrightnessSliceEdgeCase(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z, boolean shouldUpdateNeighbors)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
-                createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, null, DirectionEnum.WEST);
+                createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
                     if(world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(0, y, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.9f, brightnessList, 0, y, z, world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)), DirectionEnum.WEST);
+                createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
-                createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, null, DirectionEnum.EAST);
+                createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(World.CHUNK_SIZE-1, y, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.8f, brightnessList, World.CHUNK_SIZE-1, y, z, world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)), DirectionEnum.EAST);
+                createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
-                createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, null, DirectionEnum.UP);
+                createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, 0, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 1.0f, brightnessList, x, 0, z, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)), DirectionEnum.UP);
+                createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.DOWN);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, World.CHUNK_SIZE-1, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.7f, brightnessList, x, World.CHUNK_SIZE-1, z, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)), DirectionEnum.DOWN);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.NORTH);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)).getVoxelIDAtOffset(x, y, 0) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, 0, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)), DirectionEnum.NORTH);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.SOUTH);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)).getVoxelIDAtOffset(x, y, World.CHUNK_SIZE-1) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, World.CHUNK_SIZE-1, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)), DirectionEnum.SOUTH);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
             }
     }
 

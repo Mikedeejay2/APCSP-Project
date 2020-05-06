@@ -249,4 +249,24 @@ public class World implements Runnable
     {
         return allChunks.get(vector3f);
     }
+
+    public boolean isVoxelAtCoordinate(int x, int y, int z)
+    {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null)
+        {
+            float tex = chunk.chunkCoords.x;
+            float tey = chunk.chunkCoords.y;
+            float tez = chunk.chunkCoords.z;
+            if(!chunk.hasLoaded) return false;
+            int newX = ((x)%CHUNK_SIZE);
+            int newY = ((y)%CHUNK_SIZE);
+            int newZ = ((z)%CHUNK_SIZE);
+            if(newX < 0) newX += CHUNK_SIZE;
+            if(newY < 0) newY += CHUNK_SIZE;
+            if(newZ < 0) newZ += CHUNK_SIZE;
+            return chunk.containsVoxelAtOffset(newX, newY, newZ);
+        }
+        return false;
+    }
 }

@@ -1,10 +1,12 @@
 package com.mikedeejay2.voxel.game.voxel;
 
+import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 import com.mikedeejay2.voxel.game.Main;
 import org.joml.Vector3f;
 
+import static com.mikedeejay2.voxel.game.Main.instance;
 import static com.mikedeejay2.voxel.game.Main.loader;
 
 public class Voxel
