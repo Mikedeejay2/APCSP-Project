@@ -24,11 +24,10 @@ public class OverworldGenerator
                 Vector3f position = new Vector3f((chunk.getChunkCoords().x/VoxelShape.VOXEL_SIZE) + x, (chunk.getChunkCoords().y/VoxelShape.VOXEL_SIZE), (chunk.getChunkCoords().z/VoxelShape.VOXEL_SIZE) + z);
                 int height = (int)generator.generateHeight((int)position.x, (int)position.z);
                 int chunkLevel = (int)Math.floor((float)height / (float)World.CHUNK_SIZE);
-                while(height > World.CHUNK_SIZE-1) height -= World.CHUNK_SIZE;
-                while(height < 0) height += World.CHUNK_SIZE;
-                Vector3f pos = new Vector3f(position.x, height, position.z);
                 if(chunk.getChunkLoc().y == chunkLevel)
                 {
+                    while(height > World.CHUNK_SIZE-1) height -= World.CHUNK_SIZE;
+                    while(height < 0) height += World.CHUNK_SIZE;
                     for(int i = height; i >= 0; i--)
                     {
                         chunk.addVoxel(x, height - i, z, "dirt");

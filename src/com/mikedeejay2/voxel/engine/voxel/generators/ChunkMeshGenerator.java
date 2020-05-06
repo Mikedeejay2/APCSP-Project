@@ -4,11 +4,13 @@ import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
 import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
+import com.mikedeejay2.voxel.engine.utils.DirectionEnum;
 import com.mikedeejay2.voxel.game.Main;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import com.mikedeejay2.voxel.game.world.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -150,7 +152,7 @@ public class ChunkMeshGenerator
                     if (chunk.containsVoxelAtOffset(x, y, z))
                     {
                         if (!edgeCheck(x, y, z))
-                            createBrightnessSlice(chunk, brightnessList, x, y, z);
+                            createBrightnessSlice(world, chunk, brightnessList, x, y, z);
                         else
                             createBrightnessSliceEdgeCase(world, chunk, brightnessList, x, y, z, shouldUpdateNeighbors);
                     }
@@ -175,84 +177,335 @@ public class ChunkMeshGenerator
         return x == 0 || x == World.CHUNK_SIZE-1;
     }
 
-    private static void createLightValue(Chunk chunk, float value, List<Float> brightnessList)
+
+    private static final float AO_DEFAULT = 0.2f;
+
+    private static void createLightValue(World world, Chunk chunk, float value, List<Float> brightnessList, int x, int y, int z, Chunk neighborChunk, DirectionEnum direction)
     {
-        for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
+        if(neighborChunk == null)
         {
-            brightnessList.add(value);
+            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
+            {
+                genBrightness(chunk, value, x, y, z, i, brightnessList, direction, AO_DEFAULT);
+                //brightnessList.add(value);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
+            {
+                if(!genBrightnessWithChunkLoc(world, chunk, value, x, y, z, i, brightnessList, direction))
+                    genBrightness(neighborChunk, value, x, y, z, i, brightnessList, direction, AO_DEFAULT);
+            }
         }
     }
 
-    private static void createBrightnessSlice(Chunk chunk, List<Float> brightnessList, int x, int y, int z)
+    private static boolean genBrightnessWithChunkLoc(World world, Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction)
     {
-        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createLightValue(chunk, 0.9f, brightnessList);
-        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createLightValue(chunk, 0.8f, brightnessList);
-        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createLightValue(chunk, 1.0f, brightnessList);
-        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createLightValue(chunk, 0.7f, brightnessList);
-        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createLightValue(chunk, 0.7f, brightnessList);
-        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createLightValue(chunk, 0.7f, brightnessList);
+        int newX = x; int newY = y; int newZ = z;
+        Chunk newChunk = chunk;
+        Vector3f vector3f = new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z);
+        if(x == 0)
+        {
+            if(!world.chunkAtChunkLoc(vector3f)) return false;
+            newX = World.CHUNK_SIZE-1;
+            newChunk = world.getChunkFromChunkLoc(vector3f);
+        }
+        vector3f.set(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z);
+        if(x == World.CHUNK_SIZE-1)
+        {
+            if(!world.chunkAtChunkLoc(vector3f)) return false;
+            newX = 0;
+            newChunk = world.getChunkFromChunkLoc(vector3f);
+        }
+        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z);
+        if(y == 0)
+        {
+            if(!world.chunkAtChunkLoc(vector3f)) return false;
+            newY = World.CHUNK_SIZE-1;
+            newChunk = world.getChunkFromChunkLoc(vector3f);
+        }
+        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z);
+        if(y == World.CHUNK_SIZE-1)
+        {
+            if(!world.chunkAtChunkLoc(vector3f)) return false;
+            newY = 0;
+            newChunk = world.getChunkFromChunkLoc(vector3f);
+        }
+        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1);
+        if(z == 0)
+        {
+            if(!world.chunkAtChunkLoc(vector3f)) return false;
+            newZ = World.CHUNK_SIZE-1;
+            newChunk = world.getChunkFromChunkLoc(vector3f);
+        }
+        vector3f.set(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1);
+        if(z == World.CHUNK_SIZE-1)
+        {
+            if(!world.chunkAtChunkLoc(vector3f)) return false;
+            newZ = 0;
+            newChunk = world.getChunkFromChunkLoc(vector3f);
+        }
+        genBrightness(newChunk, value, newX, newY, newZ, index, brightnessList, direction, 0.7f);
+        return true;
+    }
+
+    private static void genBrightness(Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction, float AO)
+    {
+        switch (direction)
+        {
+            case WEST: //           X+1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case EAST: //         X-1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case UP: //          Y+1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                        break;
+                    case 3: case 4: case 5:
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                        break;
+                    case 6: case 7: case 8:
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                        break;
+                    case 9: case 10: case 11:
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                        break;
+                }
+                break;
+            case DOWN: //           Y-1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case NORTH: //          Z+1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+            case SOUTH: //         Z-1
+                switch (index)
+                {
+                    case 0: case 1: case 2:
+                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 3: case 4: case 5:
+                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 6: case 7: case 8:
+                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                    case 9: case 10: case 11:
+                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                        brightnessList.add(value);
+                    break;
+                }
+                break;
+        }
+    }
+
+    private static void calculateBrightnessLevels()
+    {
+
+    }
+
+    private static void createBrightnessSlice(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z)
+    {
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, null, DirectionEnum.WEST);
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, null, DirectionEnum.EAST);
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, null, DirectionEnum.UP);
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.DOWN);
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.NORTH);
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.SOUTH);
     }
 
     private static void createBrightnessSliceEdgeCase(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z, boolean shouldUpdateNeighbors)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
-                createLightValue(chunk, 0.9f, brightnessList);
+                createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, null, DirectionEnum.WEST);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
                     if(world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(0, y, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(chunk, 0.9f, brightnessList);
+                createLightValue(world, chunk, 0.9f, brightnessList, 0, y, z, world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)), DirectionEnum.WEST);
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
-                createLightValue(chunk, 0.8f, brightnessList);
+                createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, null, DirectionEnum.EAST);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(World.CHUNK_SIZE-1, y, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(chunk, 0.8f, brightnessList);
+                createLightValue(world, chunk, 0.8f, brightnessList, World.CHUNK_SIZE-1, y, z, world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)), DirectionEnum.EAST);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
-                createLightValue(chunk, 1.0f, brightnessList);
+                createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, null, DirectionEnum.UP);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, 0, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(chunk, 1.0f, brightnessList);
+                createLightValue(world, chunk, 1.0f, brightnessList, x, 0, z, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)), DirectionEnum.UP);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
-                createLightValue(chunk, 0.7f, brightnessList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.DOWN);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, World.CHUNK_SIZE-1, z) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(chunk, 0.7f, brightnessList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, World.CHUNK_SIZE-1, z, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)), DirectionEnum.DOWN);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
-                createLightValue(chunk, 0.7f, brightnessList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.NORTH);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)).getVoxelIDAtOffset(x, y, 0) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(chunk, 0.7f, brightnessList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, 0, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)), DirectionEnum.NORTH);
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
-                createLightValue(chunk, 0.7f, brightnessList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, null, DirectionEnum.SOUTH);
             else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)))
                 if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)).getVoxelIDAtOffset(x, y, World.CHUNK_SIZE-1) == 0)
             {
                 chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(chunk, 0.7f, brightnessList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, World.CHUNK_SIZE-1, world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)), DirectionEnum.SOUTH);
             }
     }
 
