@@ -1,7 +1,12 @@
 package com.mikedeejay2.voxel.engine.io;
 
 import com.mikedeejay2.voxel.game.Main;
+import org.lwjgl.egl.EGLDebugMessageKHRCallback;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GLUtil;
+import org.lwjgl.system.Callback;
+import org.lwjgl.system.Configuration;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.*;
@@ -32,6 +37,23 @@ public class Window
 
     public void create()
     {
+        //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+//        // custom
+//        glfwSetErrorCallback((error, description) -> {
+//            System.err.println("GLFW error [" + Integer.toHexString(error) + "]: " + GLFWErrorCallback.getDescription(description));
+//        });
+//// or shortcut that prints to DEBUG_STREAM
+//        GLFWErrorCallback.createPrint().set();
+//// or shortcut that throws an exception on errors
+//        GLFWErrorCallback.createThrow().set();
+
+//        Configuration.DEBUG.set(true);
+//        Configuration.DEBUG_FUNCTIONS.set(true);
+//        Configuration.DEBUG_LOADER.set(true);
+//        Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
+//        Configuration.DEBUG_STACK.set(true);
+//        Configuration.DEBUG_MEMORY_ALLOCATOR_INTERNAL.set(true);
+//        Configuration.DEBUG_STREAM.set(true);
         if(!glfwInit())
         {
             System.err.println("ERROR: Could not initialize GLFW!");
@@ -52,6 +74,9 @@ public class Window
         glfwSetWindowPos(window, (videoMode.width() - width) / 2, (videoMode.height() - height) / 2);
         glfwMakeContextCurrent(window);
         createCapabilities();
+
+        //Callback debugProc = GLUtil.setupDebugMessageCallback(); // may return null if the debug mode is not available
+
         glEnable(GL_DEPTH_TEST);
 
         glfwShowWindow(window);

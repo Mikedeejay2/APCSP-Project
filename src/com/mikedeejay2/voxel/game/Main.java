@@ -3,29 +3,18 @@ package com.mikedeejay2.voxel.game;
 import com.mikedeejay2.voxel.engine.core.CoreEngine;
 import com.mikedeejay2.voxel.engine.debug.DebugScreen;
 import com.mikedeejay2.voxel.engine.graphics.font.TextMaster;
-import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
-import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
-import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.renderers.MasterRenderer;
-import com.mikedeejay2.voxel.engine.graphics.renderers.Renderer;
 import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.loaders.Loader;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
-import com.mikedeejay2.voxel.game.voxel.Voxel;
-import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
-import com.mikedeejay2.voxel.game.world.Chunk;
+import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
-import org.joml.Vector3f;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.mikedeejay2.voxel.game.world.World.renderDistanceHorizontal;
-import static com.mikedeejay2.voxel.game.world.World.renderDistanceVertical;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Main
@@ -46,8 +35,6 @@ public class Main
     public World world;
 
     public ArrayList<Chunk> chunksToRender;
-
-    public CopyOnWriteArrayList<Vector3f> locsDebug = new CopyOnWriteArrayList<Vector3f>();
 
     public void start()
     {
@@ -84,7 +71,7 @@ public class Main
 
     public void update(float delta)
     {
-        camera.update(delta);
+
     }
 
     public void update50ms(float delta)
@@ -108,17 +95,13 @@ public class Main
             if(chunk != null)
             chunk.render();
         }
-        for(Vector3f vector3f : locsDebug)
-        {
-            renderer.processEntity(new Entity(new TexturedModel(loader.loadToVAO(VoxelShape.getVertices(), VoxelShape.getTextureCoords(), VoxelShape.getIndices(), VoxelShape.getBrightness()), VoxelTypes.gold_block.getTexture()), vector3f));
-            locsDebug.remove(vector3f);
-        }
         renderer.render(camera);
         TextMaster.render();
     }
 
     public void close()
     {
+        world.cleanUp();
         worldThread.stop();
         renderer.cleanUp();
         TextMaster.cleanUp();

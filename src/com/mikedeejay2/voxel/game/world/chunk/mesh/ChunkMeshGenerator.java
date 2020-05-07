@@ -1,4 +1,4 @@
-package com.mikedeejay2.voxel.engine.voxel.generators;
+package com.mikedeejay2.voxel.game.world.chunk.mesh;
 
 import com.mikedeejay2.voxel.engine.graphics.models.RawModel;
 import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
@@ -8,9 +8,8 @@ import com.mikedeejay2.voxel.engine.utils.DirectionEnum;
 import com.mikedeejay2.voxel.game.Main;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
-import com.mikedeejay2.voxel.game.world.Chunk;
+import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -21,11 +20,14 @@ public class ChunkMeshGenerator
     public static Entity createChunkEntity(Chunk chunk)
     {
         if(chunk.verticesTemp == null || chunk.textureCoordsTemp == null || chunk.indicesTemp == null || chunk.brightnessTemp == null) return null;
+        if(chunk.verticesTemp.length == 0 && chunk.textureCoordsTemp.length == 0 && chunk.indicesTemp.length == 0 && chunk.brightnessTemp.length == 0)
+        {
+        if(chunk.verticesTemp.length/2f != chunk.indicesTemp.length) return null;
+        if(chunk.verticesTemp.length/1.5f != chunk.textureCoordsTemp.length) return null;
+        }
+//        System.out.println(chunk.verticesTemp.length + " " + chunk.indicesTemp.length + " " + chunk.textureCoordsTemp.length + " " + chunk.brightnessTemp.length);
         RawModel model = Main.getLoader().loadToVAO(chunk.verticesTemp, chunk.textureCoordsTemp, chunk.indicesTemp, chunk.brightnessTemp);
 
-        chunk.shouldRender = chunk.verticesTemp.length >= 12;
-
-        chunk.verticesTemp = null;
         chunk.textureCoordsTemp = null;
         chunk.indicesTemp = null;
         chunk.brightnessTemp = null;
@@ -40,6 +42,9 @@ public class ChunkMeshGenerator
         chunk.chunkEntity = null;
         chunk.chunkEntity = entity;
         chunk.entityShouldBeRemade = false;
+
+        chunk.shouldRender = chunk.verticesTemp.length >= 12;
+        chunk.verticesTemp = null;
         return entity;
     }
 

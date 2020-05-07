@@ -1,7 +1,8 @@
-package com.mikedeejay2.voxel.engine.voxel.generators;
+package com.mikedeejay2.voxel.game.world.generators;
 
+import com.mikedeejay2.voxel.engine.voxel.generators.PerlinNoiseGenerator;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
-import com.mikedeejay2.voxel.game.world.Chunk;
+import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
@@ -24,7 +25,7 @@ public class OverworldGenerator
                 Vector3f position = new Vector3f((chunk.getChunkCoords().x/VoxelShape.VOXEL_SIZE) + x, (chunk.getChunkCoords().y/VoxelShape.VOXEL_SIZE), (chunk.getChunkCoords().z/VoxelShape.VOXEL_SIZE) + z);
                 int height = (int)generator.generateHeight((int)position.x, (int)position.z);
                 int chunkLevel = (int)Math.floor((float)height / (float)World.CHUNK_SIZE);
-                if(chunk.getChunkLoc().y == chunkLevel)
+                if(chunk.getChunkLoc() != null && chunk.getChunkLoc().y == chunkLevel)
                 {
                     while(height > World.CHUNK_SIZE-1) height -= World.CHUNK_SIZE;
                     while(height < 0) height += World.CHUNK_SIZE;
@@ -34,11 +35,14 @@ public class OverworldGenerator
                     }
 
                 }
-                else if(chunk.getChunkLoc().y < chunkLevel)
+                else
                 {
-                    for(int y = 0; y < World.CHUNK_SIZE; y++)
+                    if(chunk.getChunkLoc() != null && chunk.getChunkLoc().y < chunkLevel)
                     {
-                        chunk.addVoxel(x, y, z, "stone");
+                        for(int y = 0; y < World.CHUNK_SIZE; y++)
+                        {
+                            chunk.addVoxel(x, y, z, "stone");
+                        }
                     }
                 }
             }

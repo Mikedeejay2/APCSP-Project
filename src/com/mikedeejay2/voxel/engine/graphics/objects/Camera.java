@@ -27,6 +27,9 @@ public class Camera
     Vector3f right;
 
     private final float REG_SPEED = 20;
+    private final float REG_MULTIPLIER = 1.1f;
+
+    private float multiplier = REG_MULTIPLIER;
 
     private float speed = REG_SPEED;
     private float sensitivity = 0.3f;
@@ -48,7 +51,11 @@ public class Camera
     {
         viewMatrix.positiveZ(forward).negate().mul(speed * delta);
         viewMatrix.positiveX(right).mul(speed * delta);
-        if(Input.getKey(GLFW_KEY_LEFT_CONTROL)) speed = REG_SPEED;
+        if(Input.getKey(GLFW_KEY_LEFT_CONTROL))
+        {
+            speed = REG_SPEED;
+            multiplier = REG_MULTIPLIER;
+        }
         if(Input.getKey(GLFW_KEY_W))
         {
             realPos.add(forward.x, 0, forward.z);
@@ -73,7 +80,17 @@ public class Camera
         {
             realPos.y += -(speed * delta);
         }
-        speed += Input.getScroll()*100;
+        float oldSpeed = speed;
+        speed += Input.getScroll()*multiplier;
+        if(oldSpeed != speed)
+        {
+            multiplier *= REG_MULTIPLIER;
+            if (speed < 0)
+            {
+                multiplier = REG_MULTIPLIER;
+                speed = 0;
+            }
+        }
 
         if (Input.getKey(GLFW_KEY_ESCAPE))
         {
@@ -110,11 +127,6 @@ public class Camera
 
             Input.setMousePosition(Window.getWidth() / 2.0f, Window.getHeight() / 2.0f);
         }
-    }
-
-    public void update(float delta)
-    {
-
     }
 
     public Vector3f getPosition()

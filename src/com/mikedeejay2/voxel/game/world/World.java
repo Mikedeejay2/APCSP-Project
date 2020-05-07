@@ -2,14 +2,17 @@ package com.mikedeejay2.voxel.game.world;
 
 import com.mikedeejay2.voxel.game.Main;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
-import com.mikedeejay2.voxel.engine.voxel.generators.OverworldGenerator;
+import com.mikedeejay2.voxel.game.world.generators.OverworldGenerator;
+import com.mikedeejay2.voxel.game.world.chunk.Chunk;
+import com.mikedeejay2.voxel.game.world.chunk.ChunkConsumerThread;
+import com.mikedeejay2.voxel.game.world.chunk.ChunkPC;
+import com.mikedeejay2.voxel.game.world.chunk.ChunkProducerThread;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
-public class World implements Runnable
+public class World extends Thread
 {
     public static final int CHUNK_SIZE = 32;
     public static final int CHUNKS_TO_PROCESS_PER_TICK = 10;
@@ -22,13 +25,19 @@ public class World implements Runnable
 
     public static World world;
 
+    ChunkPC chunkPC;
+    ChunkProducerThread chunkProducer;
+    ChunkConsumerThread chunkConsumer;
+    Thread chunkProducerThread;
+    Thread chunkConsumerThread;
+
     Main instance = Main.getInstance();
-    Vector3d playerPosition;
-    Vector3f playerChunk;
+    public Vector3d playerPosition;
+    public Vector3f playerChunk;
 
-    OverworldGenerator overworldGenerator;
+    public OverworldGenerator overworldGenerator;
 
-    Map<Vector3f, Chunk> allChunks;
+    public Map<Vector3f, Chunk> allChunks;
 
     public World()
     {
@@ -36,6 +45,14 @@ public class World implements Runnable
         playerChunk = new Vector3f(0, 0, 0);
         allChunks = new HashMap<>();
         overworldGenerator = new OverworldGenerator(this);
+
+        chunkPC = new ChunkPC();
+        chunkProducer = new ChunkProducerThread(chunkPC, this);
+        chunkConsumer = new ChunkConsumerThread(chunkPC, this);
+        chunkProducerThread = new Thread(chunkProducer, "chunkProducer");
+        chunkConsumerThread = new Thread(chunkConsumer, "chunkConsumer");
+        chunkProducerThread.start();
+        chunkConsumerThread.start();
     }
 
     @Override
@@ -47,6 +64,14 @@ public class World implements Runnable
             updateChunks();
             getRenderableChunks();
             chunksProcessedThisTick = 0;
+            try
+            {
+                Thread.sleep(50);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -61,7 +86,8 @@ public class World implements Runnable
                 for (int z = (int) (playerChunk.z - renderDistanceHorizontal); z < playerChunk.z + renderDistanceHorizontal + 1; z++)
                 {
                     Chunk chunk = getChunkFromChunkLoc(new Vector3f(x, y, z));
-                    chunksToRender.add(chunk);
+                    if(chunk != null)
+                        chunksToRender.add(chunk);
                     //world.renderChunk(x, y, z);
                 }
             }
@@ -84,6 +110,10 @@ public class World implements Runnable
                         playerChunk.x - loc.x < -World.renderDistanceHorizontal || playerChunk.y - loc.y < -World.renderDistanceVertical || playerChunk.z - loc.z < -World.renderDistanceHorizontal)
                 {
                     Chunk chunk = getChunkFromChunkLoc(loc);
+                    chunk.shouldRender = false;
+                    chunk.containsVoxels = false;
+                    chunk.hasLoaded = false;
+                    chunk.entityShouldBeRemade = false;
                     chunk.destroy();
                     chunk.chunkCoords = null;
                     chunk.voxels = null;
@@ -131,31 +161,7 @@ public class World implements Runnable
 
     public void updateChunks()
     {
-        for (int rdh = 0; rdh < renderDistanceHorizontal; rdh++)
-        {
-            for (int rdv = 0; rdv < renderDistanceVertical; rdv++)
-            {
-                for (int x = (int) ((playerChunk.x) - rdh); x < (playerChunk.x) + rdh + 1; x++)
-                {
-                    for (int y = (int) ((playerChunk.y) - rdv); y < (playerChunk.y) + rdv + 1; y++)
-                    {
-                        for (int z = (int) ((playerChunk.z) - rdh); z < (playerChunk.z) + rdh + 1; z++)
-                        {
-                            if (chunksProcessedThisTick < CHUNKS_TO_PROCESS_PER_TICK)
-                            {
-                                Vector3f currentChunkLoc = new Vector3f(x, y, z);
-                                if (!chunkAtChunkLoc(currentChunkLoc))
-                                {
-                                    Chunk chunk = generateChunk(currentChunkLoc);
-                                    chunk.populate();
-                                    chunksProcessedThisTick++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+
     }
 
     public void renderChunk(float x, float y, float z)
@@ -268,5 +274,11 @@ public class World implements Runnable
             return chunk.containsVoxelAtOffset(newX, newY, newZ);
         }
         return false;
+    }
+
+    public void cleanUp()
+    {
+        chunkConsumerThread.stop();
+        chunkProducerThread.stop();
     }
 }

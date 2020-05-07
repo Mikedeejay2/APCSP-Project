@@ -1,11 +1,12 @@
-package com.mikedeejay2.voxel.game.world;
+package com.mikedeejay2.voxel.game.world.chunk;
 
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.game.Main;
 import com.mikedeejay2.voxel.game.voxel.Voxel;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
-import com.mikedeejay2.voxel.engine.voxel.generators.ChunkMeshGenerator;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshGenerator;
+import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
 public class Chunk
@@ -24,7 +25,7 @@ public class Chunk
 
     World instanceWorld;
 
-    boolean hasLoaded;
+    public boolean hasLoaded;
     public boolean containsVoxels;
     public boolean shouldUpdateNeighbors;
     public boolean entityShouldBeRemade;
@@ -44,18 +45,7 @@ public class Chunk
     public void populate()
     {
         instanceWorld.populateChunk(this);
-        try
-        {
-            float[] verticesTemp = ChunkMeshGenerator.createVertices(instanceWorld, this, true);
-            float[] textureCoordsTemp = ChunkMeshGenerator.createTextureCoords(instanceWorld, this, true);
-            int[] indicesTemp = ChunkMeshGenerator.createIndices(instanceWorld, this, true);
-            float[] brightnessTemp = ChunkMeshGenerator.createBrightness(instanceWorld, this, true);
-            this.verticesTemp = verticesTemp;
-            this.textureCoordsTemp = textureCoordsTemp;
-            this.indicesTemp = indicesTemp;
-            this.brightnessTemp = brightnessTemp;
-        }
-        catch (NullPointerException e) {System.out.println("bruh2");}
+//        rebuildChunkMesh(false);
         hasLoaded = true;
         updateNeighbors();
     }
@@ -64,31 +54,36 @@ public class Chunk
     {
         Vector3f nextChunkLoc;
         nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
-        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
         nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
-        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
         nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
-        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
         nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
-        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
         nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
-        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
         nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
-        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh();
+        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+
         shouldUpdateNeighbors = false;
     }
 
-    public void rebuildChunkMesh()
+    public void rebuildChunkMesh(boolean shouldUpdateNeighbors)
     {
         try
         {
-            verticesTemp = ChunkMeshGenerator.createVertices(instanceWorld, this, false);
-            textureCoordsTemp = ChunkMeshGenerator.createTextureCoords(instanceWorld, this, false);
-            indicesTemp = ChunkMeshGenerator.createIndices(instanceWorld, this, false);
-            brightnessTemp = ChunkMeshGenerator.createBrightness(instanceWorld, this, false);
+            float[] verticesTemp = ChunkMeshGenerator.createVertices(instanceWorld, this, shouldUpdateNeighbors);
+            float[] textureCoordsTemp = ChunkMeshGenerator.createTextureCoords(instanceWorld, this, shouldUpdateNeighbors);
+            int[] indicesTemp = ChunkMeshGenerator.createIndices(instanceWorld, this, shouldUpdateNeighbors);
+            float[] brightnessTemp = ChunkMeshGenerator.createBrightness(instanceWorld, this, shouldUpdateNeighbors);
+            this.verticesTemp = verticesTemp;
+            this.textureCoordsTemp = textureCoordsTemp;
+            this.indicesTemp = indicesTemp;
+            this.brightnessTemp = brightnessTemp;
+            instanceWorld.chunksProcessedThisTick++;
         }
-            catch (NullPointerException e) {System.out.println("bruh");}
-        instanceWorld.chunksProcessedThisTick++;
+        catch (NullPointerException e) {System.out.println("bruh");}
         entityShouldBeRemade = true;
     }
 
