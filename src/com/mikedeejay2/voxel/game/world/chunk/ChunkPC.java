@@ -15,20 +15,26 @@ public class ChunkPC
     public static LinkedList<Chunk> chunksToBeProcessed = new LinkedList<Chunk>();
     public static int capacity = 2;
 
+    int x;
+    int y;
+    int z;
+    int rdh;
+    int rdv;
+
     public void produce(World world) throws InterruptedException
     {
         boolean createdChunk = false;
         synchronized (this)
         {
-            for (int rdh = 0; rdh < World.renderDistanceHorizontal; rdh++)
+            for (rdh = 0; rdh < World.renderDistanceHorizontal; rdh++)
             {
-                for (int rdv = 0; rdv < World.renderDistanceVertical; rdv++)
+                for (rdv = 0; rdv < World.renderDistanceVertical; rdv++)
                 {
-                    for (int x = (int) ((world.playerChunk.x) - rdh); x < (world.playerChunk.x) + rdh + 1; x++)
+                    for (x = (int) ((world.playerChunk.x) - rdh); x < (world.playerChunk.x) + rdh + 1; x++)
                     {
-                        for (int y = (int) ((world.playerChunk.y) - rdv); y < (world.playerChunk.y) + rdv + 1; y++)
+                        for (y = (int) ((world.playerChunk.y) - rdv); y < (world.playerChunk.y) + rdv + 1; y++)
                         {
-                            for (int z = (int) ((world.playerChunk.z) - rdh); z < (world.playerChunk.z) + rdh + 1; z++)
+                            for (z = (int) ((world.playerChunk.z) - rdh); z < (world.playerChunk.z) + rdh + 1; z++)
                             {
                                 Vector3f currentChunkLoc = new Vector3f(x, y, z);
                                 if (!world.chunkAtChunkLoc(currentChunkLoc))
@@ -40,10 +46,10 @@ public class ChunkPC
                                     notify();
                                     createdChunk = true;
                                 } if(createdChunk) break;
-                            }if(createdChunk) break;
-                        }if(createdChunk) break;
-                    }if(createdChunk) break;
-                }if(createdChunk) break;
+                            } if(createdChunk) break;
+                        } if(createdChunk) break;
+                    } if(createdChunk) break;
+                } if(createdChunk) break;
             }
         }
     }

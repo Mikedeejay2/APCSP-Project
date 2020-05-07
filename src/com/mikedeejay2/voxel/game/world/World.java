@@ -11,6 +11,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class World extends Thread
 {
@@ -20,7 +21,7 @@ public class World extends Thread
 
     public int chunkUpdates = 0;
 
-    public static int renderDistanceHorizontal = 12;
+    public static int renderDistanceHorizontal = 16;
     public static int renderDistanceVertical = 6;
 
     public static World world;
@@ -43,7 +44,7 @@ public class World extends Thread
     {
         playerPosition = new Vector3d(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
-        allChunks = new HashMap<>();
+        allChunks = new ConcurrentHashMap<>();
         overworldGenerator = new OverworldGenerator(this);
 
         chunkPC = new ChunkPC();
@@ -63,15 +64,6 @@ public class World extends Thread
             updatePlayerLoc();
             updateChunks();
             getRenderableChunks();
-            chunksProcessedThisTick = 0;
-            try
-            {
-                Thread.sleep(50);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -188,7 +180,8 @@ public class World extends Thread
 
     public void populateChunk(Chunk chunk)
     {
-        overworldGenerator.populate(chunk);
+//        overworldGenerator.genTerrain(chunk);
+        overworldGenerator.genFlat(chunk);
     }
 
     public static World getWorld()

@@ -13,21 +13,73 @@ import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ChunkMeshGenerator
 {
+    public static LinkedList<MeshRequest> meshRequests = new LinkedList<MeshRequest>();
+    int capacity = 2;
+
+    static boolean finished = false;
+
+    public void consume() throws InterruptedException
+    {
+        synchronized(this)
+        {
+            while(meshRequests.size() == 0) wait();
+            MeshRequest meshRequest = meshRequests.removeFirst();
+            Chunk chunk = meshRequest.getChunk();
+            World world = meshRequest.getWorld();
+            boolean shouldUpdateNeighbors = meshRequest.isShouldUpdateNeighbors();
+            if(world == null || chunk == null) return;
+            try
+            {
+                float[] verticesTemp = createVertices(world, chunk, shouldUpdateNeighbors);
+                float[] textureCoordsTemp = createTextureCoords(world, chunk, shouldUpdateNeighbors);
+                int[] indicesTemp = createIndices(world, chunk, shouldUpdateNeighbors);
+                float[] brightnessTemp = createBrightness(world, chunk, shouldUpdateNeighbors);
+                chunk.verticesTemp = verticesTemp;
+                chunk.textureCoordsTemp = textureCoordsTemp;
+                chunk.indicesTemp = indicesTemp;
+                chunk.brightnessTemp = brightnessTemp;
+                world.chunksProcessedThisTick++;
+                chunk.entityShouldBeRemade = true;
+            }
+            catch(NullPointerException e) {System.out.println("bruh");}
+            finished = true;
+            notify();
+        }
+    }
+
+    public void produce(ConcurrentLinkedQueue<MeshRequest> queue) throws InterruptedException
+    {
+        synchronized(this)
+        {
+            while(meshRequests.size() == capacity) wait();
+            if(!queue.isEmpty())
+            {
+                MeshRequest meshRequest = queue.remove();
+                meshRequests.add(meshRequest);
+                finished = false;
+                notify();
+            }
+        }
+    }
+
     public static Entity createChunkEntity(Chunk chunk)
     {
+        if(!finished) return null;
         if(chunk.verticesTemp == null || chunk.textureCoordsTemp == null || chunk.indicesTemp == null || chunk.brightnessTemp == null) return null;
-        if(chunk.verticesTemp.length == 0 && chunk.textureCoordsTemp.length == 0 && chunk.indicesTemp.length == 0 && chunk.brightnessTemp.length == 0)
+        if(chunk.verticesTemp.length != 0 && chunk.textureCoordsTemp.length != 0 && chunk.indicesTemp.length != 0 && chunk.brightnessTemp.length != 0)
         {
-        if(chunk.verticesTemp.length/2f != chunk.indicesTemp.length) return null;
-        if(chunk.verticesTemp.length/1.5f != chunk.textureCoordsTemp.length) return null;
-        }
+            if(chunk.verticesTemp.length/2f != chunk.indicesTemp.length) return null;
+            if(chunk.verticesTemp.length/1.5f != chunk.textureCoordsTemp.length) return null;
+        } else return null;
 //        System.out.println(chunk.verticesTemp.length + " " + chunk.indicesTemp.length + " " + chunk.textureCoordsTemp.length + " " + chunk.brightnessTemp.length);
         RawModel model = Main.getLoader().loadToVAO(chunk.verticesTemp, chunk.textureCoordsTemp, chunk.indicesTemp, chunk.brightnessTemp);
-
         chunk.textureCoordsTemp = null;
         chunk.indicesTemp = null;
         chunk.brightnessTemp = null;
@@ -54,7 +106,7 @@ public class ChunkMeshGenerator
 
 
 
-    public static float[] createVertices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private float[] createVertices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
         if(!chunk.containsVoxels) return new float[0];
         List<Float> verticesList = new ArrayList<Float>();
@@ -88,7 +140,7 @@ public class ChunkMeshGenerator
 
 
 
-    public static float[] createTextureCoords(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private float[] createTextureCoords(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
         if(!chunk.containsVoxels) return new float[0];
         List<Float> textureCoordsList = new ArrayList<Float>();
@@ -116,7 +168,7 @@ public class ChunkMeshGenerator
     }
 
 
-    public static int[] createIndices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private int[] createIndices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
         if(!chunk.containsVoxels) return new int[0];
         List<Integer> indicesList = new ArrayList<Integer>();
@@ -144,7 +196,7 @@ public class ChunkMeshGenerator
     }
 
 
-    public static float[] createBrightness(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private float[] createBrightness(World world, Chunk chunk, boolean shouldUpdateNeighbors)
     {
         if(!chunk.containsVoxels) return new float[0];
         List<Float> brightnessList = new ArrayList<Float>();
@@ -172,12 +224,12 @@ public class ChunkMeshGenerator
     }
 
 
-    private static boolean edgeCheck(float x, float y, float z)
+    private boolean edgeCheck(float x, float y, float z)
     {
         return x == 0 || y == 0 || z == 0 || x == World.CHUNK_SIZE-1 || y == World.CHUNK_SIZE-1 || z == World.CHUNK_SIZE-1;
     }
 
-    private static boolean edgeCheckSingle(float x)
+    private boolean edgeCheckSingle(float x)
     {
         return x == 0 || x == World.CHUNK_SIZE-1;
     }
@@ -185,7 +237,7 @@ public class ChunkMeshGenerator
 
     private static final float AO_DEFAULT = 0.2f;
 
-    private static void createLightValue(World world, Chunk chunk, float value, List<Float> brightnessList, int x, int y, int z, boolean edge, DirectionEnum direction)
+    private void createLightValue(World world, Chunk chunk, float value, List<Float> brightnessList, int x, int y, int z, boolean edge, DirectionEnum direction)
     {
         if(!edge)
         {
@@ -206,7 +258,7 @@ public class ChunkMeshGenerator
         }
     }
 
-    private static void genBrightnessWithChunkLoc(World world, Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction, float AO)
+    private void genBrightnessWithChunkLoc(World world, Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction, float AO)
     {
         switch (direction)
         {
@@ -387,7 +439,7 @@ public class ChunkMeshGenerator
         }
     }
 
-    private static void genBrightness(Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction, float AO)
+    private void genBrightness(Chunk chunk, float value, int x, int y, int z, int index, List<Float> brightnessList, DirectionEnum direction, float AO)
     {
         switch (direction)
         {
@@ -568,12 +620,7 @@ public class ChunkMeshGenerator
         }
     }
 
-    private static void calculateBrightnessLevels()
-    {
-
-    }
-
-    private static void createBrightnessSlice(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z)
+    private void createBrightnessSlice(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, false, DirectionEnum.WEST);
         if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, false, DirectionEnum.EAST);
@@ -583,7 +630,7 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.SOUTH);
     }
 
-    private static void createBrightnessSliceEdgeCase(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z, boolean shouldUpdateNeighbors)
+    private void createBrightnessSliceEdgeCase(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z, boolean shouldUpdateNeighbors)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
@@ -646,7 +693,7 @@ public class ChunkMeshGenerator
             }
     }
 
-    private static void createIndex(int x, int y, int z, int[] indices, List<Integer> indicesList)
+    private void createIndex(int x, int y, int z, int[] indices, List<Integer> indicesList)
     {
         int indicesSize = indicesList.size();
         for (int i = 0; i < indices.length; i++)
@@ -656,7 +703,7 @@ public class ChunkMeshGenerator
         }
     }
 
-    private static void createIndexSlice(Chunk chunk, List<Integer> indicesList, int x, int y, int z)
+    private void createIndexSlice(Chunk chunk, List<Integer> indicesList, int x, int y, int z)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
         if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
@@ -666,7 +713,7 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
     }
 
-    private static void createIndexSliceEdgeCase(World world, Chunk chunk, List<Integer> indicesList, int x, int y, int z, boolean shouldUpdateNeighbors)
+    private void createIndexSliceEdgeCase(World world, Chunk chunk, List<Integer> indicesList, int x, int y, int z, boolean shouldUpdateNeighbors)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
@@ -729,7 +776,7 @@ public class ChunkMeshGenerator
             }
     }
 
-    private  static void createTextureCoord(List<Float> textureCoordsList)
+    private void createTextureCoord(List<Float> textureCoordsList)
     {
         for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
         {
@@ -738,7 +785,7 @@ public class ChunkMeshGenerator
         }
     }
 
-    private static void createTextureCoordSlice(Chunk chunk, List<Float> textureCoordsList, int x, int y, int z)
+    private void createTextureCoordSlice(Chunk chunk, List<Float> textureCoordsList, int x, int y, int z)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createTextureCoord(textureCoordsList);
         if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createTextureCoord(textureCoordsList);
@@ -748,7 +795,7 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createTextureCoord(textureCoordsList);
     }
 
-    private static void createTextureCoordSliceEdgeCase(World world, Chunk chunk, List<Float> textureCoordsList, int x, int y, int z, boolean shouldUpdateNeighbors)
+    private void createTextureCoordSliceEdgeCase(World world, Chunk chunk, List<Float> textureCoordsList, int x, int y, int z, boolean shouldUpdateNeighbors)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
@@ -811,7 +858,7 @@ public class ChunkMeshGenerator
             }
     }
 
-    private static void createVertex(int x, int y, int z, float[] vertices, List<Float> verticesList)
+    private void createVertex(int x, int y, int z, float[] vertices, List<Float> verticesList)
     {
         for (int i = 0; i < vertices.length; i++)
         {
@@ -824,7 +871,7 @@ public class ChunkMeshGenerator
         }
     }
 
-    private static void createVertexSlice(Chunk chunk, int x, int y, int z, List<Float> verticesList)
+    private void createVertexSlice(Chunk chunk, int x, int y, int z, List<Float> verticesList)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
         if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
@@ -834,7 +881,7 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
     }
 
-    private static void createVertexSliceEdgeCase(World world, Chunk chunk, int x, int y, int z, List<Float> verticesList, boolean shouldUpdateNeighbors)
+    private void createVertexSliceEdgeCase(World world, Chunk chunk, int x, int y, int z, List<Float> verticesList, boolean shouldUpdateNeighbors)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
@@ -897,7 +944,7 @@ public class ChunkMeshGenerator
             }
     }
 
-    public static String generateTemporaryBlockName(Chunk chunk)
+    private static String generateTemporaryBlockName(Chunk chunk)
     {
         String name = "";
         if (Math.abs(chunk.chunkLoc.x) % 2 == 0 && Math.abs(chunk.chunkLoc.z) % 2 == 0 && Math.abs(chunk.chunkLoc.y) % 2 == 0)

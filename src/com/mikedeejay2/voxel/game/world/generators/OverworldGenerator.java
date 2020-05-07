@@ -15,7 +15,7 @@ public class OverworldGenerator
         instanceWorld = world;
     }
 
-    public void populate(Chunk chunk)
+    public void genTerrain(Chunk chunk)
     {
         PerlinNoiseGenerator generator = new PerlinNoiseGenerator();
         for (int x = 0; x < World.CHUNK_SIZE; x++)
@@ -44,6 +44,20 @@ public class OverworldGenerator
                             chunk.addVoxel(x, y, z, "stone");
                         }
                     }
+                }
+            }
+        }
+    }
+
+    public void genFlat(Chunk chunk)
+    {
+        for (int x = 0; x < World.CHUNK_SIZE; x++)
+        {
+            for (int z = 0; z < World.CHUNK_SIZE; z++)
+            {
+                if(chunk.getChunkLoc().y == 0)
+                {
+                    chunk.addVoxel(x, 0, z, "stone");
                 }
             }
         }

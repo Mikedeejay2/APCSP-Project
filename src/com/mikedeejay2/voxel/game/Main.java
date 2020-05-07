@@ -12,6 +12,10 @@ import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumer;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshGenerator;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducer;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.MeshRequest;
 
 import java.util.ArrayList;
 
@@ -25,14 +29,19 @@ public class Main
     public CoreEngine coreEngine;
     public MasterRenderer renderer;
 
+    public World world;
     Thread worldThread;
+
+    public ChunkMeshProducer chunkMeshProducer;
+    public ChunkMeshConsumer chunkMeshConsumer;
+    Thread chunkMeshProducerThread;
+    Thread chunkMeshConsumerThread;
 
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
 
     public Camera camera;
 
-    public World world;
 
     public ArrayList<Chunk> chunksToRender;
 
@@ -55,10 +64,9 @@ public class Main
         Input.init();
 
         camera = new Camera();
+        chunksToRender = new ArrayList<Chunk>();
 
         world = new World();
-
-        chunksToRender = new ArrayList<Chunk>();
 
         this.worldThread = new Thread(world, "world");
         worldThread.start();
@@ -79,6 +87,7 @@ public class Main
         world.updateChunkUpdates();
         debugScreen.update();
         world.unloadOldChunks();
+        world.chunksProcessedThisTick = 0;
     }
 
     public void input(float delta)
@@ -146,5 +155,30 @@ public class Main
     public World getWorld()
     {
         return world;
+    }
+
+    public ChunkMeshProducer getChunkMeshProducer()
+    {
+        return chunkMeshProducer;
+    }
+
+    public ChunkMeshConsumer getChunkMeshConsumer()
+    {
+        return chunkMeshConsumer;
+    }
+
+    public static int getWIDTH()
+    {
+        return WIDTH;
+    }
+
+    public static int getHEIGHT()
+    {
+        return HEIGHT;
+    }
+
+    public ArrayList<Chunk> getChunksToRender()
+    {
+        return chunksToRender;
     }
 }
