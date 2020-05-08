@@ -1,6 +1,7 @@
 package com.mikedeejay2.voxel.game.world.chunk;
 
 import com.mikedeejay2.voxel.game.Main;
+import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
@@ -15,26 +16,20 @@ public class ChunkPC
     public static LinkedList<Chunk> chunksToBeProcessed = new LinkedList<Chunk>();
     public static int capacity = 2;
 
-    int x;
-    int y;
-    int z;
-    int rdh;
-    int rdv;
-
     public void produce(World world) throws InterruptedException
     {
-        boolean createdChunk = false;
+        boolean breakout = false;
         synchronized (this)
         {
-            for (rdh = 0; rdh < World.renderDistanceHorizontal; rdh++)
+            for (int rdh = 0; rdh < World.renderDistanceHorizontal; rdh++)
             {
-                for (rdv = 0; rdv < World.renderDistanceVertical; rdv++)
+                for (int rdv = 0; rdv < World.renderDistanceVertical; rdv++)
                 {
-                    for (x = (int) ((world.playerChunk.x) - rdh); x < (world.playerChunk.x) + rdh + 1; x++)
+                    for (int x = (int) ((world.playerChunk.x) - rdh); x < (world.playerChunk.x) + rdh + 1; x++)
                     {
-                        for (y = (int) ((world.playerChunk.y) - rdv); y < (world.playerChunk.y) + rdv + 1; y++)
+                        for (int y = (int) ((world.playerChunk.y) - rdv); y < (world.playerChunk.y) + rdv + 1; y++)
                         {
-                            for (z = (int) ((world.playerChunk.z) - rdh); z < (world.playerChunk.z) + rdh + 1; z++)
+                            for (int z = (int) ((world.playerChunk.z) - rdh); z < (world.playerChunk.z) + rdh + 1; z++)
                             {
                                 Vector3f currentChunkLoc = new Vector3f(x, y, z);
                                 if (!world.chunkAtChunkLoc(currentChunkLoc))
@@ -44,12 +39,12 @@ public class ChunkPC
                                     Chunk chunk = world.generateChunk(currentChunkLoc);
                                     chunksToBeProcessed.add(chunk);
                                     notify();
-                                    createdChunk = true;
-                                } if(createdChunk) break;
-                            } if(createdChunk) break;
-                        } if(createdChunk) break;
-                    } if(createdChunk) break;
-                } if(createdChunk) break;
+                                    breakout = true;
+                                } if(breakout) break;
+                            } if(breakout) break;
+                        } if(breakout) break;
+                    } if(breakout) break;
+                } if(breakout) break;
             }
         }
     }

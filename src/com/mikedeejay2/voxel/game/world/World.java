@@ -1,6 +1,7 @@
 package com.mikedeejay2.voxel.game.world;
 
 import com.mikedeejay2.voxel.game.Main;
+import com.mikedeejay2.voxel.game.voxel.Voxel;
 import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.world.generators.OverworldGenerator;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class World extends Thread
 {
     public static final int CHUNK_SIZE = 32;
-    public static final int CHUNKS_TO_PROCESS_PER_TICK = 10;
+
     public int chunksProcessedThisTick = 0;
 
     public int chunkUpdates = 0;
@@ -79,6 +80,7 @@ public class World extends Thread
                 {
                     Chunk chunk = getChunkFromChunkLoc(new Vector3f(x, y, z));
                     if(chunk != null)
+                        if(chunk.containsVoxels && chunk.hasLoaded)
                         chunksToRender.add(chunk);
                     //world.renderChunk(x, y, z);
                 }
@@ -148,7 +150,7 @@ public class World extends Thread
 
     public Vector3f coordsToChunkLoc(Vector3f loc)
     {
-        return new Vector3f((float)Math.floor(loc.x/CHUNK_SIZE* VoxelShape.VOXEL_SIZE), (float)Math.floor(loc.y/CHUNK_SIZE* VoxelShape.VOXEL_SIZE), (float)Math.floor(loc.z/CHUNK_SIZE* VoxelShape.VOXEL_SIZE));
+        return new Vector3f((float)Math.floor(loc.x/(CHUNK_SIZE*VoxelShape.VOXEL_SIZE)), (float)Math.floor(loc.y/(CHUNK_SIZE*VoxelShape.VOXEL_SIZE)), (float)Math.floor(loc.z/(CHUNK_SIZE*VoxelShape.VOXEL_SIZE)));
     }
 
     public void updateChunks()
@@ -180,8 +182,8 @@ public class World extends Thread
 
     public void populateChunk(Chunk chunk)
     {
-//        overworldGenerator.genTerrain(chunk);
-        overworldGenerator.genFlat(chunk);
+        overworldGenerator.genTerrain(chunk);
+//        overworldGenerator.genFlat(chunk);
     }
 
     public static World getWorld()
@@ -219,11 +221,6 @@ public class World extends Thread
         return allChunks;
     }
 
-    public static int getChunksToProcessPerTick()
-    {
-        return CHUNKS_TO_PROCESS_PER_TICK;
-    }
-
     public int getChunksProcessedThisTick()
     {
         return chunksProcessedThisTick;
@@ -249,7 +246,7 @@ public class World extends Thread
         return allChunks.get(vector3f);
     }
 
-    public boolean isVoxelAtCoordinate(int x, int y, int z)
+    public boolean isVoxelAtCoordinate(float x, float y, float z)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
         if(chunk != null)
@@ -258,13 +255,13 @@ public class World extends Thread
             float tey = chunk.chunkCoords.y;
             float tez = chunk.chunkCoords.z;
             if(!chunk.hasLoaded) return false;
-            int newX = ((x)%CHUNK_SIZE);
-            int newY = ((y)%CHUNK_SIZE);
-            int newZ = ((z)%CHUNK_SIZE);
-            if(newX < 0) newX += CHUNK_SIZE;
-            if(newY < 0) newY += CHUNK_SIZE;
-            if(newZ < 0) newZ += CHUNK_SIZE;
-            return chunk.containsVoxelAtOffset(newX, newY, newZ);
+            float newX = (int) ((x/VoxelShape.VOXEL_SIZE)%(CHUNK_SIZE));
+            float newY = (int) ((y/VoxelShape.VOXEL_SIZE)%(CHUNK_SIZE));
+            float newZ = (int) ((z/VoxelShape.VOXEL_SIZE)%(CHUNK_SIZE));
+            if(newX < 0) newX += (CHUNK_SIZE);
+            if(newY < 0) newY += (CHUNK_SIZE);
+            if(newZ < 0) newZ += (CHUNK_SIZE);
+            return chunk.containsVoxelAtOffset((int)(newX), (int)(newY), (int)(newZ));
         }
         return false;
     }

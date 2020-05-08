@@ -246,7 +246,7 @@ public class ChunkMeshGenerator
                 //genBrightnessWithChunkLoc(world, chunk, value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, -5.5f);
                 genBrightness(chunk, value, x, y, z, i, brightnessList, direction, 0.2f);
                 //brightnessList.add((float)x/World.CHUNK_SIZE);
-                //brightnessList.add(value);
+//                brightnessList.add(value);
             }
         }
         else
@@ -254,6 +254,7 @@ public class ChunkMeshGenerator
             for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
             {
                 genBrightnessWithChunkLoc(world, chunk, value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, 0.2f);
+//                brightnessList.add(value);
             }
         }
     }
@@ -266,27 +267,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate((x+VoxelShape.VOXEL_SIZE), (y+VoxelShape.VOXEL_SIZE), (z))) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -295,27 +296,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -324,27 +325,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -353,27 +354,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -382,27 +383,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z+VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -411,27 +412,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x-VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y-VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y+VoxelShape.VOXEL_SIZE, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinate(x+VoxelShape.VOXEL_SIZE, y, z-VoxelShape.VOXEL_SIZE)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
