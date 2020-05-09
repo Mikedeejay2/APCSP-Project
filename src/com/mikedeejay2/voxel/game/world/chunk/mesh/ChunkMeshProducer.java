@@ -25,8 +25,7 @@ public class ChunkMeshProducer extends  Thread
         {
             try
             {
-                while(latestQueue.size() > capacity) queue.add(latestQueue.remove());
-                while(latestQueue.size() < capacity && !queue.isEmpty()) latestQueue.add(queue.remove());
+                while(latestQueue.size() < capacity) if(queue.size() != 0) latestQueue.add(queue.remove());
                 chunkMeshGenerator.produce(latestQueue);
             }
             catch(InterruptedException e)

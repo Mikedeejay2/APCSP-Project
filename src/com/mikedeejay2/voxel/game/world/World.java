@@ -23,7 +23,7 @@ public class World extends Thread
     public int chunkUpdates = 0;
 
     public static int renderDistanceHorizontal = 16;
-    public static int renderDistanceVertical = 6;
+    public static int renderDistanceVertical = 8;
 
     public static World world;
 
@@ -109,8 +109,6 @@ public class World extends Thread
                     chunk.hasLoaded = false;
                     chunk.entityShouldBeRemade = false;
                     chunk.destroy();
-                    chunk.chunkCoords = null;
-                    chunk.voxels = null;
                     chunk.chunkEntity = null;
                     allChunks.remove(loc);
                     loc = null;
@@ -150,7 +148,7 @@ public class World extends Thread
 
     public Vector3f coordsToChunkLoc(Vector3f loc)
     {
-        return new Vector3f((float)Math.floor(loc.x/(CHUNK_SIZE*VoxelShape.VOXEL_SIZE)), (float)Math.floor(loc.y/(CHUNK_SIZE*VoxelShape.VOXEL_SIZE)), (float)Math.floor(loc.z/(CHUNK_SIZE*VoxelShape.VOXEL_SIZE)));
+        return new Vector3f((float)Math.floor(loc.x/(CHUNK_SIZE)), (float)Math.floor(loc.y/(CHUNK_SIZE)), (float)Math.floor(loc.z/(CHUNK_SIZE)));
     }
 
     public void updateChunks()
@@ -168,9 +166,9 @@ public class World extends Thread
     public void updatePlayerLoc()
     {
         playerPosition = instance.getCamera().getRealPos();
-        playerChunk.x = (float)Math.floor(playerPosition.x/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
-        playerChunk.y = (float)Math.floor(playerPosition.y/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
-        playerChunk.z = (float)Math.floor(playerPosition.z/CHUNK_SIZE/VoxelShape.VOXEL_SIZE);
+        playerChunk.x = (float)Math.floor(playerPosition.x/CHUNK_SIZE);
+        playerChunk.y = (float)Math.floor(playerPosition.y/CHUNK_SIZE);
+        playerChunk.z = (float)Math.floor(playerPosition.z/CHUNK_SIZE);
     }
 
     public Chunk generateChunk(Vector3f currentChunkLoc)
@@ -251,13 +249,10 @@ public class World extends Thread
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
         if(chunk != null)
         {
-            float tex = chunk.chunkCoords.x;
-            float tey = chunk.chunkCoords.y;
-            float tez = chunk.chunkCoords.z;
             if(!chunk.hasLoaded) return false;
-            float newX = (int) ((x/VoxelShape.VOXEL_SIZE)%(CHUNK_SIZE));
-            float newY = (int) ((y/VoxelShape.VOXEL_SIZE)%(CHUNK_SIZE));
-            float newZ = (int) ((z/VoxelShape.VOXEL_SIZE)%(CHUNK_SIZE));
+            float newX = (int) ((x)%(CHUNK_SIZE));
+            float newY = (int) ((y)%(CHUNK_SIZE));
+            float newZ = (int) ((z)%(CHUNK_SIZE));
             if(newX < 0) newX += (CHUNK_SIZE);
             if(newY < 0) newY += (CHUNK_SIZE);
             if(newZ < 0) newZ += (CHUNK_SIZE);

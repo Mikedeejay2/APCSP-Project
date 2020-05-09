@@ -20,6 +20,8 @@ public class VoxelTypes
     public static final Voxel white_concrete = loadVoxel("white_concrete", 5);
     public static final Voxel black_concrete = loadVoxel("black_concrete", 6);
     public static final Voxel light_gray_concrete = loadVoxel("light_gray_concrete", 7);
+    public static final Voxel lime_concrete = loadVoxel("lime_concrete", 8);
+    public static final Voxel light_blue_concrete = loadVoxel("light_blue_concrete", 9);
 
 
 

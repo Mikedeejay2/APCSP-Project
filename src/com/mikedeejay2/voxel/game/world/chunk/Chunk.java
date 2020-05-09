@@ -33,12 +33,13 @@ public class Chunk
     public boolean shouldUpdateNeighbors;
     public boolean entityShouldBeRemade;
     public boolean shouldRender;
+    public boolean isAlreadyBeingCalculated;
 
     public Chunk(Vector3f chunkLoc, World world)
     {
         main = Main.getInstance();
         this.chunkLoc = chunkLoc;
-        this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE* VoxelShape.VOXEL_SIZE, chunkLoc.y * World.CHUNK_SIZE* VoxelShape.VOXEL_SIZE, chunkLoc.z * World.CHUNK_SIZE* VoxelShape.VOXEL_SIZE);
+        this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE, chunkLoc.y * World.CHUNK_SIZE, chunkLoc.z * World.CHUNK_SIZE);
         this.voxels = new short[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
         instanceWorld = world;
         hasLoaded = false;
@@ -49,7 +50,7 @@ public class Chunk
     public void populate()
     {
         instanceWorld.populateChunk(this);
-//        rebuildChunkMesh(true);
+//        rebuildChunkMesh(false);
         updateNeighbors();
         hasLoaded = true;
     }
@@ -98,6 +99,15 @@ public class Chunk
 
     }
 
+    public int getCloseness()
+    {
+        int closeness = 0;
+        closeness += Math.abs(chunkLoc.x - instanceWorld.playerChunk.x);
+        closeness += Math.abs(chunkLoc.y - instanceWorld.playerChunk.y);
+        closeness += Math.abs(chunkLoc.z - instanceWorld.playerChunk.z);
+        return closeness;
+    }
+
     public void render()
     {
         if(!hasLoaded) return;
@@ -133,8 +143,9 @@ public class Chunk
 
     public boolean containsVoxelAtOffset(int x, int y, int z)
     {
-        if(x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1) return false;
-            return voxels[x][y][z] != 0;
+        if(x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1)
+            return false;
+        return voxels[x][y][z] != 0;
     }
 
     public Voxel getVoxelAtOffset(int x, int y, int z)
@@ -179,11 +190,10 @@ public class Chunk
 
     public void destroy()
     {
-        voxels = null;
         if(chunkEntity != null)
             chunkEntity.destroy();
-        chunkLoc = null;
-        chunkCoords = null;
+//        chunkLoc = null;
+//        chunkCoords = null;
         verticesTemp = null;
         textureCoordsTemp = null;
         indicesTemp = null;

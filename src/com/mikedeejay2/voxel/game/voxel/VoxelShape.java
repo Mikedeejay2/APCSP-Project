@@ -6,87 +6,86 @@ import static com.mikedeejay2.voxel.game.Main.loader;
 
 public class VoxelShape
 {
-    public static final float VOXEL_SIZE = 0.5f;
 
     private static float[] vertices = new float[]
             {
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, //NORTH FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
+                    -0.5f, 0.5f, -0.5f, //NORTH FACE
+                    -0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, -0.5f,
+                    0.5f, 0.5f, -0.5f,
 
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, //SOUTH FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
+                    -0.5f, 0.5f, 0.5f, //SOUTH FACE
+                    -0.5f, -0.5f, 0.5f,
+                    0.5f, -0.5f, 0.5f,
+                    0.5f, 0.5f, 0.5f,
 
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, //WEST FACE
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
+                    0.5f, 0.5f, -0.5f, //WEST FACE
+                    0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, 0.5f,
+                    0.5f, 0.5f, 0.5f,
 
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, //EAST FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
+                    -0.5f, 0.5f, -0.5f, //EAST FACE
+                    -0.5f, -0.5f, -0.5f,
+                    -0.5f, -0.5f, 0.5f,
+                    -0.5f, 0.5f, 0.5f,
 
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, //UP FACE
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
+                    -0.5f, 0.5f, 0.5f, //UP FACE
+                    -0.5f, 0.5f, -0.5f,
+                    0.5f, 0.5f, -0.5f,
+                    0.5f, 0.5f, 0.5f,
 
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, //DOWN FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE
+                    -0.5f, -0.5f, 0.5f, //DOWN FACE
+                    -0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, 0.5f
             };
 
     private static float[] verticesFaceNorth = new float[]
             {
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, //NORTH FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE
+                    -0.5f, 0.5f, -0.5f, //NORTH FACE
+                    -0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, -0.5f,
+                    0.5f, 0.5f, -0.5f
             };
 
     private static float[] verticesFaceSouth = new float[]
             {
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, //SOUTH FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE
+                    -0.5f, 0.5f, 0.5f, //SOUTH FACE
+                    -0.5f, -0.5f, 0.5f,
+                    0.5f, -0.5f, 0.5f,
+                    0.5f, 0.5f, 0.5f
             };
 
     private static float[] verticesFaceWest = new float[]
             {
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, //WEST FACE
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE
+                    0.5f, 0.5f, -0.5f, //WEST FACE
+                    0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, 0.5f,
+                    0.5f, 0.5f, 0.5f
             };
 
     private static float[] verticesFaceEast = new float[]
             {
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, //EAST FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE,
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE
+                    -0.5f, 0.5f, -0.5f, //EAST FACE
+                    -0.5f, -0.5f, -0.5f,
+                    -0.5f, -0.5f, 0.5f,
+                    -0.5f, 0.5f, 0.5f
             };
 
     private static float[] verticesFaceUp = new float[]
             {
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, //UP FACE
-                    -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE
+                    -0.5f, 0.5f, 0.5f, //UP FACE
+                    -0.5f, 0.5f, -0.5f,
+                    0.5f, 0.5f, -0.5f,
+                    0.5f, 0.5f, 0.5f
             };
 
     private static float[] verticesFaceDown = new float[]
             {
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE, //DOWN FACE
-                    -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE,
-                    0.5f * VOXEL_SIZE, -0.5f * VOXEL_SIZE, 0.5f * VOXEL_SIZE
+                    -0.5f, -0.5f, 0.5f, //DOWN FACE
+                    -0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, 0.5f
             };
 
     private static int[] indices = new int[]
@@ -310,11 +309,6 @@ public class VoxelShape
     public static int[] getIndicesFaceDown()
     {
         return indicesFaceDown;
-    }
-
-    public static float getVoxelSize()
-    {
-        return VOXEL_SIZE;
     }
 
     public static float[] getBrightness()

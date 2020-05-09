@@ -4,14 +4,12 @@ import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
 import com.mikedeejay2.voxel.engine.graphics.objects.Camera;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.shaders.StaticShader;
-import com.mikedeejay2.voxel.game.Main;
 import com.mikedeejay2.voxel.game.world.World;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumer;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshGenerator;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducer;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.MeshRequest;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +23,9 @@ public class MasterRenderer
 
     private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
 
-    public ChunkMeshProducer chunkMeshProducer;
-    public ChunkMeshConsumer chunkMeshConsumer;
+    ChunkMeshProducer chunkMeshProducer;
     public Thread chunkMeshProducerThread;
-    public Thread chunkMeshConsumerThread;
+    public ArrayList<Thread> chunkMeshConsumerThreads;
 
     public ChunkMeshGenerator chunkMeshGenerator;
 
@@ -37,12 +34,17 @@ public class MasterRenderer
         chunkMeshGenerator = new ChunkMeshGenerator();
 
         chunkMeshProducer = new ChunkMeshProducer(chunkMeshGenerator);
-        chunkMeshConsumer = new ChunkMeshConsumer(chunkMeshGenerator);
-
         chunkMeshProducerThread = new Thread(chunkMeshProducer, "chunkMeshProducer");
-        chunkMeshConsumerThread = new Thread(chunkMeshConsumer, "chunkMeshConsumer");
         chunkMeshProducerThread.start();
-        chunkMeshConsumerThread.start();
+
+        chunkMeshConsumerThreads = new ArrayList<Thread>();
+        for(int i =0; i < Runtime.getRuntime().availableProcessors(); i++)
+        {
+            ChunkMeshConsumer chunkMeshConsumer = new ChunkMeshConsumer(chunkMeshGenerator);
+            Thread threadConsumer = new Thread(chunkMeshConsumer, "chunkMeshConsumer" + i);
+            chunkMeshConsumerThreads.add(threadConsumer);
+            threadConsumer.start();
+        }
     }
 
     public void render(Camera camera)
@@ -81,6 +83,9 @@ public class MasterRenderer
     {
         shader.cleanUp();
         chunkMeshProducerThread.stop();
-        chunkMeshConsumerThread.stop();
+        for(Thread thread : chunkMeshConsumerThreads)
+        {
+            thread.stop();
+        }
     }
 }

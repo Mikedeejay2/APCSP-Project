@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class PerlinNoiseGenerator {
 
-    public static float AMPLITUDE = 200f;
+    public static float AMPLITUDE = 70f;
     public static int OCTAVES = 7;
     public static float ROUGHNESS = 0.1f;
 
