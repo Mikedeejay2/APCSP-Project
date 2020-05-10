@@ -47,6 +47,11 @@ public class MasterRenderer
         }
     }
 
+    public void windowHasBeenResized()
+    {
+        renderer.windowHasBeenResized();
+    }
+
     public void render(Camera camera)
     {
         renderer.prepare();
@@ -74,9 +79,9 @@ public class MasterRenderer
         }
     }
 
-    public void genMesh(Chunk chunk, World world, boolean shouldUpdateNeighbors)
+    public void genMesh(Chunk chunk, World world)
     {
-        chunkMeshProducer.addRequest(new MeshRequest(chunk, world, shouldUpdateNeighbors));
+        chunkMeshProducer.addRequest(new MeshRequest(chunk, world));
     }
 
     public void cleanUp()

@@ -28,10 +28,11 @@ public class World extends Thread
     public static World world;
 
     ChunkPC chunkPC;
+
     ChunkProducerThread chunkProducer;
-    ChunkConsumerThread chunkConsumer;
     Thread chunkProducerThread;
-    Thread chunkConsumerThread;
+
+    ArrayList<Thread> chunkConsumerThreads;
 
     Main instance = Main.getInstance();
     public Vector3d playerPosition;
@@ -48,13 +49,20 @@ public class World extends Thread
         allChunks = new ConcurrentHashMap<>();
         overworldGenerator = new OverworldGenerator(this);
 
+        chunkConsumerThreads = new ArrayList<Thread>();
+
         chunkPC = new ChunkPC();
         chunkProducer = new ChunkProducerThread(chunkPC, this);
-        chunkConsumer = new ChunkConsumerThread(chunkPC, this);
         chunkProducerThread = new Thread(chunkProducer, "chunkProducer");
-        chunkConsumerThread = new Thread(chunkConsumer, "chunkConsumer");
         chunkProducerThread.start();
-        chunkConsumerThread.start();
+
+        for(int i = 0; i < Runtime.getRuntime().availableProcessors(); i++)
+        {
+            ChunkConsumerThread chunkConsumerThread = new ChunkConsumerThread(chunkPC, this);
+            Thread thread = new Thread(chunkConsumerThread, "chunkConsumer" + i);
+            chunkConsumerThreads.add(thread);
+            thread.start();
+        }
     }
 
     @Override
@@ -80,9 +88,10 @@ public class World extends Thread
                 {
                     Chunk chunk = getChunkFromChunkLoc(new Vector3f(x, y, z));
                     if(chunk != null)
+                    {
                         if(chunk.containsVoxels && chunk.hasLoaded)
-                        chunksToRender.add(chunk);
-                    //world.renderChunk(x, y, z);
+                            chunksToRender.add(chunk);
+                    }
                 }
             }
         }
@@ -154,13 +163,6 @@ public class World extends Thread
     public void updateChunks()
     {
 
-    }
-
-    public void renderChunk(float x, float y, float z)
-    {
-        Chunk chunk = getChunkFromChunkLoc(new Vector3f(x, y, z));
-        if(chunk != null)
-        chunk.render();
     }
 
     public void updatePlayerLoc()
@@ -263,7 +265,10 @@ public class World extends Thread
 
     public void cleanUp()
     {
-        chunkConsumerThread.stop();
+        for(Thread thread : chunkConsumerThreads)
+        {
+            thread.stop();
+        }
         chunkProducerThread.stop();
     }
 }

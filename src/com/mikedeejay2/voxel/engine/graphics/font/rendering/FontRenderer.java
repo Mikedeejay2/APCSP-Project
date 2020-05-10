@@ -3,6 +3,7 @@ package com.mikedeejay2.voxel.engine.graphics.font.rendering;
 
 import com.mikedeejay2.voxel.engine.loaders.font.creator.FontType;
 import com.mikedeejay2.voxel.engine.loaders.font.creator.GUIText;
+import org.joml.Vector2f;
 import org.lwjgl.opengl.*;
 
 import java.util.List;
@@ -49,6 +50,12 @@ public class FontRenderer {
 		GL30.glBindVertexArray(text.getMesh());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
+		if(text.hasShadow())
+		{
+			shader.loadColor(text.getShadowColor());
+			shader.loadTranslation(new Vector2f(text.getPosition().x + text.getFontSize()/600, text.getPosition().y + text.getFontSize()/400));
+			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
+		}
 		shader.loadColor(text.getColor());
 		shader.loadTranslation(text.getPosition());
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
@@ -65,4 +72,8 @@ public class FontRenderer {
 		glEnable(GL_CULL_FACE);
 	}
 
+	public void windowHasBeenResized()
+	{
+
+	}
 }

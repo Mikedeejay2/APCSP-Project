@@ -18,6 +18,7 @@ public class GUIText {
 	private int textMeshVao;
 	private int vertexCount;
 	private Vector3f color = new Vector3f(0f, 0f, 0f);
+	private Vector3f shadowColor = new Vector3f(0f, 0f, 0f);
 
 	private Vector2f position;
 	private float lineMaxSize;
@@ -28,6 +29,7 @@ public class GUIText {
 	private TextMeshData textMeshData;
 
 	private boolean centerText = false;
+	private boolean hasShadow = false;
 	private int[] vbos;
 
 	/**
@@ -96,8 +98,17 @@ public class GUIText {
 	 * @param b
 	 *            - blue value, between 0 and 1.
 	 */
-	public void setcolor(float r, float g, float b) {
+	public void setColor(float r, float g, float b) {
 		color.set(r, g, b);
+	}
+
+	public void setShadowColor(float r, float g, float b) {
+		shadowColor.set(r, g, b);
+	}
+
+	public void setHasShadow(boolean hasShadow)
+	{
+		this.hasShadow = hasShadow;
 	}
 
 	/**
@@ -177,6 +188,16 @@ public class GUIText {
 	 */
 	public boolean isCentered() {
 		return centerText;
+	}
+
+	public Vector3f getShadowColor()
+	{
+		return shadowColor;
+	}
+
+	public boolean hasShadow()
+	{
+		return hasShadow;
 	}
 
 	/**

@@ -37,11 +37,11 @@ public class Chunk
 
     public Chunk(Vector3f chunkLoc, World world)
     {
+        instanceWorld = world;
         main = Main.getInstance();
         this.chunkLoc = chunkLoc;
         this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE, chunkLoc.y * World.CHUNK_SIZE, chunkLoc.z * World.CHUNK_SIZE);
         this.voxels = new short[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
-        instanceWorld = world;
         hasLoaded = false;
         containsVoxels = false;
         shouldRender = false;
@@ -49,10 +49,13 @@ public class Chunk
 
     public void populate()
     {
-        instanceWorld.populateChunk(this);
-//        rebuildChunkMesh(false);
-        updateNeighbors();
-        hasLoaded = true;
+        try
+        {
+            instanceWorld.populateChunk(this);
+        rebuildChunkMesh(true);
+//            updateNeighbors();
+            hasLoaded = true;
+        } catch(NullPointerException e) {}
     }
 
     public void update()
@@ -63,25 +66,37 @@ public class Chunk
     public void updateNeighbors()
     {
         Vector3f nextChunkLoc;
-        nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
-        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
-        nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
-        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
-        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
-        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
-        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
-        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
-        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
-        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
-        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
-        if (instanceWorld.chunkAtChunkLoc(nextChunkLoc)) instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+        try
+        {
+            nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
+            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+            nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
+            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
+            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
+            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
+            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
+            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
 
-        shouldUpdateNeighbors = false;
+            shouldUpdateNeighbors = false;
+        } catch(NullPointerException e) {}
+
     }
 
     public void rebuildChunkMesh(boolean shouldUpdateNeighbors)
     {
-        Main.getInstance().getRenderer().genMesh(this, instanceWorld, shouldUpdateNeighbors);
+        Main.getInstance().getRenderer().genMesh(this, instanceWorld);
+        if(shouldUpdateNeighbors) updateNeighbors();
+        shouldUpdateNeighbors = false;
 //        try
 //        {
 //            float[] verticesTemp = ChunkMeshGenerator.createVertices(instanceWorld, this, shouldUpdateNeighbors);

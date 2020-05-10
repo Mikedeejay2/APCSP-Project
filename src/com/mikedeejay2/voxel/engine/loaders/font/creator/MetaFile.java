@@ -48,7 +48,7 @@ public class MetaFile {
 	 *            - the font file.
 	 */
 	protected MetaFile(File file) {
-		this.aspectRatio = (double) Window.getWidth() / (double) Window.getHeight();
+		this.aspectRatio = (double) Window.getWindowWidth() / (double) Window.getWindowHeight();
 		openFile(file);
 		loadPaddingData();
 		loadLineSizes();

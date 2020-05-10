@@ -33,14 +33,13 @@ public class ChunkMeshGenerator
             MeshRequest meshRequest = meshRequests.removeFirst();
             Chunk chunk = meshRequest.getChunk();
             World world = meshRequest.getWorld();
-            boolean shouldUpdateNeighbors = meshRequest.isShouldUpdateNeighbors();
             if(world == null || chunk == null) return;
             if(chunk.isAlreadyBeingCalculated) return;
             chunk.isAlreadyBeingCalculated = true;
-            float[] verticesTemp = createVertices(world, chunk, shouldUpdateNeighbors);
-            float[] textureCoordsTemp = createTextureCoords(world, chunk, shouldUpdateNeighbors);
-            int[] indicesTemp = createIndices(world, chunk, shouldUpdateNeighbors);
-            float[] brightnessTemp = createBrightness(world, chunk, shouldUpdateNeighbors);
+            float[] verticesTemp = createVertices(world, chunk);
+            float[] textureCoordsTemp = createTextureCoords(world, chunk);
+            int[] indicesTemp = createIndices(world, chunk);
+            float[] brightnessTemp = createBrightness(world, chunk);
             chunk.verticesTemp = verticesTemp;
             chunk.textureCoordsTemp = textureCoordsTemp;
             chunk.indicesTemp = indicesTemp;
@@ -105,7 +104,7 @@ public class ChunkMeshGenerator
 
 
 
-    private float[] createVertices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private float[] createVertices(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new float[0];
         List<Float> verticesList = new ArrayList<Float>();
@@ -120,7 +119,7 @@ public class ChunkMeshGenerator
                         if (!edgeCheck(x, y, z))
                             createVertexSlice(chunk, x, y, z, verticesList);
                         else
-                            createVertexSliceEdgeCase(world, chunk, x, y, z, verticesList, shouldUpdateNeighbors);
+                            createVertexSliceEdgeCase(world, chunk, x, y, z, verticesList);
                     }
                 }
             }
@@ -139,7 +138,7 @@ public class ChunkMeshGenerator
 
 
 
-    private float[] createTextureCoords(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private float[] createTextureCoords(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new float[0];
         List<Float> textureCoordsList = new ArrayList<Float>();
@@ -154,7 +153,7 @@ public class ChunkMeshGenerator
                         if (!edgeCheck(x, y, z))
                             createTextureCoordSlice(chunk, textureCoordsList, x, y, z);
                         else
-                            createTextureCoordSliceEdgeCase(world, chunk, textureCoordsList, x, y, z, shouldUpdateNeighbors);
+                            createTextureCoordSliceEdgeCase(world, chunk, textureCoordsList, x, y, z);
                     }
                 }
             }
@@ -167,7 +166,7 @@ public class ChunkMeshGenerator
     }
 
 
-    private int[] createIndices(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private int[] createIndices(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new int[0];
         List<Integer> indicesList = new ArrayList<Integer>();
@@ -182,7 +181,7 @@ public class ChunkMeshGenerator
                         if (!edgeCheck(x, y, z))
                             createIndexSlice(chunk, indicesList, x, y, z);
                         else
-                            createIndexSliceEdgeCase(world, chunk, indicesList, x, y, z, shouldUpdateNeighbors);
+                            createIndexSliceEdgeCase(world, chunk, indicesList, x, y, z);
                     }
                 }
             }
@@ -195,7 +194,7 @@ public class ChunkMeshGenerator
     }
 
 
-    private float[] createBrightness(World world, Chunk chunk, boolean shouldUpdateNeighbors)
+    private float[] createBrightness(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new float[0];
         List<Float> brightnessList = new ArrayList<Float>();
@@ -213,7 +212,7 @@ public class ChunkMeshGenerator
                         }
                         else
                         {
-                            createBrightnessSliceEdgeCase(world, chunk, brightnessList, x, y, z, shouldUpdateNeighbors);
+                            createBrightnessSliceEdgeCase(world, chunk, brightnessList, x, y, z);
                         }
                     }
                 }
@@ -634,66 +633,78 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.SOUTH);
     }
 
-    private void createBrightnessSliceEdgeCase(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z, boolean shouldUpdateNeighbors)
+    private void createBrightnessSliceEdgeCase(World world, Chunk chunk, List<Float> brightnessList, int x, int y, int z)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
                 createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                    if(world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(0, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
                 createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(World.CHUNK_SIZE-1, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
                 createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, 0, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
+                {
+                    createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, World.CHUNK_SIZE-1, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && newChunk.hasLoaded)
+                {
+                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)).getVoxelIDAtOffset(x, y, 0) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
+                {
+                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)).getVoxelIDAtOffset(x, y, World.CHUNK_SIZE-1) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
+                {
+                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
+                }
             }
     }
 
@@ -717,66 +728,78 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
     }
 
-    private void createIndexSliceEdgeCase(World world, Chunk chunk, List<Integer> indicesList, int x, int y, int z, boolean shouldUpdateNeighbors)
+    private void createIndexSliceEdgeCase(World world, Chunk chunk, List<Integer> indicesList, int x, int y, int z)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
                 createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(0, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
                 createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(World.CHUNK_SIZE-1, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
                 createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, 0, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
+                {
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
                 createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, World.CHUNK_SIZE-1, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && newChunk.hasLoaded)
+                {
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
                 createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)).getVoxelIDAtOffset(x, y, 0) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
+                {
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
                 createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)).getVoxelIDAtOffset(x, y, World.CHUNK_SIZE-1) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
+                {
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+                }
             }
     }
 
@@ -799,66 +822,78 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createTextureCoord(textureCoordsList);
     }
 
-    private void createTextureCoordSliceEdgeCase(World world, Chunk chunk, List<Float> textureCoordsList, int x, int y, int z, boolean shouldUpdateNeighbors)
+    private void createTextureCoordSliceEdgeCase(World world, Chunk chunk, List<Float> textureCoordsList, int x, int y, int z)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
                 createTextureCoord(textureCoordsList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(0, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createTextureCoord(textureCoordsList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createTextureCoord(textureCoordsList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
                 createTextureCoord(textureCoordsList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(World.CHUNK_SIZE-1, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createTextureCoord(textureCoordsList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createTextureCoord(textureCoordsList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
                 createTextureCoord(textureCoordsList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, 0, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createTextureCoord(textureCoordsList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
+                {
+                    createTextureCoord(textureCoordsList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
                 createTextureCoord(textureCoordsList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, World.CHUNK_SIZE-1, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createTextureCoord(textureCoordsList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && newChunk.hasLoaded)
+                {
+                    createTextureCoord(textureCoordsList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
                 createTextureCoord(textureCoordsList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)).getVoxelIDAtOffset(x, y, 0) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createTextureCoord(textureCoordsList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
+                {
+                    createTextureCoord(textureCoordsList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
                 createTextureCoord(textureCoordsList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)).getVoxelIDAtOffset(x, y, World.CHUNK_SIZE-1) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createTextureCoord(textureCoordsList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && chunk.hasLoaded)
+                {
+                    createTextureCoord(textureCoordsList);
+                }
             }
     }
 
@@ -885,66 +920,78 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
     }
 
-    private void createVertexSliceEdgeCase(World world, Chunk chunk, int x, int y, int z, List<Float> verticesList, boolean shouldUpdateNeighbors)
+    private void createVertexSliceEdgeCase(World world, Chunk chunk, int x, int y, int z, List<Float> verticesList)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
             createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(0, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
             createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z)).getVoxelIDAtOffset(World.CHUNK_SIZE-1, y, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
             createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, 0, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
             createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z)).getVoxelIDAtOffset(x, World.CHUNK_SIZE-1, z) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && chunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
             createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1)).getVoxelIDAtOffset(x, y, 0) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+                }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
             createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
-            else if(world.chunkAtChunkLoc(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)))
-                if(world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1)).getVoxelIDAtOffset(x, y, World.CHUNK_SIZE-1) == 0)
+            else
             {
-                chunk.shouldUpdateNeighbors = shouldUpdateNeighbors;
-                createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+                }
             }
     }
 

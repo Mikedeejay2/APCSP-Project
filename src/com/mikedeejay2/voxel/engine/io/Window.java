@@ -1,12 +1,9 @@
 package com.mikedeejay2.voxel.engine.io;
 
+import com.mikedeejay2.voxel.engine.graphics.font.TextMaster;
 import com.mikedeejay2.voxel.game.Main;
-import org.lwjgl.egl.EGLDebugMessageKHRCallback;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GLUtil;
-import org.lwjgl.system.Callback;
-import org.lwjgl.system.Configuration;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.*;
@@ -15,7 +12,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Window
 {
     private Main instance = Main.getInstance();
-    private static int width, height;
+    private static int windowWidth, windowHeight;
     private String title;
     private long window;
     public static int frames;
@@ -26,41 +23,40 @@ public class Window
     private static int FPS;
     private static int oldFPS;
 
+    private static int monitorWidth, monitorHeight;
+
+    GLFWWindowSizeCallback glfwWindowSizeCallback;
+
     public Window(int width, int height, String title)
     {
         System.out.println("Window");
-        this.width = width;
-        this.height = height;
+        this.windowWidth = width;
+        this.windowHeight = height;
         this.title = title;
         time = System.currentTimeMillis();
+        glfwWindowSizeCallback = new GLFWWindowSizeCallback()
+        {
+            @Override
+            public void invoke(long window, int width, int height)
+            {
+                glViewport(0, 0, width, height);
+                windowWidth = width;
+                windowHeight = height;
+                instance.getRenderer().windowHasBeenResized();
+                TextMaster.windowHasBeenResized();
+            }
+        };
     }
 
     public void create()
     {
-        //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-//        // custom
-//        glfwSetErrorCallback((error, description) -> {
-//            System.err.println("GLFW error [" + Integer.toHexString(error) + "]: " + GLFWErrorCallback.getDescription(description));
-//        });
-//// or shortcut that prints to DEBUG_STREAM
-//        GLFWErrorCallback.createPrint().set();
-//// or shortcut that throws an exception on errors
-//        GLFWErrorCallback.createThrow().set();
-
-//        Configuration.DEBUG.set(true);
-//        Configuration.DEBUG_FUNCTIONS.set(true);
-//        Configuration.DEBUG_LOADER.set(true);
-//        Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
-//        Configuration.DEBUG_STACK.set(true);
-//        Configuration.DEBUG_MEMORY_ALLOCATOR_INTERNAL.set(true);
-//        Configuration.DEBUG_STREAM.set(true);
         if(!glfwInit())
         {
             System.err.println("ERROR: Could not initialize GLFW!");
             return;
         }
 
-        window = glfwCreateWindow(width, height, title, isFullscreen ? glfwGetPrimaryMonitor() : 0, 0);
+        window = glfwCreateWindow(windowWidth, windowHeight, title, isFullscreen ? glfwGetPrimaryMonitor() : 0, 0);
 
         if(window == 0)
         {
@@ -69,9 +65,11 @@ public class Window
         }
 
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        windowPosX[0] = (videoMode.width() - width) / 2;
-        windowPosY[0] = (videoMode.height() - height) / 2;
-        glfwSetWindowPos(window, (videoMode.width() - width) / 2, (videoMode.height() - height) / 2);
+        windowPosX[0] = (videoMode.width() - windowWidth) / 2;
+        windowPosY[0] = (videoMode.height() - windowHeight) / 2;
+        monitorHeight = videoMode.height();
+        monitorWidth = videoMode.width();
+        glfwSetWindowPos(window, (videoMode.width() - windowWidth) / 2, (videoMode.height() - windowHeight) / 2);
         glfwMakeContextCurrent(window);
         createCapabilities();
 
@@ -82,16 +80,11 @@ public class Window
         glfwShowWindow(window);
 
         //glfwSwapInterval(2);
+        glfwWindowSizeCallback.set(window);
     }
 
     public void update()
     {
-        if(isResized)
-        {
-            glViewport(0, 0, width, height);
-            isResized = false;
-        }
-
         glfwPollEvents();
 
         frames++;
@@ -123,24 +116,24 @@ public class Window
         glfwTerminate();
     }
 
-    public static int getWidth()
+    public static int getWindowWidth()
     {
-        return width;
+        return windowWidth;
     }
 
     public void setWidth(int width)
     {
-        this.width = width;
+        this.windowWidth = width;
     }
 
-    public static int getHeight()
+    public static int getWindowHeight()
     {
-        return height;
+        return windowHeight;
     }
 
     public void setHeight(int height)
     {
-        this.height = height;
+        this.windowHeight = height;
     }
 
     public String getTitle()
@@ -175,11 +168,11 @@ public class Window
         if(isFullscreen)
         {
             glfwGetWindowPos(window, windowPosX, windowPosY);
-            glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, 0);
+            glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, monitorWidth, monitorHeight, 2000);
         }
         else
         {
-            glfwSetWindowMonitor(window, 0, windowPosX[0], windowPosY[0], width, height,0 );
+            glfwSetWindowMonitor(window, 0, windowPosX[0], windowPosY[0], windowWidth, windowHeight,2000);
         }
     }
 

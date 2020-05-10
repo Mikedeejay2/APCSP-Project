@@ -22,10 +22,15 @@ public class TextMaster
 
     private static Main instance;
 
-    public static void init(Loader theLoader, Main main){
+    public static void init(Loader theLoader, Main main) {
         renderer = new FontRenderer();
         loader = theLoader;
         instance = main;
+    }
+
+    public static void windowHasBeenResized()
+    {
+        renderer.windowHasBeenResized();
     }
 
     public static void render(){

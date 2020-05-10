@@ -23,8 +23,8 @@ public class CoreEngine implements Runnable
         this.game = new Thread(this, "game");
         isRunning = false;
         this.main = game;
-        this.width = width;
-        this.height = height;
+        this.width = Window.getWindowWidth();
+        this.height = Window.getWindowHeight();
         this.frameTime = 1.0 / framerate;
     }
 

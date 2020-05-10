@@ -14,13 +14,16 @@ public class ChunkPC
     World world = Main.getInstance().world;
 
     public static LinkedList<Chunk> chunksToBeProcessed = new LinkedList<Chunk>();
-    public static int capacity = 2;
+    public static int capacity = Runtime.getRuntime().availableProcessors();
+
+    private Vector3f playerChunk;
 
     public void produce(World world) throws InterruptedException
     {
-        boolean breakout = false;
+        if(playerChunk == null) playerChunk = new Vector3f(world.getPlayerChunk().x, world.getPlayerChunk().y, world.getPlayerChunk().z);
         synchronized (this)
         {
+            boolean breakout = false;
             for (int rdh = 0; rdh < World.renderDistanceHorizontal; rdh++)
             {
                 for (int rdv = 0; rdv < World.renderDistanceVertical; rdv++)
@@ -29,22 +32,31 @@ public class ChunkPC
                     {
                         for (int y = (int) ((world.playerChunk.y) - rdv); y < (world.playerChunk.y) + rdv + 1; y++)
                         {
-                            for (int z = (int) ((world.playerChunk.z) - rdh); z < (world.playerChunk.z) + rdh + 1; z++)
+                            for (int z = (int) ((world.playerChunk.z) - rdh); z < (world.playerChunk.z) + rdh + 2; z++)
                             {
+                                if(!playerChunk.equals(world.getPlayerChunk()))
+                                {
+                                    breakout = true;
+                                    playerChunk = new Vector3f(world.getPlayerChunk().x, world.getPlayerChunk().y, world.getPlayerChunk().z);
+                                    break;
+                                }
                                 Vector3f currentChunkLoc = new Vector3f(x, y, z);
                                 if (!world.chunkAtChunkLoc(currentChunkLoc))
                                 {
-                                    while (chunksToBeProcessed.size() == capacity)
-                                        wait();
+                                    while (chunksToBeProcessed.size() == capacity) wait();
                                     Chunk chunk = world.generateChunk(currentChunkLoc);
                                     chunksToBeProcessed.add(chunk);
                                     notify();
-                                    breakout = true;
-                                } if(breakout) break;
-                            } if(breakout) break;
-                        } if(breakout) break;
-                    } if(breakout) break;
-                } if(breakout) break;
+                                }
+                                if(breakout) break;
+                            }
+                            if(breakout) break;
+                        }
+                        if(breakout) break;
+                    }
+                    if(breakout) break;
+                }
+                if(breakout) break;
             }
         }
     }

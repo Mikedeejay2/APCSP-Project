@@ -6,19 +6,10 @@ import com.mikedeejay2.voxel.engine.graphics.shaders.StaticShader;
 import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.utils.Maths;
-import com.mikedeejay2.voxel.game.Main;
-import com.mikedeejay2.voxel.game.world.chunk.Chunk;
-import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumer;
-import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshGenerator;
-import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducer;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.opengl.GL30;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
@@ -52,6 +43,14 @@ public class Renderer
         this.shader = shader;
         transformationMatrix = new Matrix4f();
         projectionMatrix = new Matrix4f();
+        createProjectionMatrix();
+        shader.start();
+        shader.loadProjectionMatrix(projectionMatrix);
+        shader.stop();
+    }
+
+    public void windowHasBeenResized()
+    {
         createProjectionMatrix();
         shader.start();
         shader.loadProjectionMatrix(projectionMatrix);
@@ -106,7 +105,7 @@ public class Renderer
 
     private void createProjectionMatrix()
     {
-        float aspectRatio = (float) Window.getWidth() / (float) Window.getHeight();
+        float aspectRatio = (float) Window.getWindowWidth() / (float) Window.getWindowHeight();
         float y_scale = (1f / (float) Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio;
         float x_scale = y_scale / aspectRatio;
         float frustrum_length = FAR_PLANE - NEAR_PLANE;

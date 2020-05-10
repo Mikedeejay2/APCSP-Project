@@ -64,11 +64,12 @@ public class Main
         System.out.println("Initializing game!");
 
         loader = new Loader();
-        ModelTexture loadData = VoxelTypes.getTexture("diamond_block");
 
         renderer = new MasterRenderer();
 
         Input.init();
+
+        ModelTexture loadData = VoxelTypes.getTexture("diamond_block");
 
         camera = new Camera();
         chunksToRender = new ArrayList<Chunk>();

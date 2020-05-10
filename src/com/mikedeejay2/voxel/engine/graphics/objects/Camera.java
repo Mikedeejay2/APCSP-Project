@@ -4,8 +4,6 @@ import com.mikedeejay2.voxel.engine.io.Input;
 import com.mikedeejay2.voxel.engine.io.Window;
 import org.joml.*;
 
-import java.math.BigDecimal;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera
@@ -99,15 +97,15 @@ public class Camera
         }
         if (Input.getMouseDown(0))
         {
-            Input.setMousePosition(Window.getWidth() / 2.0f, Window.getHeight() / 2.0f);
+            Input.setMousePosition(Window.getWindowWidth() / 2.0f, Window.getWindowHeight() / 2.0f);
             Input.setCursor(false);
             mouseLocked = true;
         }
 
         if (mouseLocked)
         {
-            deltaPosX = Input.getMousePositionX() - (Window.getWidth() / 2.0f);
-            deltaPosY = Input.getMousePositionY() - (Window.getHeight() / 2.0f);
+            deltaPosX = Input.getMousePositionX() - (Window.getWindowWidth() / 2.0f);
+            deltaPosY = Input.getMousePositionY() - (Window.getWindowHeight() / 2.0f);
 
             boolean rotY = deltaPosX != 0;
             boolean rotX = deltaPosY!= 0;
@@ -125,7 +123,7 @@ public class Camera
                 if(pitch < -90) pitch = -90;
             }
 
-            Input.setMousePosition(Window.getWidth() / 2.0f, Window.getHeight() / 2.0f);
+            Input.setMousePosition(Window.getWindowWidth() / 2.0f, Window.getWindowHeight() / 2.0f);
         }
     }
 
