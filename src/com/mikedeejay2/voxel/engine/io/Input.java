@@ -9,6 +9,7 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.DoubleBuffer;
+import java.util.Arrays;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -70,7 +71,8 @@ public class Input
 
     public static void update(float delta)
     {
-
+        keysLast = Arrays.copyOf(keys, keys.length);
+        mouseLast = Arrays.copyOf(mouse, mouse.length);
     }
 
 
@@ -94,8 +96,6 @@ public class Input
     {
         if(keys[keyCode] == 1 && keysLast[keyCode] == 0)
         {
-            keys[keyCode] = 2;
-            keysLast[keyCode] = 1;
             return true;
         }
         return false;
@@ -105,8 +105,6 @@ public class Input
     {
         if(keysLast[keyCode] == 2 && keys[keyCode] == 1)
         {
-            keysLast[keyCode] = 0;
-            keys[keyCode] = 0;
             return true;
         }
         return false;
@@ -130,8 +128,6 @@ public class Input
     {
         if(mouse[mouseButton] == 1 && mouseLast[mouseButton] == 0)
         {
-            mouse[mouseButton] = 1;
-            mouseLast[mouseButton] = 1;
             return true;
         }
         return false;
@@ -141,8 +137,6 @@ public class Input
     {
         if(mouseLast[mouseButton] == 1 && mouse[mouseButton] == 0)
         {
-            mouseLast[mouseButton] = 0;
-            mouse[mouseButton] = 0;
             return true;
         }
         return false;

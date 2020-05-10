@@ -217,6 +217,18 @@ public class Chunk
         containsVoxels = false;
     }
 
+    public void removeVoxel(int x, int y, int z)
+    {
+        voxels[x][y][z] = 0;
+        if(!edgeCheck(x, y, z)) rebuildChunkMesh(false);
+        else rebuildChunkMesh(true);
+    }
+
+    private boolean edgeCheck(float x, float y, float z)
+    {
+        return x == 0 || y == 0 || z == 0 || x == World.CHUNK_SIZE-1 || y == World.CHUNK_SIZE-1 || z == World.CHUNK_SIZE-1;
+    }
+
 
 
 

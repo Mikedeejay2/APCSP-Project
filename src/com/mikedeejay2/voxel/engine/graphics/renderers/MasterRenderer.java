@@ -10,6 +10,7 @@ import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumer;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshGenerator;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducer;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.MeshRequest;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,5 +93,10 @@ public class MasterRenderer
         {
             thread.stop();
         }
+    }
+
+    public Matrix4f getProjectionMatrix()
+    {
+        return renderer.getProjectionMatrix();
     }
 }

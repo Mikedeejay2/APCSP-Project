@@ -246,21 +246,37 @@ public class World extends Thread
         return allChunks.get(vector3f);
     }
 
-    public boolean isVoxelAtCoordinate(float x, float y, float z)
+    public boolean isVoxelAtCoordinate(int x, int y, int z)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
         if(chunk != null)
         {
             if(!chunk.hasLoaded) return false;
-            float newX = (int) ((x)%(CHUNK_SIZE));
-            float newY = (int) ((y)%(CHUNK_SIZE));
-            float newZ = (int) ((z)%(CHUNK_SIZE));
+            int newX = ((x)%(CHUNK_SIZE));
+            int newY = ((y)%(CHUNK_SIZE));
+            int newZ = ((z)%(CHUNK_SIZE));
             if(newX < 0) newX += (CHUNK_SIZE);
             if(newY < 0) newY += (CHUNK_SIZE);
             if(newZ < 0) newZ += (CHUNK_SIZE);
-            return chunk.containsVoxelAtOffset((int)(newX), (int)(newY), (int)(newZ));
+            return chunk.containsVoxelAtOffset(newX, newY, newZ);
         }
         return false;
+    }
+
+    public void removeVoxel(int x, int y, int z)
+    {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null)
+        {
+            int newX = ((x)%(CHUNK_SIZE));
+            int newY = ((y)%(CHUNK_SIZE));
+            int newZ = ((z)%(CHUNK_SIZE));
+            if(newX < 0) newX += (CHUNK_SIZE);
+            if(newY < 0) newY += (CHUNK_SIZE);
+            if(newZ < 0) newZ += (CHUNK_SIZE);
+            System.out.println(x + ", " + y + ", " + z);
+            chunk.removeVoxel(newX, newY, newZ);
+        }
     }
 
     public void cleanUp()
