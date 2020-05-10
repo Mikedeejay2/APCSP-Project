@@ -85,6 +85,11 @@ public class MasterRenderer
         chunkMeshProducer.addRequest(new MeshRequest(chunk, world));
     }
 
+    public void genMeshImmediate(Chunk chunk, World world)
+    {
+        chunkMeshProducer.addRequestImmediate(new MeshRequest(chunk, world));
+    }
+
     public void cleanUp()
     {
         shader.cleanUp();

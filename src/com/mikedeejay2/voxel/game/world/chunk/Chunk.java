@@ -52,7 +52,7 @@ public class Chunk
         try
         {
             instanceWorld.populateChunk(this);
-        rebuildChunkMesh(true);
+        rebuildChunkMesh(true, false);
 //            updateNeighbors();
             hasLoaded = true;
         } catch(NullPointerException e) {}
@@ -63,55 +63,41 @@ public class Chunk
 
     }
 
-    public void updateNeighbors()
+    public void updateNeighbors(boolean immediate)
     {
         Vector3f nextChunkLoc;
         try
         {
             nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
             nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false);
+                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
             shouldUpdateNeighbors = false;
         } catch(NullPointerException e) {}
 
     }
 
-    public void rebuildChunkMesh(boolean shouldUpdateNeighbors)
+    public void rebuildChunkMesh(boolean shouldUpdateNeighbors, boolean immediate)
     {
-        Main.getInstance().getRenderer().genMesh(this, instanceWorld);
-        if(shouldUpdateNeighbors) updateNeighbors();
+        if(!immediate) Main.getInstance().getRenderer().genMesh(this, instanceWorld);
+        else Main.getInstance().getRenderer().genMeshImmediate(this, instanceWorld);
+        if(shouldUpdateNeighbors) updateNeighbors(immediate);
         shouldUpdateNeighbors = false;
-//        try
-//        {
-//            float[] verticesTemp = ChunkMeshGenerator.createVertices(instanceWorld, this, shouldUpdateNeighbors);
-//            float[] textureCoordsTemp = ChunkMeshGenerator.createTextureCoords(instanceWorld, this, shouldUpdateNeighbors);
-//            int[] indicesTemp = ChunkMeshGenerator.createIndices(instanceWorld, this, shouldUpdateNeighbors);
-//            float[] brightnessTemp = ChunkMeshGenerator.createBrightness(instanceWorld, this, shouldUpdateNeighbors);
-//            this.verticesTemp = verticesTemp;
-//            this.textureCoordsTemp = textureCoordsTemp;
-//            this.indicesTemp = indicesTemp;
-//            this.brightnessTemp = brightnessTemp;
-//            instanceWorld.chunksProcessedThisTick++;
-//        }
-//        catch (NullPointerException e) {System.out.println("bruh");}
-//        entityShouldBeRemade = true;
-
     }
 
     public int getCloseness()
@@ -220,8 +206,8 @@ public class Chunk
     public void removeVoxel(int x, int y, int z)
     {
         voxels[x][y][z] = 0;
-        if(!edgeCheck(x, y, z)) rebuildChunkMesh(false);
-        else rebuildChunkMesh(true);
+        if(!edgeCheck(x, y, z)) rebuildChunkMesh(false, true);
+        else rebuildChunkMesh(true, true);
     }
 
     private boolean edgeCheck(float x, float y, float z)

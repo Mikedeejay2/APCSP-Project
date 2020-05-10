@@ -274,7 +274,6 @@ public class World extends Thread
             if(newX < 0) newX += (CHUNK_SIZE);
             if(newY < 0) newY += (CHUNK_SIZE);
             if(newZ < 0) newZ += (CHUNK_SIZE);
-            System.out.println(x + ", " + y + ", " + z);
             chunk.removeVoxel(newX, newY, newZ);
         }
     }

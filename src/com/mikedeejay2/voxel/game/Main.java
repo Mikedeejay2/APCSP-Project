@@ -103,7 +103,7 @@ public class Main
         {
             if(Input.getMouseDown(GLFW_MOUSE_BUTTON_LEFT))
             {
-                world.removeVoxel((int) Math.round(mousePicker.getCurrentPoint().x), (int)mousePicker.getCurrentPoint().y, (int)Math.round(mousePicker.getCurrentPoint().z));
+                world.removeVoxel((int) Math.round(mousePicker.getCurrentPoint().x), (int) Math.round(mousePicker.getCurrentPoint().y), (int)Math.round(mousePicker.getCurrentPoint().z));
             }
         }
     }

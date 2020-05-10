@@ -57,7 +57,7 @@ public class ChunkMeshGenerator
         synchronized(this)
         {
             while(meshRequests.size() == capacity) wait();
-            if(queue.size() != 0)
+            if(!queue.isEmpty())
             {
                 MeshRequest meshRequest = queue.remove();
                 meshRequests.add(meshRequest);

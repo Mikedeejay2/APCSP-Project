@@ -1,5 +1,6 @@
 package com.mikedeejay2.voxel.game.world.chunk.mesh;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ChunkMeshProducer extends  Thread
@@ -41,5 +42,15 @@ public class ChunkMeshProducer extends  Thread
         if(!meshRequest.chunk.containsVoxels) return;
         if(!meshRequest.chunk.hasLoaded) return;
         latestQueue.add(meshRequest);
+    }
+
+    public void addRequestImmediate(MeshRequest meshRequest)
+    {
+        if(!meshRequest.chunk.containsVoxels) return;
+        if(!meshRequest.chunk.hasLoaded) return;
+        ArrayList<MeshRequest> requests = new ArrayList<>(latestQueue);
+        latestQueue.clear();
+        latestQueue.add(meshRequest);
+        latestQueue.addAll(requests);
     }
 }
