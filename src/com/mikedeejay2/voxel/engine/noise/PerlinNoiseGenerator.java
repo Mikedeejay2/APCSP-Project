@@ -1,4 +1,4 @@
-package com.mikedeejay2.voxel.engine.voxel.generators;
+package com.mikedeejay2.voxel.engine.noise;
 
 import java.util.Random;
 

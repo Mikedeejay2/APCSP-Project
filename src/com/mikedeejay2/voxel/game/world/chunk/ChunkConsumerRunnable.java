@@ -2,16 +2,17 @@ package com.mikedeejay2.voxel.game.world.chunk;
 
 import com.mikedeejay2.voxel.game.world.World;
 
-public class ChunkProducerThread extends Thread
+public class ChunkConsumerRunnable implements Runnable
 {
+
     private ChunkPC chunkPC;
 
     private World world;
 
-    public ChunkProducerThread(ChunkPC chunkPC, World world)
+    public ChunkConsumerRunnable(ChunkPC chunkPC, World world)
     {
-        this.chunkPC = chunkPC;
         this.world = world;
+        this.chunkPC = chunkPC;
     }
 
     @Override
@@ -20,7 +21,9 @@ public class ChunkProducerThread extends Thread
         try
         {
             while(true)
-                chunkPC.produce(world);
+            {
+                chunkPC.consume(world);
+            }
         }
         catch (InterruptedException e)
         {

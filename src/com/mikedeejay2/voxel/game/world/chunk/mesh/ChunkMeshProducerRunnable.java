@@ -3,16 +3,16 @@ package com.mikedeejay2.voxel.game.world.chunk.mesh;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ChunkMeshProducer extends  Thread
+public class ChunkMeshProducerRunnable implements Runnable
 {
     ChunkMeshGenerator chunkMeshGenerator;
 
     private ConcurrentLinkedQueue<MeshRequest> latestQueue;
     private ConcurrentLinkedQueue<MeshRequest> queue;
 
-    private final int capacity = 5;
+    private final int capacity = Runtime.getRuntime().availableProcessors()*2;
 
-    public ChunkMeshProducer(ChunkMeshGenerator chunkMeshGenerator)
+    public ChunkMeshProducerRunnable(ChunkMeshGenerator chunkMeshGenerator)
     {
         this.latestQueue = new ConcurrentLinkedQueue<MeshRequest>();
         this.queue = new ConcurrentLinkedQueue<MeshRequest>();
@@ -41,7 +41,7 @@ public class ChunkMeshProducer extends  Thread
         if(meshRequest.chunk == null && meshRequest.world == null) return;
         if(!meshRequest.chunk.containsVoxels) return;
         if(!meshRequest.chunk.hasLoaded) return;
-        latestQueue.add(meshRequest);
+        else queue.add(meshRequest);
     }
 
     public void addRequestImmediate(MeshRequest meshRequest)

@@ -13,8 +13,8 @@ import com.mikedeejay2.voxel.engine.utils.Raycast;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
-import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumer;
-import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducer;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumerRunnable;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducerRunnable;
 
 import java.util.ArrayList;
 
@@ -31,8 +31,8 @@ public class Main
     public World world;
     Thread worldThread;
 
-    public ChunkMeshProducer chunkMeshProducer;
-    public ChunkMeshConsumer chunkMeshConsumer;
+    public ChunkMeshProducerRunnable chunkMeshProducer;
+    public ChunkMeshConsumerRunnable chunkMeshConsumer;
     Thread chunkMeshProducerThread;
     Thread chunkMeshConsumerThread;
 
@@ -168,12 +168,12 @@ public class Main
         return world;
     }
 
-    public ChunkMeshProducer getChunkMeshProducer()
+    public ChunkMeshProducerRunnable getChunkMeshProducer()
     {
         return chunkMeshProducer;
     }
 
-    public ChunkMeshConsumer getChunkMeshConsumer()
+    public ChunkMeshConsumerRunnable getChunkMeshConsumer()
     {
         return chunkMeshConsumer;
     }

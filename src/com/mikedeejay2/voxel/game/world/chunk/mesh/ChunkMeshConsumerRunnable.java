@@ -1,10 +1,10 @@
 package com.mikedeejay2.voxel.game.world.chunk.mesh;
 
-public class ChunkMeshConsumer extends Thread
+public class ChunkMeshConsumerRunnable implements Runnable
 {
     ChunkMeshGenerator chunkMeshGenerator;
 
-    public ChunkMeshConsumer(ChunkMeshGenerator chunkMeshGenerator)
+    public ChunkMeshConsumerRunnable(ChunkMeshGenerator chunkMeshGenerator)
     {
         this.chunkMeshGenerator = chunkMeshGenerator;
     }

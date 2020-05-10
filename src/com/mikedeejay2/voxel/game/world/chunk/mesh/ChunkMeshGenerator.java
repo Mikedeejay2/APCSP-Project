@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ChunkMeshGenerator
 {
     public static LinkedList<MeshRequest> meshRequests = new LinkedList<MeshRequest>();
-    int capacity = Runtime.getRuntime().availableProcessors();
+    int capacity = Runtime.getRuntime().availableProcessors()*2;
 
     static boolean finished = false;
 
@@ -44,8 +44,8 @@ public class ChunkMeshGenerator
             chunk.textureCoordsTemp = textureCoordsTemp;
             chunk.indicesTemp = indicesTemp;
             chunk.brightnessTemp = brightnessTemp;
-            world.chunksProcessedThisTick++;
             chunk.isAlreadyBeingCalculated = false;
+            world.chunksProcessedThisTick++;
             chunk.entityShouldBeRemade = true;
             finished = true;
             notify();

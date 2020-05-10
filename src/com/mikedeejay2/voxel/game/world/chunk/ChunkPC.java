@@ -14,7 +14,7 @@ public class ChunkPC
     World world = Main.getInstance().world;
 
     public static LinkedList<Chunk> chunksToBeProcessed = new LinkedList<Chunk>();
-    public static int capacity = Runtime.getRuntime().availableProcessors();
+    public static int capacity = Runtime.getRuntime().availableProcessors()*2;
 
     private Vector3f playerChunk;
 

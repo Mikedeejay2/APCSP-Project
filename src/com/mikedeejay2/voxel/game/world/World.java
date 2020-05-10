@@ -1,13 +1,11 @@
 package com.mikedeejay2.voxel.game.world;
 
 import com.mikedeejay2.voxel.game.Main;
-import com.mikedeejay2.voxel.game.voxel.Voxel;
-import com.mikedeejay2.voxel.game.voxel.VoxelShape;
 import com.mikedeejay2.voxel.game.world.generators.OverworldGenerator;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
-import com.mikedeejay2.voxel.game.world.chunk.ChunkConsumerThread;
+import com.mikedeejay2.voxel.game.world.chunk.ChunkConsumerRunnable;
 import com.mikedeejay2.voxel.game.world.chunk.ChunkPC;
-import com.mikedeejay2.voxel.game.world.chunk.ChunkProducerThread;
+import com.mikedeejay2.voxel.game.world.chunk.ChunkProducerRunnable;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -29,7 +27,7 @@ public class World extends Thread
 
     ChunkPC chunkPC;
 
-    ChunkProducerThread chunkProducer;
+    ChunkProducerRunnable chunkProducer;
     Thread chunkProducerThread;
 
     ArrayList<Thread> chunkConsumerThreads;
@@ -52,13 +50,13 @@ public class World extends Thread
         chunkConsumerThreads = new ArrayList<Thread>();
 
         chunkPC = new ChunkPC();
-        chunkProducer = new ChunkProducerThread(chunkPC, this);
+        chunkProducer = new ChunkProducerRunnable(chunkPC, this);
         chunkProducerThread = new Thread(chunkProducer, "chunkProducer");
         chunkProducerThread.start();
 
         for(int i = 0; i < Runtime.getRuntime().availableProcessors(); i++)
         {
-            ChunkConsumerThread chunkConsumerThread = new ChunkConsumerThread(chunkPC, this);
+            ChunkConsumerRunnable chunkConsumerThread = new ChunkConsumerRunnable(chunkPC, this);
             Thread thread = new Thread(chunkConsumerThread, "chunkConsumer" + i);
             chunkConsumerThreads.add(thread);
             thread.start();
@@ -182,8 +180,8 @@ public class World extends Thread
 
     public void populateChunk(Chunk chunk)
     {
-//        overworldGenerator.genTerrain(chunk);
-        overworldGenerator.genFlat(chunk);
+        overworldGenerator.genTerrain(chunk);
+//        overworldGenerator.genFlat(chunk);
     }
 
     public static World getWorld()

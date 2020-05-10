@@ -6,10 +6,9 @@ import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.shaders.StaticShader;
 import com.mikedeejay2.voxel.game.world.World;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
-import com.mikedeejay2.voxel.game.world.chunk.ChunkPC;
-import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumer;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumerRunnable;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshGenerator;
-import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducer;
+import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducerRunnable;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.MeshRequest;
 import org.joml.Matrix4f;
 
@@ -25,7 +24,7 @@ public class MasterRenderer
 
     private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
 
-    ChunkMeshProducer chunkMeshProducer;
+    ChunkMeshProducerRunnable chunkMeshProducer;
     public Thread chunkMeshProducerThread;
     public ArrayList<Thread> chunkMeshConsumerThreads;
 
@@ -35,15 +34,17 @@ public class MasterRenderer
     {
         chunkMeshGenerator = new ChunkMeshGenerator();
 
-        chunkMeshProducer = new ChunkMeshProducer(chunkMeshGenerator);
+        chunkMeshProducer = new ChunkMeshProducerRunnable(chunkMeshGenerator);
         chunkMeshProducerThread = new Thread(chunkMeshProducer, "chunkMeshProducer");
+        chunkMeshProducerThread.setPriority(Thread.MAX_PRIORITY);
         chunkMeshProducerThread.start();
 
         chunkMeshConsumerThreads = new ArrayList<Thread>();
         for(int i =0; i < Runtime.getRuntime().availableProcessors(); i++)
         {
-            ChunkMeshConsumer chunkMeshConsumer = new ChunkMeshConsumer(chunkMeshGenerator);
+            ChunkMeshConsumerRunnable chunkMeshConsumer = new ChunkMeshConsumerRunnable(chunkMeshGenerator);
             Thread threadConsumer = new Thread(chunkMeshConsumer, "chunkMeshConsumer" + i);
+            threadConsumer.setPriority(Thread.MAX_PRIORITY);
             chunkMeshConsumerThreads.add(threadConsumer);
             threadConsumer.start();
         }
@@ -88,8 +89,8 @@ public class MasterRenderer
 
     public void genMeshImmediate(Chunk chunk, World world)
     {
-//        chunkMeshProducer.addRequestImmediate(new MeshRequest(chunk, world));
-        chunkMeshGenerator.forceRequest(new MeshRequest(chunk, world));
+        chunkMeshProducer.addRequestImmediate(new MeshRequest(chunk, world));
+//        chunkMeshGenerator.forceRequest(new MeshRequest(chunk, world, 0));
     }
 
     public void cleanUp()
