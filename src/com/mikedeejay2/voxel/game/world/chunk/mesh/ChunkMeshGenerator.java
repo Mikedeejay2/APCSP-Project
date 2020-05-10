@@ -52,6 +52,27 @@ public class ChunkMeshGenerator
         }
     }
 
+    public void forceRequest(MeshRequest meshRequest)
+    {
+        Chunk chunk = meshRequest.getChunk();
+        World world = meshRequest.getWorld();
+        if(world == null || chunk == null) return;
+        if(chunk.isAlreadyBeingCalculated) return;
+        chunk.isAlreadyBeingCalculated = true;
+        float[] verticesTemp = createVertices(world, chunk);
+        float[] textureCoordsTemp = createTextureCoords(world, chunk);
+        int[] indicesTemp = createIndices(world, chunk);
+        float[] brightnessTemp = createBrightness(world, chunk);
+        chunk.verticesTemp = verticesTemp;
+        chunk.textureCoordsTemp = textureCoordsTemp;
+        chunk.indicesTemp = indicesTemp;
+        chunk.brightnessTemp = brightnessTemp;
+        world.chunksProcessedThisTick++;
+        chunk.isAlreadyBeingCalculated = false;
+        chunk.entityShouldBeRemade = true;
+        finished = true;
+    }
+
     public void produce(ConcurrentLinkedQueue<MeshRequest> queue) throws InterruptedException
     {
         synchronized(this)

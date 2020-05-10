@@ -52,7 +52,7 @@ public class Chunk
         try
         {
             instanceWorld.populateChunk(this);
-        rebuildChunkMesh(true, false);
+            rebuildChunkMesh(true, false);
 //            updateNeighbors();
             hasLoaded = true;
         } catch(NullPointerException e) {}
@@ -71,24 +71,123 @@ public class Chunk
             nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
                 instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+
             nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
                 instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
                 instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
                 instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
                 instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+
             nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
             if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
                 instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
             shouldUpdateNeighbors = false;
-        } catch(NullPointerException e) {}
+        } catch(NullPointerException e) {System.out.println("bruh");}
+
+    }
+
+    public void updateNeighborsSmart(boolean immediate, float x, float y, float z)
+    {
+        Vector3f nextChunkLoc;
+        try
+        {
+            if(x == World.CHUNK_SIZE-1)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(x == 0)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(y == World.CHUNK_SIZE-1)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(y == 0)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(z == World.CHUNK_SIZE-1)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(z == 0)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(x == World.CHUNK_SIZE-1 && y == World.CHUNK_SIZE-1)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y + 1, chunkLoc.z);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(x == 0 && y == 0)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y - 1, chunkLoc.z);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(z == World.CHUNK_SIZE-1 && y == World.CHUNK_SIZE-1)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z + 1);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(z == 0 && y == 0)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z - 1);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(x == World.CHUNK_SIZE-1 && z == World.CHUNK_SIZE-1)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z + 1);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            if(x == 0 && z == 0)
+            {
+                nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z - 1);
+                if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+                    instanceWorld.getChunk(nextChunkLoc).rebuildChunkMeshSmartNeighbor(false, immediate, x, y, z);
+            }
+
+            shouldUpdateNeighbors = false;
+        } catch(NullPointerException e) {System.out.println("bruh");}
 
     }
 
@@ -97,6 +196,14 @@ public class Chunk
         if(!immediate) Main.getInstance().getRenderer().genMesh(this, instanceWorld);
         else Main.getInstance().getRenderer().genMeshImmediate(this, instanceWorld);
         if(shouldUpdateNeighbors) updateNeighbors(immediate);
+        shouldUpdateNeighbors = false;
+    }
+
+    public void rebuildChunkMeshSmartNeighbor(boolean shouldUpdateNeighbors, boolean immediate, float x, float y, float z)
+    {
+        if(!immediate) Main.getInstance().getRenderer().genMesh(this, instanceWorld);
+        else Main.getInstance().getRenderer().genMeshImmediate(this, instanceWorld);
+        if(shouldUpdateNeighbors) updateNeighborsSmart(immediate, x, y, z);
         shouldUpdateNeighbors = false;
     }
 
@@ -206,13 +313,18 @@ public class Chunk
     public void removeVoxel(int x, int y, int z)
     {
         voxels[x][y][z] = 0;
-        if(!edgeCheck(x, y, z)) rebuildChunkMesh(false, true);
-        else rebuildChunkMesh(true, true);
+        if(!edgeCheck(x, y, z)) rebuildChunkMeshSmartNeighbor(false, true, x, y, z);
+        else rebuildChunkMeshSmartNeighbor(true, true, x, y, z);
     }
 
     private boolean edgeCheck(float x, float y, float z)
     {
         return x == 0 || y == 0 || z == 0 || x == World.CHUNK_SIZE-1 || y == World.CHUNK_SIZE-1 || z == World.CHUNK_SIZE-1;
+    }
+
+    private boolean edgeCheckSingle(float x)
+    {
+        return x == 0 || x == World.CHUNK_SIZE-1;
     }
 
 

@@ -6,6 +6,7 @@ import com.mikedeejay2.voxel.engine.graphics.objects.Entity;
 import com.mikedeejay2.voxel.engine.graphics.shaders.StaticShader;
 import com.mikedeejay2.voxel.game.world.World;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
+import com.mikedeejay2.voxel.game.world.chunk.ChunkPC;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshConsumer;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshGenerator;
 import com.mikedeejay2.voxel.game.world.chunk.mesh.ChunkMeshProducer;
@@ -87,7 +88,8 @@ public class MasterRenderer
 
     public void genMeshImmediate(Chunk chunk, World world)
     {
-        chunkMeshProducer.addRequestImmediate(new MeshRequest(chunk, world));
+//        chunkMeshProducer.addRequestImmediate(new MeshRequest(chunk, world));
+        chunkMeshGenerator.forceRequest(new MeshRequest(chunk, world));
     }
 
     public void cleanUp()

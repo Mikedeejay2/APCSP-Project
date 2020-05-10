@@ -6,6 +6,8 @@ import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
+import java.util.Arrays;
+
 public class OverworldGenerator
 {
     World instanceWorld;
@@ -56,9 +58,12 @@ public class OverworldGenerator
         {
             for (int z = 0; z < World.CHUNK_SIZE; z++)
             {
-                if(chunk.getChunkLoc().y == 0)
+                if(chunk.getChunkLoc().y <= -1)
                 {
-                    chunk.addVoxel(x, 0, z, "stone");
+                    for(int y = 0; y < World.CHUNK_SIZE; y++)
+                    {
+                        chunk.addVoxel(x, y, z, "stone");
+                    }
                 }
             }
         }

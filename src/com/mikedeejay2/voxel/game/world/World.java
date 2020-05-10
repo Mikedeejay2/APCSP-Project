@@ -182,8 +182,8 @@ public class World extends Thread
 
     public void populateChunk(Chunk chunk)
     {
-        overworldGenerator.genTerrain(chunk);
-//        overworldGenerator.genFlat(chunk);
+//        overworldGenerator.genTerrain(chunk);
+        overworldGenerator.genFlat(chunk);
     }
 
     public static World getWorld()
