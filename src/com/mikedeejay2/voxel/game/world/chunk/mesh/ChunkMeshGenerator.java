@@ -23,54 +23,15 @@ public class ChunkMeshGenerator
     public static LinkedList<MeshRequest> meshRequests = new LinkedList<MeshRequest>();
     int capacity = Runtime.getRuntime().availableProcessors()*2;
 
-    static boolean finished = false;
-
     public void consume() throws InterruptedException
     {
         synchronized(this)
         {
             while(meshRequests.size() == 0) wait();
             MeshRequest meshRequest = meshRequests.removeFirst();
-            Chunk chunk = meshRequest.getChunk();
-            World world = meshRequest.getWorld();
-            if(world == null || chunk == null) return;
-            if(chunk.isAlreadyBeingCalculated) return;
-            chunk.isAlreadyBeingCalculated = true;
-            float[] verticesTemp = createVertices(world, chunk);
-            float[] textureCoordsTemp = createTextureCoords(world, chunk);
-            int[] indicesTemp = createIndices(world, chunk);
-            float[] brightnessTemp = createBrightness(world, chunk);
-            chunk.verticesTemp = verticesTemp;
-            chunk.textureCoordsTemp = textureCoordsTemp;
-            chunk.indicesTemp = indicesTemp;
-            chunk.brightnessTemp = brightnessTemp;
-            chunk.isAlreadyBeingCalculated = false;
-            world.chunksProcessedThisTick++;
-            chunk.entityShouldBeRemade = true;
-            finished = true;
+            createAll(meshRequest);
             notify();
         }
-    }
-
-    public void forceRequest(MeshRequest meshRequest)
-    {
-        Chunk chunk = meshRequest.getChunk();
-        World world = meshRequest.getWorld();
-        if(world == null || chunk == null) return;
-        if(chunk.isAlreadyBeingCalculated) return;
-        chunk.isAlreadyBeingCalculated = true;
-        float[] verticesTemp = createVertices(world, chunk);
-        float[] textureCoordsTemp = createTextureCoords(world, chunk);
-        int[] indicesTemp = createIndices(world, chunk);
-        float[] brightnessTemp = createBrightness(world, chunk);
-        chunk.verticesTemp = verticesTemp;
-        chunk.textureCoordsTemp = textureCoordsTemp;
-        chunk.indicesTemp = indicesTemp;
-        chunk.brightnessTemp = brightnessTemp;
-        world.chunksProcessedThisTick++;
-        chunk.isAlreadyBeingCalculated = false;
-        chunk.entityShouldBeRemade = true;
-        finished = true;
     }
 
     public void produce(ConcurrentLinkedQueue<MeshRequest> queue) throws InterruptedException
@@ -82,7 +43,6 @@ public class ChunkMeshGenerator
             {
                 MeshRequest meshRequest = queue.remove();
                 meshRequests.add(meshRequest);
-                finished = false;
                 notify();
             }
         }
@@ -90,21 +50,11 @@ public class ChunkMeshGenerator
 
     public static Entity createChunkEntity(Chunk chunk)
     {
-        if(!finished) return null;
-        if(chunk.verticesTemp == null || chunk.textureCoordsTemp == null || chunk.indicesTemp == null || chunk.brightnessTemp == null) return null;
-        if(chunk.verticesTemp.length != 0 && chunk.textureCoordsTemp.length != 0 && chunk.indicesTemp.length != 0 && chunk.brightnessTemp.length != 0)
-        {
-            if(chunk.verticesTemp.length/2f != chunk.indicesTemp.length) return null;
-            if(chunk.verticesTemp.length/1.5f != chunk.textureCoordsTemp.length) return null;
-        } else return null;
-//        System.out.println(chunk.verticesTemp.length + " " + chunk.indicesTemp.length + " " + chunk.textureCoordsTemp.length + " " + chunk.brightnessTemp.length);
+        if(chunk.verticesTemp != null && chunk.textureCoordsTemp != null && chunk.indicesTemp != null && chunk.brightnessTemp != null);
         RawModel model = Main.getLoader().loadToVAO(chunk.verticesTemp, chunk.textureCoordsTemp, chunk.indicesTemp, chunk.brightnessTemp);
-        chunk.textureCoordsTemp = null;
-        chunk.indicesTemp = null;
-        chunk.brightnessTemp = null;
+
 
         String name = generateTemporaryBlockName(chunk);
-
         ModelTexture modelTexture = VoxelTypes.getTexture(name);
         TexturedModel texturedModel = new TexturedModel(model, modelTexture);
         Entity entity = new Entity(texturedModel, chunk.chunkCoords);
@@ -115,8 +65,278 @@ public class ChunkMeshGenerator
         chunk.entityShouldBeRemade = false;
 
         chunk.shouldRender = chunk.verticesTemp.length >= 12;
+
         chunk.verticesTemp = null;
+        chunk.textureCoordsTemp = null;
+        chunk.indicesTemp = null;
+        chunk.brightnessTemp = null;
         return entity;
+    }
+
+    public void createAll(MeshRequest meshRequest)
+    {
+        Chunk chunk = meshRequest.getChunk();
+        World world = meshRequest.getWorld();
+        if(world == null || chunk == null) return;
+
+        if(chunk.isAlreadyBeingCalculated) return;
+        chunk.isAlreadyBeingCalculated = true;
+
+        float[] vertices = new float[0];
+        float[] textureCoords = new float[0];
+        int[] indices = new int[0];
+        float[] brightness = new float[0];
+        if(chunk.containsVoxels)
+        {
+            ArrayList<Float> verticesList = new ArrayList<Float>();
+            ArrayList<Float> textureCoordsList = new ArrayList<Float>();
+            ArrayList<Integer> indicesList = new ArrayList<Integer>();
+            ArrayList<Float> brightnessList = new ArrayList<Float>();
+
+            fillAllArrayLists(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+
+            vertices = new float[verticesList.size()];
+            textureCoords = new float[textureCoordsList.size()];
+            indices = new int[indicesList.size()];
+            brightness = new float[brightnessList.size()];
+
+            convertAllToArrays(verticesList, vertices, textureCoordsList, textureCoords, indicesList, indices, brightnessList, brightness);
+
+            chunk.verticesTemp = vertices;
+            chunk.textureCoordsTemp = textureCoords;
+            chunk.indicesTemp = indices;
+            chunk.brightnessTemp = brightness;
+
+            chunk.isAlreadyBeingCalculated = false;
+            world.chunksProcessedThisTick++;
+            chunk.entityShouldBeRemade = true;
+        }
+        else
+        {
+            chunk.verticesTemp = vertices;
+            chunk.textureCoordsTemp = textureCoords;
+            chunk.indicesTemp = indices;
+            chunk.brightnessTemp = brightness;
+        }
+    }
+
+    public void convertAllToArrays(ArrayList<Float> verticesList, float[] vertices, ArrayList<Float> textureCoordsList, float[] textureCoords, ArrayList<Integer> indicesList, int[] indices, ArrayList<Float> brightnessList, float[] brightness)
+    {
+        for(int i = 0; i < vertices.length; i++) vertices[i] = verticesList.get(i);
+        for(int i = 0; i < textureCoords.length; i++) textureCoords[i] = textureCoordsList.get(i);
+        for(int i = 0; i < indices.length; i++) indices[i] = indicesList.get(i);
+        for(int i = 0; i < brightness.length; i++) brightness[i] = brightnessList.get(i);
+
+        verticesList.clear();
+        textureCoordsList.clear();
+        indicesList.clear();
+        brightnessList.clear();
+    }
+
+    public void fillAllArrayLists(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk)
+    {
+        for (int x = 0; x < World.CHUNK_SIZE; x++)
+        {
+            for (int y = 0; y < World.CHUNK_SIZE; y++)
+            {
+                for (int z = 0; z < World.CHUNK_SIZE; z++)
+                {
+                    if (chunk.containsVoxelAtOffset(x, y, z))
+                    {
+                        if (!edgeCheck(x, y, z))
+                        {
+                            createSlice(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
+                        }
+                        else
+                        {
+                            createSliceEdge(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void createSlice(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z)
+    {
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z))
+        {
+            createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+            createTextureCoord(textureCoordsList);
+            createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+            createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, false, DirectionEnum.WEST);
+        }
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z))
+        {
+            createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+            createTextureCoord(textureCoordsList);
+            createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+            createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, false, DirectionEnum.EAST);
+        }
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z))
+        {
+            createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+            createTextureCoord(textureCoordsList);
+            createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+            createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, false, DirectionEnum.UP);
+        }
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z))
+        {
+            createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+            createTextureCoord(textureCoordsList);
+            createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+            createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.DOWN);
+        }
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1))
+        {
+            createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+            createTextureCoord(textureCoordsList);
+            createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+            createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.NORTH);
+        }
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1))
+        {
+            createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+            createTextureCoord(textureCoordsList);
+            createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+            createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.SOUTH);
+        }
+    }
+
+    public void createSliceEdge(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z)
+    {
+
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z))
+        {
+            if(x != World.CHUNK_SIZE - 1)
+            {
+                createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+                createTextureCoord(textureCoordsList);
+                createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+                createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
+            }
+            else
+            {
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+                    createTextureCoord(textureCoordsList);
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+                    createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
+                }
+            }
+        }
+
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z))
+        {
+            if(x != 0)
+            {
+                createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+                createTextureCoord(textureCoordsList);
+                createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+                createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
+            }
+            else
+            {
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+                    createTextureCoord(textureCoordsList);
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+                    createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
+                }
+            }
+        }
+
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z))
+        {
+            if(y != World.CHUNK_SIZE - 1)
+            {
+                createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+                createTextureCoord(textureCoordsList);
+                createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+                createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
+            }
+            else
+            {
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+                    createTextureCoord(textureCoordsList);
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+                    createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
+                }
+            }
+        }
+
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z))
+        {
+            if(y != 0)
+            {
+                createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+                createTextureCoord(textureCoordsList);
+                createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
+            }
+            else
+            {
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && chunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+                    createTextureCoord(textureCoordsList);
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
+                }
+            }
+        }
+
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1))
+        {
+            if(z != World.CHUNK_SIZE - 1)
+            {
+                createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+                createTextureCoord(textureCoordsList);
+                createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
+            }
+            else
+            {
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+                    createTextureCoord(textureCoordsList);
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
+                }
+            }
+        }
+
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1))
+        {
+            if(z != 0)
+            {
+                createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+                createTextureCoord(textureCoordsList);
+                createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+                createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
+            }
+            else
+            {
+                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
+                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
+                {
+                    createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+                    createTextureCoord(textureCoordsList);
+                    createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
+                }
+            }
+        }
     }
 
 
@@ -125,6 +345,7 @@ public class ChunkMeshGenerator
 
 
 
+    @Deprecated
     private float[] createVertices(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new float[0];
@@ -158,7 +379,7 @@ public class ChunkMeshGenerator
 
 
 
-
+    @Deprecated
     private float[] createTextureCoords(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new float[0];
@@ -181,12 +402,11 @@ public class ChunkMeshGenerator
         }
         float[] textureCoords = new float[textureCoordsList.size()];
         for(int i = 0; i < textureCoords.length; i++) textureCoords[i] = textureCoordsList.get(i);
-        textureCoordsList.clear();
-        textureCoordsList = null;
+        textureCoordsList.clear(); textureCoordsList = null;
         return textureCoords;
     }
 
-
+    @Deprecated
     private int[] createIndices(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new int[0];
@@ -209,12 +429,11 @@ public class ChunkMeshGenerator
         }
         int[] indices = new int[indicesList.size()];
         for(int i = 0; i < indices.length; i++) indices[i] = indicesList.get(i);
-        indicesList.clear();
-        indicesList = null;
+        indicesList.clear(); indicesList = null;
         return indices;
     }
 
-
+    @Deprecated
     private float[] createBrightness(World world, Chunk chunk)
     {
         if(!chunk.containsVoxels) return new float[0];
@@ -241,8 +460,7 @@ public class ChunkMeshGenerator
         }
         float[] brightness = new float[brightnessList.size()];
         for(int i = 0; i < brightness.length; i++) brightness[i] = brightnessList.get(i);
-        brightnessList.clear();
-        brightnessList = null;
+        brightnessList.clear(); brightnessList = null;
         return brightness;
     }
 
@@ -731,11 +949,10 @@ public class ChunkMeshGenerator
 
     private void createIndex(int x, int y, int z, int[] indices, List<Integer> indicesList)
     {
-        int indicesSize = indicesList.size();
+        int indicesSize = (int) (indicesList.size() / 1.5);
         for (int i = 0; i < indices.length; i++)
         {
-            int index = indices[i];
-            indicesList.add((int) Math.ceil(index + indicesSize / 1.5));
+            indicesList.add((int) (indices[i] + indicesSize));
         }
     }
 
@@ -828,8 +1045,7 @@ public class ChunkMeshGenerator
     {
         for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
         {
-            float texCoord = VoxelShape.getTextureCoordsSingleSide()[i];
-            textureCoordsList.add(texCoord);
+            textureCoordsList.add(VoxelShape.getTextureCoordsSingleSide()[i]);
         }
     }
 

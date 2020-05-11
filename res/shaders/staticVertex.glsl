@@ -14,8 +14,9 @@ uniform mat4 viewMatrix;
 
 out float visibility;
 
-const float density = 0.002;
-const float gradient = 1.5;
+const float density = 0.002; //0.002
+const float gradient = 10; //10
+const float gradient2 = 2; //2
 
 void main(void)
 {
@@ -27,6 +28,7 @@ void main(void)
 
     float distance = length(positionRelativeToCam.xyz);
     visibility = exp(-pow((distance * density), gradient));
+    visibility = visibility * exp(-pow((distance * density), gradient2));
     visibility = clamp(visibility, 0.0, 1.0);
 
     pass_brightness = brightness;

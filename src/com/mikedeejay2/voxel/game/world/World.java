@@ -116,7 +116,6 @@ public class World extends Thread
                     chunk.hasLoaded = false;
                     chunk.entityShouldBeRemade = false;
                     chunk.destroy();
-                    chunk.chunkEntity = null;
                     allChunks.remove(loc);
                     loc = null;
                 }

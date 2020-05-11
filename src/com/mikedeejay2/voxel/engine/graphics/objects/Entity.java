@@ -65,6 +65,11 @@ public class Entity
         this.position = position;
     }
 
+    public void setPosition(float x, float y, float z)
+    {
+        this.position.set(x, y, z);
+    }
+
     public float getRotX()
     {
         return rotX;
