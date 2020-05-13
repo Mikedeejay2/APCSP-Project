@@ -82,6 +82,7 @@ public class Main
 
     public void update(float delta)
     {
+//        camera.getRealPos().add(0.001, 0, 0.001);
         mousePicker.update();
 //        System.out.println(mousePicker.getCurrentPoint());
     }

@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -30,19 +31,19 @@ public class Loader
 
     public RawModel loadToVAO(float[] positions, float[] textureCoords, int[] indices, float[] brightness) {
         int vaoID = createVAO();
-        bindIndicesBuffer(indices);
+        int indicesVBO = bindIndicesBuffer(indices);
         int positionsVBO = storeDataInAttributeList(0, 3, positions);
         int textureCoordsVBO = storeDataInAttributeList(1, 2, textureCoords);
         int brightnessVBO = storeDataInAttributeList(2, 3, brightness);
         unbindVAO();
-        return new RawModel(vaoID, indices.length, new int[] {positionsVBO, textureCoordsVBO, brightnessVBO});
+        return new RawModel(vaoID, indices.length, new int[] {positionsVBO, textureCoordsVBO, brightnessVBO, indicesVBO});
     }
 
     public RawModel loadToVAO(float[] positions, int dimensions) {
         int vaoID = createVAO();
-        this.storeDataInAttributeList(0, dimensions, positions);
+        int vbo = storeDataInAttributeList(0, dimensions, positions);
         unbindVAO();
-        return new RawModel(vaoID, positions.length / dimensions);
+        return new RawModel(vaoID, positions.length / dimensions, new int[] {vbo});
     }
 
     public int loadTexture(String fileName)
@@ -117,13 +118,13 @@ public class Loader
     public void deleteVAO(int vao)
     {
         glDeleteVertexArrays(vao);
-        vaos.remove(Integer.valueOf(vao));
+        vaos.removeAll(Arrays.asList(vao));
     }
 
     public void deleteVBO(int vbo)
     {
         glDeleteBuffers(vbo);
-        vbos.remove(Integer.valueOf(vbo));
+        vbos.removeAll(Arrays.asList(vbo));
     }
 
     public void deleteTexture(int texture)
@@ -170,12 +171,13 @@ public class Loader
         glBindVertexArray(0);
     }
 
-    private void bindIndicesBuffer(int[] indices) {
+    private int bindIndicesBuffer(int[] indices) {
         int vboID = glGenBuffers();
         vbos.add(vboID);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
         IntBuffer buffer = storeDataInIntBuffer(indices);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        return vboID;
     }
 
     public List<Integer> getVaos()

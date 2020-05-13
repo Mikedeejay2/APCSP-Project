@@ -351,8 +351,7 @@ public class Chunk
 
     public void destroy()
     {
-        if(chunkEntity != null)
-            chunkEntity.destroy();
+        chunkEntity.destroy();
         chunkEntity = null;
 //        chunkLoc = null;
 //        chunkCoords = null;

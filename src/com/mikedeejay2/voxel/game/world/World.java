@@ -98,15 +98,9 @@ public class World extends Thread
 
     public void unloadOldChunks()
     {
-        List<Vector3f> locs = new ArrayList<>();
-        try
+        List<Vector3f> locs = new ArrayList<>(allChunks.keySet());
+        for(Vector3f loc : locs)
         {
-            locs = new ArrayList<>(allChunks.keySet());
-        }
-        catch (ConcurrentModificationException e) {}
-        for(int i = 0; i < locs.size(); i++)
-        {
-            Vector3f loc = locs.get(i);
                 if (playerChunk.x - loc.x > World.renderDistanceHorizontal || playerChunk.y - loc.y > World.renderDistanceVertical || playerChunk.z - loc.z > World.renderDistanceHorizontal ||
                         playerChunk.x - loc.x < -World.renderDistanceHorizontal || playerChunk.y - loc.y < -World.renderDistanceVertical || playerChunk.z - loc.z < -World.renderDistanceHorizontal)
                 {
@@ -115,9 +109,11 @@ public class World extends Thread
                     chunk.containsVoxels = false;
                     chunk.hasLoaded = false;
                     chunk.entityShouldBeRemade = false;
-                    chunk.destroy();
                     allChunks.remove(loc);
                     loc = null;
+                    if(chunk.chunkEntity != null) chunk.destroy();
+                    chunk.chunkEntity = null;
+                    chunk = null;
                 }
         }
         locs.clear();

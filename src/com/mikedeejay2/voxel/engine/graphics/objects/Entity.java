@@ -1,6 +1,7 @@
 package com.mikedeejay2.voxel.engine.graphics.objects;
 
 import com.mikedeejay2.voxel.engine.graphics.models.TexturedModel;
+import com.mikedeejay2.voxel.game.Main;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 

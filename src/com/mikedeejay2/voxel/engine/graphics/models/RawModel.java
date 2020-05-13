@@ -16,12 +16,6 @@ public class RawModel {
         this.vbos = vbos;
     }
 
-    public RawModel(int vaoID, int vertexCount){
-        this.vaoID = vaoID;
-        this.vertexCount = vertexCount;
-        vbos = new int[0];
-    }
-
     public int getVaoID() {
         return vaoID;
     }
@@ -34,7 +28,9 @@ public class RawModel {
     {
         Main.getLoader().deleteVAO(vaoID);
         for(int i = 0; i < vbos.length; i++)
+        {
             Main.getLoader().deleteVBO(vbos[i]);
+        }
         vertexCount = 0;
     }
 }
