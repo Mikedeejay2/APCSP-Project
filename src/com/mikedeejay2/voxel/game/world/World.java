@@ -34,7 +34,9 @@ public class World extends Thread
 
     Main instance = Main.getInstance();
     public Vector3d playerPosition;
+    public Vector3d playerPositionPrevious;
     public Vector3f playerChunk;
+    public Vector3f playerChunkPrevious;
 
     public OverworldGenerator overworldGenerator;
 
@@ -42,8 +44,11 @@ public class World extends Thread
 
     public World()
     {
+        world = this;
         playerPosition = new Vector3d(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
+        playerPositionPrevious = new Vector3d(0, 0, 0);
+        playerChunkPrevious = new Vector3f(0, 0, 0);
         allChunks = new ConcurrentHashMap<>();
         overworldGenerator = new OverworldGenerator(this);
 
@@ -71,6 +76,14 @@ public class World extends Thread
             updatePlayerLoc();
             updateChunks();
             getRenderableChunks();
+            try
+            {
+                Thread.sleep(50);
+            }
+            catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -160,6 +173,8 @@ public class World extends Thread
 
     public void updatePlayerLoc()
     {
+        playerChunkPrevious = new Vector3f(playerChunk);
+        playerPositionPrevious = new Vector3d(playerPosition);
         playerPosition = instance.getCamera().getRealPos();
         playerChunk.x = (float)Math.floor(playerPosition.x/CHUNK_SIZE);
         playerChunk.y = (float)Math.floor(playerPosition.y/CHUNK_SIZE);

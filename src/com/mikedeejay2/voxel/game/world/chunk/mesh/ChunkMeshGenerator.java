@@ -12,39 +12,32 @@ import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
 import org.joml.Vector3f;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChunkMeshGenerator
 {
-    public static LinkedList<MeshRequest> meshRequests = new LinkedList<MeshRequest>();
+    public static BlockingQueue<MeshRequest> meshRequests = new LinkedBlockingQueue<MeshRequest>();
     int capacity = Runtime.getRuntime().availableProcessors()*2;
 
     public void consume() throws InterruptedException
     {
-        synchronized(this)
-        {
-            while(meshRequests.size() == 0) wait();
-            MeshRequest meshRequest = meshRequests.removeFirst();
-            createAll(meshRequest);
-            notify();
-        }
+        while(meshRequests.size() == 0) Thread.sleep(1);//wait();
+        MeshRequest meshRequest = meshRequests.take();
+        createAll(meshRequest);
     }
 
     public void produce(ConcurrentLinkedQueue<MeshRequest> queue) throws InterruptedException
     {
-        synchronized(this)
+        while(meshRequests.size() == capacity) Thread.sleep(1);//wait();
+        if(!queue.isEmpty())
         {
-            while(meshRequests.size() == capacity) wait();
-            if(!queue.isEmpty())
-            {
-                MeshRequest meshRequest = queue.remove();
-                meshRequests.add(meshRequest);
-                notify();
-            }
+            MeshRequest meshRequest = queue.remove();
+            meshRequests.add(meshRequest);
         }
     }
 
@@ -62,7 +55,7 @@ public class ChunkMeshGenerator
         ModelTexture modelTexture = VoxelTypes.getTexture(name);
         TexturedModel texturedModel = new TexturedModel(model, modelTexture);
         Entity entity = new Entity(texturedModel, chunk.chunkCoords);
-
+//
         chunk.chunkEntity = entity;
         entity = null;
         chunk.entityShouldBeRemade = false;

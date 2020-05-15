@@ -10,6 +10,7 @@ import com.mikedeejay2.voxel.engine.io.Window;
 import com.mikedeejay2.voxel.engine.loaders.Loader;
 import com.mikedeejay2.voxel.engine.graphics.textures.ModelTexture;
 import com.mikedeejay2.voxel.engine.utils.Raycast;
+import com.mikedeejay2.voxel.game.player.Player;
 import com.mikedeejay2.voxel.game.voxel.VoxelTypes;
 import com.mikedeejay2.voxel.game.world.chunk.Chunk;
 import com.mikedeejay2.voxel.game.world.World;
@@ -39,7 +40,7 @@ public class Main
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
 
-    public Camera camera;
+    public Player player;
 
     public Raycast mousePicker;
 
@@ -48,6 +49,7 @@ public class Main
 
     public void start()
     {
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         instance = this;
         coreEngine = new CoreEngine(1920, 1080, 8000, this);
         coreEngine.start();
@@ -65,23 +67,26 @@ public class Main
 
         ModelTexture loadData = VoxelTypes.getTexture("diamond_block");
 
-        camera = new Camera();
         chunksToRender = new ArrayList<Chunk>();
 
         world = new World();
 
+        player = new Player(new Camera());
+
         this.worldThread = new Thread(world, "world");
         worldThread.start();
+
 
         TextMaster.init(loader, this);
         debugScreen = new DebugScreen(this);
         debugScreen.init();
 
-        mousePicker = new Raycast(camera, renderer.getProjectionMatrix());
+        mousePicker = new Raycast(player.getCamera(), renderer.getProjectionMatrix());
     }
 
     public void update(float delta)
     {
+        player.update(delta);
 //        camera.getRealPos().add(0.001, 0, 0.001);
         mousePicker.update();
 //        System.out.println(mousePicker.getCurrentPoint());
@@ -98,7 +103,7 @@ public class Main
     public void input(float delta)
     {
         if(Input.getKeyDown(GLFW_KEY_F11)) coreEngine.getWindow().setFullscreen(!coreEngine.getWindow().isFullscreen());
-        camera.input(delta);
+        player.getCamera().input(delta);
         if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();
         if(mousePicker.getCurrentPoint() != null)
         {
@@ -114,9 +119,11 @@ public class Main
         for(Chunk chunk : chunksToRender)
         {
             if(chunk != null)
-            chunk.render();
+            {
+                chunk.render();
+            }
         }
-        renderer.render(camera);
+        renderer.render(player.getCamera());
         TextMaster.render();
     }
 
@@ -141,7 +148,7 @@ public class Main
 
     public Camera getCamera()
     {
-        return camera;
+        return player.getCamera();
     }
 
     public Window getWindow()

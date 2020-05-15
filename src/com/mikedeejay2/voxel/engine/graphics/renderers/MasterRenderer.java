@@ -40,11 +40,11 @@ public class MasterRenderer
         chunkMeshProducerThread.start();
 
         chunkMeshConsumerThreads = new ArrayList<Thread>();
-        for(int i =0; i < Runtime.getRuntime().availableProcessors(); i++)
+        for(int i =0; i < Runtime.getRuntime().availableProcessors()/4; i++)
         {
             ChunkMeshConsumerRunnable chunkMeshConsumer = new ChunkMeshConsumerRunnable(chunkMeshGenerator);
             Thread threadConsumer = new Thread(chunkMeshConsumer, "chunkMeshConsumer" + i);
-            threadConsumer.setPriority(Thread.MAX_PRIORITY);
+            threadConsumer.setPriority(Thread.MIN_PRIORITY);
             chunkMeshConsumerThreads.add(threadConsumer);
             threadConsumer.start();
         }

@@ -72,23 +72,23 @@ public class Camera
         }
         if(Input.getKey(GLFW_KEY_SPACE))
         {
-            realPos.y += (speed * delta);
+            realPos.y += (8f * delta);
         }
-        if(Input.getKey(GLFW_KEY_LEFT_SHIFT))
-        {
-            realPos.y += -(speed * delta);
-        }
-        float oldSpeed = speed;
-        speed += Input.getScroll()*multiplier;
-        if(oldSpeed != speed)
-        {
-            multiplier *= REG_MULTIPLIER;
-            if (speed < 0)
-            {
-                multiplier = REG_MULTIPLIER;
-                speed = 0;
-            }
-        }
+//        if(Input.getKey(GLFW_KEY_LEFT_SHIFT))
+//        {
+//            realPos.y += -(speed * delta);
+//        }
+//        float oldSpeed = speed;
+//        speed += Input.getScroll()*multiplier;
+//        if(oldSpeed != speed)
+//        {
+//            multiplier *= REG_MULTIPLIER;
+//            if (speed < 0)
+//            {
+//                multiplier = REG_MULTIPLIER;
+//                speed = 0;
+//            }
+//        }
 
         if (Input.getKey(GLFW_KEY_ESCAPE))
         {

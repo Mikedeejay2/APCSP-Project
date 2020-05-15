@@ -12,7 +12,7 @@ import org.joml.Vector3f;
 
 public class Chunk
 {
-    public short[][][] voxels;
+    public byte[][][] voxels;
 
     public Entity chunkEntity;
 
@@ -41,10 +41,14 @@ public class Chunk
         main = Main.getInstance();
         this.chunkLoc = chunkLoc;
         this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE, chunkLoc.y * World.CHUNK_SIZE, chunkLoc.z * World.CHUNK_SIZE);
-        this.voxels = new short[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
         hasLoaded = false;
         containsVoxels = false;
         shouldRender = false;
+    }
+
+    public void initVoxelArray()
+    {
+        this.voxels = new byte[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
     }
 
     public void populate()
@@ -272,7 +276,10 @@ public class Chunk
     public void render()
     {
         if(!hasLoaded) return;
-        if(entityShouldBeRemade) ChunkMeshGenerator.createChunkEntity(this);
+        if(entityShouldBeRemade && containsVoxels)
+        {
+            ChunkMeshGenerator.createChunkEntity(this);
+        }
         if(chunkEntity == null) return;
         if(shouldRender)
         {
@@ -298,29 +305,33 @@ public class Chunk
 
     public void addVoxel(int x, int y, int z, String name)
     {
-        voxels[x][y][z] = (short) VoxelTypes.getIDFromName(name);
+        if(!containsVoxels) initVoxelArray();
+        voxels[x][y][z] = (byte) VoxelTypes.getIDFromName(name);
         setContainsVoxels(true);
     }
 
     public boolean containsVoxelAtOffset(int x, int y, int z)
     {
-        if(x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1)
+        if(x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1 || !containsVoxels)
             return false;
         return voxels[x][y][z] != 0;
     }
 
     public Voxel getVoxelAtOffset(int x, int y, int z)
     {
+        if(!containsVoxels) return null;
         return new Voxel(voxels[x][y][z], new Vector3f(chunkCoords.x + x, chunkCoords.y + y, chunkCoords.z + z));
     }
 
     public int getVoxelIDAtOffset(int x, int y, int z)
     {
+        if(!containsVoxels) return 0;
         return voxels[x][y][z];
     }
 
     public String getVoxelNameAtOffset(int x, int y, int z)
     {
+        if(!containsVoxels) return null;
         return VoxelTypes.getNameFromID(voxels[x][y][z]);
     }
 
@@ -365,6 +376,7 @@ public class Chunk
 
     public void removeVoxel(int x, int y, int z)
     {
+        if(!containsVoxels) return;
         voxels[x][y][z] = 0;
         if(!edgeCheck(x, y, z)) rebuildChunkMeshSmartNeighbor(false, true, x, y, z);
         else rebuildChunkMeshSmartNeighbor(true, true, x, y, z);
