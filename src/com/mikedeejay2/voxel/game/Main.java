@@ -102,6 +102,7 @@ public class Main
 
     public void input(float delta)
     {
+        player.input(delta);
         if(Input.getKeyDown(GLFW_KEY_F11)) coreEngine.getWindow().setFullscreen(!coreEngine.getWindow().isFullscreen());
         player.getCamera().input(delta);
         if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();

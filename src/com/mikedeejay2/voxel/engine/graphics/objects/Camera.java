@@ -24,17 +24,9 @@ public class Camera
     Vector3f forward;
     Vector3f right;
 
-    private final float REG_SPEED = 20;
-    private final float REG_MULTIPLIER = 1.1f;
-
-    private float multiplier = REG_MULTIPLIER;
-
-    private float speed = REG_SPEED;
-    private float sensitivity = 0.3f;
-
     public Camera()
     {
-        realPos = new Vector3d(-2540, 50, 6740);
+        realPos = new Vector3d(-2540, 5, 6740);
         position = new Vector3f(0, 0, 0);
         viewMatrix = new Matrix4f();
         this.forward = new Vector3f();
@@ -47,48 +39,6 @@ public class Camera
 
     public void input(float delta)
     {
-        viewMatrix.positiveZ(forward).negate().mul(speed * delta);
-        viewMatrix.positiveX(right).mul(speed * delta);
-        if(Input.getKey(GLFW_KEY_LEFT_CONTROL))
-        {
-            speed = REG_SPEED;
-            multiplier = REG_MULTIPLIER;
-        }
-        if(Input.getKey(GLFW_KEY_W))
-        {
-            realPos.add(forward.x, 0, forward.z);
-        }
-        if(Input.getKey(GLFW_KEY_S))
-        {
-            realPos.sub(forward.x, 0, forward.z);
-        }
-        if(Input.getKey(GLFW_KEY_D))
-        {
-            realPos.add(right);
-        }
-        if(Input.getKey(GLFW_KEY_A))
-        {
-            realPos.sub(right);
-        }
-        if(Input.getKey(GLFW_KEY_SPACE))
-        {
-            realPos.y += (8f * delta);
-        }
-//        if(Input.getKey(GLFW_KEY_LEFT_SHIFT))
-//        {
-//            realPos.y += -(speed * delta);
-//        }
-//        float oldSpeed = speed;
-//        speed += Input.getScroll()*multiplier;
-//        if(oldSpeed != speed)
-//        {
-//            multiplier *= REG_MULTIPLIER;
-//            if (speed < 0)
-//            {
-//                multiplier = REG_MULTIPLIER;
-//                speed = 0;
-//            }
-//        }
 
         if (Input.getKey(GLFW_KEY_ESCAPE))
         {
@@ -100,30 +50,6 @@ public class Camera
             Input.setMousePosition(Window.getWindowWidth() / 2.0f, Window.getWindowHeight() / 2.0f);
             Input.setCursor(false);
             mouseLocked = true;
-        }
-
-        if (mouseLocked)
-        {
-            deltaPosX = Input.getMousePositionX() - (Window.getWindowWidth() / 2.0f);
-            deltaPosY = Input.getMousePositionY() - (Window.getWindowHeight() / 2.0f);
-
-            boolean rotY = deltaPosX != 0;
-            boolean rotX = deltaPosY!= 0;
-
-            if (rotY)
-            {
-                yaw += deltaPosX * sensitivity;
-                if(yaw >= 360) yaw = 0;
-                if(yaw < 0) yaw = 360;
-            }
-            if (rotX)
-            {
-                pitch += deltaPosY * sensitivity;
-                if(pitch > 90) pitch = 90;
-                if(pitch < -90) pitch = -90;
-            }
-
-            Input.setMousePosition(Window.getWindowWidth() / 2.0f, Window.getWindowHeight() / 2.0f);
         }
     }
 
@@ -155,5 +81,85 @@ public class Camera
     public Vector3d getRealPos()
     {
         return realPos;
+    }
+
+    public void setPosition(Vector3f position)
+    {
+        this.position = position;
+    }
+
+    public void setRealPos(Vector3d realPos)
+    {
+        this.realPos = realPos;
+    }
+
+    public void setViewMatrix(Matrix4f viewMatrix)
+    {
+        this.viewMatrix = viewMatrix;
+    }
+
+    public void setPitch(float pitch)
+    {
+        this.pitch = pitch;
+    }
+
+    public void setYaw(float yaw)
+    {
+        this.yaw = yaw;
+    }
+
+    public void setRoll(float roll)
+    {
+        this.roll = roll;
+    }
+
+    public double getDeltaPosX()
+    {
+        return deltaPosX;
+    }
+
+    public void setDeltaPosX(double deltaPosX)
+    {
+        this.deltaPosX = deltaPosX;
+    }
+
+    public double getDeltaPosY()
+    {
+        return deltaPosY;
+    }
+
+    public void setDeltaPosY(double deltaPosY)
+    {
+        this.deltaPosY = deltaPosY;
+    }
+
+    public boolean isMouseLocked()
+    {
+        return mouseLocked;
+    }
+
+    public void setMouseLocked(boolean mouseLocked)
+    {
+        this.mouseLocked = mouseLocked;
+    }
+
+    public Vector3f getForward()
+    {
+        return forward;
+    }
+
+    public void setForward(Vector3f forward)
+    {
+        this.forward = forward;
+    }
+
+    public Vector3f getRight()
+    {
+        return right;
+    }
+
+    public void setRight(Vector3f right)
+    {
+        this.right = right;
     }
 }
