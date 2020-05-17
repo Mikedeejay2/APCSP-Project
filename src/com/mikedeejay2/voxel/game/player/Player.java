@@ -15,13 +15,15 @@ public class Player
 
     private Vector3f velocity;
 
-    private final float REG_SPEED = 20;
-    private final float JUMP_SPEED = 8;
+    private final float REG_SPEED = 10;
+    private final float JUMP_SPEED = 9.5f;
 
     private float speed = REG_SPEED;
     private float sensitivity = 0.3f;
 
     private boolean falling = false;
+
+    public boolean jumping = false;
 
     private PlayerCollision playerGravity;
 
@@ -63,10 +65,11 @@ public class Player
         {
             velocity.sub(camera.getRight());
         }
-        if(Input.getKey(GLFW_KEY_SPACE))
+        if(Input.getKey(GLFW_KEY_SPACE) && !jumping)
         {
-            velocity.y += (JUMP_SPEED * delta);
+            jumping = true;
         }
+        if(jumping) velocity.y += (JUMP_SPEED * delta);
 
 
 

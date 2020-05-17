@@ -7,6 +7,8 @@ import org.joml.Vector3f;
 
 public class PlayerCollision
 {
+    private static final float offset = 0.1f;
+
     private Player player;
 
     private Main instance;
@@ -32,6 +34,16 @@ public class PlayerCollision
         if(collidesEast() && velocity.x < 0) velocity.x = 0;
         if(collidesNorth() && velocity.z > 0) velocity.z = 0;
         if(collidesSouth() && velocity.z < 0) velocity.z = 0;
+        if(!collidesDown())
+        {
+            fallSpeed -= 0.005f;
+            velocity.y += fallSpeed*delta;
+        }
+        else
+        {
+            fallSpeed = 0;
+            player.jumping = false;
+        }
     }
 
     public boolean collidesDown()
@@ -40,21 +52,21 @@ public class PlayerCollision
         pos.add(velocity);
         return
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
-                (int) Math.round(pos.z + player.getAabb().z1)) ||
+                (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
-                (int) Math.round(pos.z + player.getAabb().z2)) ||
+                (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
-                (int) Math.round(pos.z + player.getAabb().z2)) ||
+                (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
-                (int) Math.round(pos.z + player.getAabb().z1));
+                (int) Math.round(pos.z + player.getAabb().z1 + offset));
     }
 
     public boolean collidesUp()
@@ -63,21 +75,21 @@ public class PlayerCollision
         pos.add(velocity);
         return
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
-                (int) Math.round(pos.z + player.getAabb().z1)) ||
+                (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
-                (int) Math.round(pos.z + player.getAabb().z2)) ||
+                (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
-                (int) Math.round(pos.z + player.getAabb().z2)) ||
+                (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
-                (int) Math.round(pos.z + player.getAabb().z1));
+                (int) Math.round(pos.z + player.getAabb().z1 + offset));
     }
 
     public boolean collidesWest()
@@ -88,19 +100,19 @@ public class PlayerCollision
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y),
-                (int) Math.round(pos.z + player.getAabb().z1)) ||
+                (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y - 1),
-                (int) Math.round(pos.z + player.getAabb().z1)) ||
+                (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y),
-                (int) Math.round(pos.z + player.getAabb().z2)) ||
+                (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y - 1),
-                (int) Math.round(pos.z + player.getAabb().z2));
+                (int) Math.round(pos.z + player.getAabb().z2 - offset));
     }
 
     public boolean collidesEast()
@@ -111,19 +123,19 @@ public class PlayerCollision
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y),
-                (int) Math.round(pos.z + player.getAabb().z1)) ||
+                (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y - 1),
-                (int) Math.round(pos.z + player.getAabb().z1)) ||
+                (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y),
-                (int) Math.round(pos.z + player.getAabb().z2)) ||
+                (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
         currentWorld.isVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y - 1),
-                (int) Math.round(pos.z + player.getAabb().z2));
+                (int) Math.round(pos.z + player.getAabb().z2 - offset));
     }
 
     public boolean collidesNorth()
@@ -132,19 +144,19 @@ public class PlayerCollision
         pos.add(velocity);
         return
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z2)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z2)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z2)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z2));
     }
@@ -155,19 +167,19 @@ public class PlayerCollision
         pos.add(velocity);
         return
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z1)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x1),
+                (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z1)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z1)) ||
         currentWorld.isVoxelAtCoordinate(
-                (int) Math.round(pos.x + player.getAabb().x2),
+                (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z1));
     }

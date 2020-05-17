@@ -23,8 +23,6 @@ public class World extends Thread
     public static int renderDistanceHorizontal = 16;
     public static int renderDistanceVertical = 8;
 
-    public static World world;
-
     ChunkPC chunkPC;
 
     ChunkProducerRunnable chunkProducer;
@@ -44,7 +42,6 @@ public class World extends Thread
 
     public World()
     {
-        world = this;
         playerPosition = new Vector3d(0, 0, 0);
         playerChunk = new Vector3f(0, 0, 0);
         playerPositionPrevious = new Vector3d(0, 0, 0);
@@ -190,13 +187,8 @@ public class World extends Thread
 
     public void populateChunk(Chunk chunk)
     {
-        overworldGenerator.genTerrain(chunk);
-//        overworldGenerator.genFlat(chunk);
-    }
-
-    public static World getWorld()
-    {
-        return world;
+//        overworldGenerator.genTerrain(chunk);
+        overworldGenerator.genFlat(chunk);
     }
 
     public static int getChunkSize()
