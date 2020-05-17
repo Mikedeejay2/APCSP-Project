@@ -5,6 +5,8 @@ import com.mikedeejay2.apcspfinal.world.World;
 import org.joml.Vector3f;
 
 import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChunkPC
 {
@@ -12,7 +14,7 @@ public class ChunkPC
 
     World world = Main.getInstance().world;
 
-    public static LinkedList<Chunk> chunksToBeProcessed = new LinkedList<Chunk>();
+    public static BlockingQueue<Chunk> chunksToBeProcessed = new LinkedBlockingQueue<>();
     public static int capacity = Runtime.getRuntime().availableProcessors()*2;
 
     private Vector3f playerChunk;
@@ -42,10 +44,10 @@ public class ChunkPC
                                 Vector3f currentChunkLoc = new Vector3f(x, y, z);
                                 if (!world.chunkAtChunkLoc(currentChunkLoc))
                                 {
-                                    while (chunksToBeProcessed.size() == capacity) wait();
+                                    while (chunksToBeProcessed.size() == capacity) Thread.sleep(1);
                                     Chunk chunk = world.generateChunk(currentChunkLoc);
                                     chunksToBeProcessed.add(chunk);
-                                    notify();
+//                                    notify();
                                 }
                                 if(breakout) break;
                             }
@@ -62,13 +64,10 @@ public class ChunkPC
 
     public void consume(World world) throws InterruptedException
     {
-        synchronized (this)
-        {
-            while (chunksToBeProcessed.size() == 0) wait();
-            Chunk chunk = chunksToBeProcessed.removeFirst();
+            while (chunksToBeProcessed.size() == 0) Thread.sleep(1);
+            Chunk chunk = chunksToBeProcessed.take();
             chunk.populate();
             world.chunksProcessedThisTick++;
-            notify();
-        }
+//            notify();
     }
 }

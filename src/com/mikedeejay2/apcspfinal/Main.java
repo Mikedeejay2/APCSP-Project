@@ -5,6 +5,7 @@ import com.mikedeejay2.apcspfinal.debug.DebugScreen;
 import com.mikedeejay2.apcspfinal.graphics.font.TextMaster;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.graphics.renderers.MasterRenderer;
+import com.mikedeejay2.apcspfinal.graphics.textures.TextureAtlas;
 import com.mikedeejay2.apcspfinal.io.Input;
 import com.mikedeejay2.apcspfinal.io.Window;
 import com.mikedeejay2.apcspfinal.loaders.Loader;
@@ -65,7 +66,7 @@ public class Main
 
         Input.init();
 
-        ModelTexture loadData = VoxelTypes.getTextureAtlas();
+        TextureAtlas loadData = VoxelTypes.getTextureAtlas();
 
         chunksToRender = new ArrayList<Chunk>();
 

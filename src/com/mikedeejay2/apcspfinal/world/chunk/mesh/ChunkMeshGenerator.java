@@ -50,8 +50,7 @@ public class ChunkMeshGenerator
         RawModel model = Main.getLoader().loadToVAO(chunk.verticesTemp, chunk.textureCoordsTemp, chunk.indicesTemp, chunk.brightnessTemp);
 
 
-        String name = generateTemporaryBlockName(chunk);
-        ModelTexture modelTexture = VoxelTypes.getTextureAtlas();
+        ModelTexture modelTexture = VoxelTypes.getTextureAtlas().getTexture();
         TexturedModel texturedModel = new TexturedModel(model, modelTexture);
         Entity entity = new Entity(texturedModel, chunk.chunkCoords);
 //
@@ -157,42 +156,42 @@ public class ChunkMeshGenerator
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
         {
             createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
-            createTextureCoord(textureCoordsList);
+            createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
             createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, false, DirectionEnum.WEST);
         }
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
         {
             createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
-            createTextureCoord(textureCoordsList);
+            createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
             createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, false, DirectionEnum.EAST);
         }
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
         {
             createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
-            createTextureCoord(textureCoordsList);
+            createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
             createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, false, DirectionEnum.UP);
         }
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
         {
             createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
-            createTextureCoord(textureCoordsList);
+            createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
             createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.DOWN);
         }
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
         {
             createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
-            createTextureCoord(textureCoordsList);
+            createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
             createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.NORTH);
         }
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
         {
             createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
-            createTextureCoord(textureCoordsList);
+            createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
             createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.SOUTH);
         }
@@ -206,7 +205,7 @@ public class ChunkMeshGenerator
             if(x != World.CHUNK_SIZE - 1)
             {
                 createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
                 createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
             }
@@ -216,7 +215,7 @@ public class ChunkMeshGenerator
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
                 {
                     createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                     createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
                     createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
                 }
@@ -228,7 +227,7 @@ public class ChunkMeshGenerator
             if(x != 0)
             {
                 createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
                 createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
             }
@@ -238,7 +237,7 @@ public class ChunkMeshGenerator
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
                 {
                     createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                     createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
                     createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
                 }
@@ -250,7 +249,7 @@ public class ChunkMeshGenerator
             if(y != World.CHUNK_SIZE - 1)
             {
                 createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
                 createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
             }
@@ -260,7 +259,7 @@ public class ChunkMeshGenerator
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
                 {
                     createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                     createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
                     createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
                 }
@@ -272,7 +271,7 @@ public class ChunkMeshGenerator
             if(y != 0)
             {
                 createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
             }
@@ -282,7 +281,7 @@ public class ChunkMeshGenerator
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && chunk.hasLoaded)
                 {
                     createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                     createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
                     createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
                 }
@@ -294,7 +293,7 @@ public class ChunkMeshGenerator
             if(z != World.CHUNK_SIZE - 1)
             {
                 createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
             }
@@ -304,7 +303,7 @@ public class ChunkMeshGenerator
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
                 {
                     createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                     createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
                     createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
                 }
@@ -316,7 +315,7 @@ public class ChunkMeshGenerator
             if(z != 0)
             {
                 createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
             }
@@ -326,7 +325,7 @@ public class ChunkMeshGenerator
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
                 {
                     createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                     createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
                     createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
                 }
@@ -1036,95 +1035,96 @@ public class ChunkMeshGenerator
             }
     }
 
-    private void createTextureCoord(List<Float> textureCoordsList)
+    private void createTextureCoord(List<Float> textureCoordsList, int id)
     {
-        for (int i = 0; i < VoxelShape.getTextureCoordsSingleSide().length; i++)
+        float[] textureCoords = VoxelTypes.getTextureAtlas().getTextureCoords(id);
+        for (int i = 0; i < textureCoords.length; i++)
         {
-            textureCoordsList.add(VoxelShape.getTextureCoordsSingleSide()[i]);
+            textureCoordsList.add(textureCoords[i]);
         }
     }
 
     private void createTextureCoordSlice(Chunk chunk, List<Float> textureCoordsList, int x, int y, int z)
     {
-        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createTextureCoord(textureCoordsList);
-        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createTextureCoord(textureCoordsList);
-        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createTextureCoord(textureCoordsList);
-        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createTextureCoord(textureCoordsList);
-        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createTextureCoord(textureCoordsList);
-        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createTextureCoord(textureCoordsList);
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
     }
 
     private void createTextureCoordSliceEdgeCase(World world, Chunk chunk, List<Float> textureCoordsList, int x, int y, int z)
     {
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
                 {
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
                 {
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
                 {
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && newChunk.hasLoaded)
                 {
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
                 {
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
-                createTextureCoord(textureCoordsList);
+                createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && chunk.hasLoaded)
                 {
-                    createTextureCoord(textureCoordsList);
+                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
                 }
             }
     }
@@ -1225,30 +1225,5 @@ public class ChunkMeshGenerator
                     createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
                 }
             }
-    }
-
-    private static String generateTemporaryBlockName(Chunk chunk)
-    {
-        String name = "";
-        name = "lime_concrete";
-        if(chunk.chunkLoc.y < 0) name = "light_blue_concrete";
-//        if (Math.abs(chunk.chunkLoc.x) % 2 == 0 && Math.abs(chunk.chunkLoc.z) % 2 == 0 && Math.abs(chunk.chunkLoc.y) % 2 == 0)
-//            name = "white_concrete";
-//        else if (Math.abs(chunk.chunkLoc.x) % 2 == 0 && Math.abs(chunk.chunkLoc.z) % 2 == 1 && Math.abs(chunk.chunkLoc.y) % 2 == 0)
-//            name = "black_concrete";
-//        else if (Math.abs(chunk.chunkLoc.x) % 2 == 1 && Math.abs(chunk.chunkLoc.z) % 2 == 1 && Math.abs(chunk.chunkLoc.y) % 2 == 0)
-//            name = "white_concrete";
-//        else if (Math.abs(chunk.chunkLoc.x) % 2 == 1 && Math.abs(chunk.chunkLoc.z) % 2 == 0 && Math.abs(chunk.chunkLoc.y) % 2 == 0)
-//            name = "black_concrete";
-//        else if (Math.abs(chunk.chunkLoc.x) % 2 == 0 && Math.abs(chunk.chunkLoc.z) % 2 == 0 && Math.abs(chunk.chunkLoc.y) % 2 == 1)
-//            name = "black_concrete";
-//        else if (Math.abs(chunk.chunkLoc.x) % 2 == 0 && Math.abs(chunk.chunkLoc.z) % 2 == 1 && Math.abs(chunk.chunkLoc.y) % 2 == 1)
-//            name = "white_concrete";
-//        else if (Math.abs(chunk.chunkLoc.x) % 2 == 1 && Math.abs(chunk.chunkLoc.z) % 2 == 1 && Math.abs(chunk.chunkLoc.y) % 2 == 1)
-//            name = "black_concrete";
-//        else if (Math.abs(chunk.chunkLoc.x) % 2 == 1 && Math.abs(chunk.chunkLoc.z) % 2 == 0 && Math.abs(chunk.chunkLoc.y) % 2 == 1)
-//            name = "white_concrete";
-
-        return name;
     }
 }

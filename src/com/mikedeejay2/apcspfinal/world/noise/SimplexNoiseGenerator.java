@@ -1,4 +1,4 @@
-package com.mikedeejay2.apcspfinal.noise;
+package com.mikedeejay2.apcspfinal.world.noise;
 
 /*
  * OpenSimplex Noise in Java.

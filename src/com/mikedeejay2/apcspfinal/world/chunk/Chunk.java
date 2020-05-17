@@ -310,9 +310,23 @@ public class Chunk
 
     public boolean containsVoxelAtOffset(int x, int y, int z)
     {
-        if(x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1 || !containsVoxels)
-            return false;
+        if(invalidCheck(x, y, z)) return false;
         return voxels[x][y][z] != 0;
+    }
+
+    public boolean containsVoxelAtOffsetSolid(int x, int y, int z)
+    {
+        if(invalidCheck(x, y, z)) return false;
+        int id = voxels[x][y][z];
+        if(id == 0) return false;
+        Voxel voxel = VoxelTypes.getFromID(id);
+        if(voxel == null) return true;
+        return voxel.isSolid();
+    }
+
+    public boolean invalidCheck(int x, int y, int z)
+    {
+        return x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1 || !containsVoxels;
     }
 
     public Voxel getVoxelAtOffset(int x, int y, int z)

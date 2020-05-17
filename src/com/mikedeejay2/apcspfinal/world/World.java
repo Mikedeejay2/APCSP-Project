@@ -187,8 +187,8 @@ public class World extends Thread
 
     public void populateChunk(Chunk chunk)
     {
-//        overworldGenerator.genTerrain(chunk);
-        overworldGenerator.genFlat(chunk);
+        overworldGenerator.genTerrain(chunk);
+//        overworldGenerator.genFlat(chunk);
     }
 
     public static int getChunkSize()
@@ -259,6 +259,23 @@ public class World extends Thread
             if(newY < 0) newY += (CHUNK_SIZE);
             if(newZ < 0) newZ += (CHUNK_SIZE);
             return chunk.containsVoxelAtOffset(newX, newY, newZ);
+        }
+        return false;
+    }
+
+    public boolean isCollidableVoxelAtCoordinate(int x, int y, int z)
+    {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null)
+        {
+            if(!chunk.hasLoaded) return false;
+            int newX = ((x)%(CHUNK_SIZE));
+            int newY = ((y)%(CHUNK_SIZE));
+            int newZ = ((z)%(CHUNK_SIZE));
+            if(newX < 0) newX += (CHUNK_SIZE);
+            if(newY < 0) newY += (CHUNK_SIZE);
+            if(newZ < 0) newZ += (CHUNK_SIZE);
+            return chunk.containsVoxelAtOffsetSolid(newX, newY, newZ);
         }
         return false;
     }

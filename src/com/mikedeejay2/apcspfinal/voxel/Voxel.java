@@ -9,6 +9,8 @@ public class Voxel
 
     private Vector3f position;
 
+    private boolean solid;
+
     @Deprecated
     public Voxel(String name)
     {
@@ -16,6 +18,7 @@ public class Voxel
         this.name = parentVoxel.name;
         this.ID = parentVoxel.ID;
         this.position = parentVoxel.position;
+        this.solid = parentVoxel.isSolid();
     }
 
     public Voxel(int ID, Vector3f position)
@@ -23,15 +26,17 @@ public class Voxel
         Voxel parentVoxel = VoxelTypes.getFromID(ID);
         this.name = parentVoxel.name;
         this.ID = parentVoxel.ID;
+        this.solid = parentVoxel.isSolid();
         this.position = position;
     }
 
     //Original
-    public Voxel(String name, int ID)
+    public Voxel(String name, int ID, boolean solid)
     {
         this.name = name;
         this.ID = ID;
         this.position = null;
+        this.solid = solid;
     }
 
     public Vector3f getPosition()
@@ -47,5 +52,10 @@ public class Voxel
     public int getID()
     {
         return ID;
+    }
+
+    public boolean isSolid()
+    {
+        return solid;
     }
 }

@@ -51,19 +51,19 @@ public class PlayerCollision
         Vector3d pos = new Vector3d(player.getPosition());
         pos.add(velocity);
         return
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y1),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset));
@@ -74,19 +74,19 @@ public class PlayerCollision
         Vector3d pos = new Vector3d(player.getPosition());
         pos.add(velocity);
         return
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y + player.getAabb().y2),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset));
@@ -97,19 +97,19 @@ public class PlayerCollision
         Vector3d pos = new Vector3d(player.getPosition());
         pos.add(velocity);
         return
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset));
@@ -120,19 +120,19 @@ public class PlayerCollision
         Vector3d pos = new Vector3d(player.getPosition());
         pos.add(velocity);
         return
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z1 + offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z2 - offset));
@@ -143,19 +143,19 @@ public class PlayerCollision
         Vector3d pos = new Vector3d(player.getPosition());
         pos.add(velocity);
         return
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z2)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z2)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z2)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z2));
@@ -166,19 +166,19 @@ public class PlayerCollision
         Vector3d pos = new Vector3d(player.getPosition());
         pos.add(velocity);
         return
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z1)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x1 + offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z1)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y),
                 (int) Math.round(pos.z + player.getAabb().z1)) ||
-        currentWorld.isVoxelAtCoordinate(
+        currentWorld.isCollidableVoxelAtCoordinate(
                 (int) Math.round(pos.x + player.getAabb().x2 - offset),
                 (int) Math.round(pos.y - 1),
                 (int) Math.round(pos.z + player.getAabb().z1));

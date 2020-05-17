@@ -177,9 +177,9 @@ public class VoxelShape
     private static float[] textureCoordsSingleSide = new float[]
             {
                     0, 0,
-                    0, 1,
-                    1, 1,
-                    1, 0
+                    0, 0.0078125f,
+                    0.0078125f, 0.0078125f,
+                    0.0078125f, 0
             };
 
     private static float[] brightness = new float[]

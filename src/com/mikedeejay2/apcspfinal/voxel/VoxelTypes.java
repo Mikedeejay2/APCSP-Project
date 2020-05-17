@@ -2,6 +2,7 @@ package com.mikedeejay2.apcspfinal.voxel;
 
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.graphics.textures.ModelTexture;
+import com.mikedeejay2.apcspfinal.graphics.textures.TextureAtlas;
 
 import java.util.HashMap;
 
@@ -10,21 +11,22 @@ public class VoxelTypes
     public static HashMap<String, Voxel> voxelsByName = new HashMap<String, Voxel>();
     public static HashMap<Integer, Voxel> voxelsByID = new HashMap<Integer, Voxel>();
 
-    public static ModelTexture textureAtlas = new ModelTexture(Main.loader.loadTexture("block/blocks.png"));
+    public static TextureAtlas textureAtlas = new TextureAtlas("block/blocks.png", Main.getLoader());
 
-    public static final Voxel dirt = loadVoxel("dirt", 1);
-    public static final Voxel grass = loadVoxel("grass", 2);
-    public static final Voxel stone = loadVoxel("stone", 3);
-
-
-
+    public static final Voxel dirt = loadVoxel("dirt", 1, true);
+    public static final Voxel grass = loadVoxel("grass", 2, true);
+    public static final Voxel stone = loadVoxel("stone", 3, true);
+    public static final Voxel water = loadVoxel("water", 4, false);
 
 
 
 
-    private static Voxel loadVoxel(String name, int ID)
+
+
+
+    private static Voxel loadVoxel(String name, int ID, boolean solid)
     {
-        Voxel voxel = new Voxel(name, ID);
+        Voxel voxel = new Voxel(name, ID, solid);
         voxelsByName.put(name, voxel);
         voxelsByID.put(ID, voxel);
         return voxel;
@@ -58,7 +60,7 @@ public class VoxelTypes
         return null;
     }
 
-    public static ModelTexture getTextureAtlas()
+    public static TextureAtlas getTextureAtlas()
     {
         return textureAtlas;
     }

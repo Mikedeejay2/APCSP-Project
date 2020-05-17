@@ -6,6 +6,7 @@ import org.lwjgl.BufferUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -97,6 +98,36 @@ public class Loader
             System.exit(1);
         }
         return -1;
+    }
+
+    public int getImageWidth(String fileName)
+    {
+        int width = 0;
+        try
+        {
+            BufferedImage image = ImageIO.read(new File("./res/textures/" + fileName));
+            width = image.getWidth();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        return width;
+    }
+
+    public int getImageHeight(String fileName)
+    {
+        int height = 0;
+        try
+        {
+            BufferedImage image = ImageIO.read(new File("./res/textures/" + fileName));
+            height = image.getHeight();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        return height;
     }
 
     public void cleanUp()
