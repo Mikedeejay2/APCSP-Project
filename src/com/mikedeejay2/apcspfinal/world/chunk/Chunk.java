@@ -6,11 +6,12 @@ import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshGenerator;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.joml.Vector3f;
 
 public class Chunk
 {
-    public byte[][][] voxels;
+    public short[][][] voxels;
 
     public Entity chunkEntity;
 
@@ -46,7 +47,7 @@ public class Chunk
 
     public void initVoxelArray()
     {
-        this.voxels = new byte[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
+        this.voxels = new short[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
     }
 
     public void populate()
@@ -331,8 +332,8 @@ public class Chunk
 
     public Voxel getVoxelAtOffset(int x, int y, int z)
     {
-        if(!containsVoxels) return null;
-        return new Voxel(voxels[x][y][z], new Vector3f(chunkCoords.x + x, chunkCoords.y + y, chunkCoords.z + z));
+        if(!containsVoxels || voxels[x][y][z] == 0) return null;
+        return VoxelTypes.getFromID(voxels[x][y][z]);
     }
 
     public int getVoxelIDAtOffset(int x, int y, int z)

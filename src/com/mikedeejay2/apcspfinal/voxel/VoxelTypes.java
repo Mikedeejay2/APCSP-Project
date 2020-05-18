@@ -1,17 +1,19 @@
 package com.mikedeejay2.apcspfinal.voxel;
 
 import com.mikedeejay2.apcspfinal.Main;
-import com.mikedeejay2.apcspfinal.graphics.textures.ModelTexture;
 import com.mikedeejay2.apcspfinal.graphics.textures.TextureAtlas;
 
 import java.util.HashMap;
 
 public class VoxelTypes
 {
-    public static HashMap<String, Voxel> voxelsByName = new HashMap<String, Voxel>();
-    public static HashMap<Integer, Voxel> voxelsByID = new HashMap<Integer, Voxel>();
+    public static final int AMT_OF_VOXELS = 5;
 
-    public static TextureAtlas textureAtlas = new TextureAtlas("block/blocks.png", Main.getLoader());
+    public static HashMap<String, Voxel> voxelsByName = new HashMap<String, Voxel>();
+    public static Voxel[] voxelsByID = new Voxel[AMT_OF_VOXELS+1];
+
+
+    public static final TextureAtlas textureAtlas = new TextureAtlas("block/blocks.png", Main.getLoader());
 
     public static final Voxel dirt = loadVoxel("dirt", 1, true);
     public static final Voxel grass = loadVoxel("grass", 2, true);
@@ -29,7 +31,7 @@ public class VoxelTypes
     {
         Voxel voxel = new Voxel(name, ID, solid);
         voxelsByName.put(name, voxel);
-        voxelsByID.put(ID, voxel);
+        voxelsByID[ID] = voxel;
         return voxel;
     }
 
@@ -42,8 +44,8 @@ public class VoxelTypes
 
     public static Voxel getFromID(int ID)
     {
-        if(voxelsByID.containsKey(ID))
-            return voxelsByID.get(ID);
+        if(ID < voxelsByID.length)
+            return voxelsByID[ID];
         return null;
     }
 
@@ -56,8 +58,8 @@ public class VoxelTypes
 
     public static String getNameFromID(int ID)
     {
-        if(voxelsByID.containsKey(ID))
-            return voxelsByID.get(ID).getName();
+        if(ID < voxelsByID.length)
+            return voxelsByID[ID].getName();
         return null;
     }
 

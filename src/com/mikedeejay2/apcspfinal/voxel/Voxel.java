@@ -11,26 +11,6 @@ public class Voxel
 
     private boolean solid;
 
-    @Deprecated
-    public Voxel(String name)
-    {
-        Voxel parentVoxel = VoxelTypes.getFromName(name);
-        this.name = parentVoxel.name;
-        this.ID = parentVoxel.ID;
-        this.position = parentVoxel.position;
-        this.solid = parentVoxel.isSolid();
-    }
-
-    public Voxel(int ID, Vector3f position)
-    {
-        Voxel parentVoxel = VoxelTypes.getFromID(ID);
-        this.name = parentVoxel.name;
-        this.ID = parentVoxel.ID;
-        this.solid = parentVoxel.isSolid();
-        this.position = position;
-    }
-
-    //Original
     public Voxel(String name, int ID, boolean solid)
     {
         this.name = name;
