@@ -38,7 +38,8 @@ public class OverworldGenerator
                         {
                             chunk.addVoxel(x, height - i, z, "dirt");
                         }
-                        chunk.addVoxel(x, height, z, "grass");
+                        if(chunk.getChunkLoc().y >= 0) chunk.addVoxel(x, height, z, "grass");
+                        else chunk.addVoxel(x, height, z, "sand");
                     }
                     else
                     {

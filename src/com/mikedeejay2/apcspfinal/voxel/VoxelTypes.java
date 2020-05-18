@@ -17,6 +17,7 @@ public class VoxelTypes
     public static final Voxel grass = loadVoxel("grass", 2, true);
     public static final Voxel stone = loadVoxel("stone", 3, true);
     public static final Voxel water = loadVoxel("water", 4, false);
+    public static final Voxel sand = loadVoxel("sand", 5, true);
 
 
 
