@@ -1,5 +1,6 @@
 package com.mikedeejay2.apcspfinal.graphics.renderers;
 
+import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.graphics.models.TexturedModel;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
@@ -40,7 +41,7 @@ public class MasterRenderer
         chunkMeshProducerThread.start();
 
         chunkMeshConsumerThreads = new ArrayList<Thread>();
-        for(int i =0; i < Runtime.getRuntime().availableProcessors()/3; i++)
+        for(int i =0; i < Runtime.getRuntime().availableProcessors()/4; i++)
         {
             ChunkMeshConsumerRunnable chunkMeshConsumer = new ChunkMeshConsumerRunnable(chunkMeshGenerator);
             Thread threadConsumer = new Thread(chunkMeshConsumer, "chunkMeshConsumer" + i);
@@ -84,12 +85,12 @@ public class MasterRenderer
 
     public void genMesh(Chunk chunk, World world)
     {
-        chunkMeshProducer.addRequest(new MeshRequest(chunk, world));
+        chunkMeshProducer.addRequest(new MeshRequest(chunk, world, false));
     }
 
     public void genMeshImmediate(Chunk chunk, World world)
     {
-        chunkMeshProducer.addRequestImmediate(new MeshRequest(chunk, world));
+        chunkMeshProducer.addRequestImmediate(new MeshRequest(chunk, world, true));
 //        chunkMeshGenerator.forceRequest(new MeshRequest(chunk, world, 0));
     }
 

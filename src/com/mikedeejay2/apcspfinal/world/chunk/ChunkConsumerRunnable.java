@@ -25,9 +25,6 @@ public class ChunkConsumerRunnable implements Runnable
                 chunkPC.consume(world);
             }
         }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        catch (InterruptedException e) {}
     }
 }

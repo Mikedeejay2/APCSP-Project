@@ -18,6 +18,7 @@ import com.mikedeejay2.apcspfinal.player.Player;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshConsumerRunnable;
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.EntityCreator;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Main
     public MasterRenderer renderer;
 
     public World world;
+    EntityCreator entityCreator;
     Thread worldThread;
 
     public ChunkMeshProducerRunnable chunkMeshProducer;
@@ -80,6 +82,8 @@ public class Main
         this.worldThread = new Thread(world, "world");
         worldThread.start();
 
+        entityCreator = new EntityCreator();
+
 
         TextMaster.init(loader, this);
         debugScreen = new DebugScreen(this);
@@ -90,6 +94,7 @@ public class Main
 
     public void update(float delta)
     {
+        entityCreator.update();
         player.update(delta);
     }
 
@@ -214,5 +219,10 @@ public class Main
     public ArrayList<Chunk> getChunksToRender()
     {
         return chunksToRender;
+    }
+
+    public EntityCreator getEntityCreator()
+    {
+        return entityCreator;
     }
 }

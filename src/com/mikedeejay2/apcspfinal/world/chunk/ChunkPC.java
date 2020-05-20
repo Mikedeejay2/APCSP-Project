@@ -65,9 +65,13 @@ public class ChunkPC
     public void consume(World world) throws InterruptedException
     {
             while (chunksToBeProcessed.size() == 0) Thread.sleep(1);
-            Chunk chunk = chunksToBeProcessed.take();
-            chunk.populate();
-            world.chunksProcessedThisTick++;
+            try
+            {
+                Chunk chunk = chunksToBeProcessed.take();
+                chunk.populate();
+                world.chunksProcessedThisTick++;
+            }
+            catch(IllegalMonitorStateException e) {}
 //            notify();
     }
 }

@@ -42,33 +42,6 @@ public class ChunkMeshGenerator
         }
     }
 
-    public static Entity createChunkEntity(Chunk chunk)
-    {
-        if(chunk.verticesTemp == null || chunk.textureCoordsTemp == null || chunk.indicesTemp == null || chunk.brightnessTemp == null) return null;
-
-        if(chunk.chunkEntity != null) chunk.chunkEntity.destroy();
-        chunk.chunkEntity = null;
-
-        RawModel model = Main.getLoader().loadToVAO(chunk.verticesTemp, chunk.textureCoordsTemp, chunk.indicesTemp, chunk.brightnessTemp);
-
-
-        ModelTexture modelTexture = VoxelTypes.getTextureAtlas().getTexture();
-        TexturedModel texturedModel = new TexturedModel(model, modelTexture);
-        Entity entity = new Entity(texturedModel, chunk.chunkCoords);
-//
-        chunk.chunkEntity = entity;
-        entity = null;
-        chunk.entityShouldBeRemade = false;
-
-        chunk.shouldRender = chunk.verticesTemp.length >= 12;
-
-        chunk.verticesTemp = null;
-        chunk.textureCoordsTemp = null;
-        chunk.indicesTemp = null;
-        chunk.brightnessTemp = null;
-        return entity;
-    }
-
     public void createAll(MeshRequest meshRequest)
     {
         Chunk chunk = meshRequest.getChunk();
@@ -106,7 +79,14 @@ public class ChunkMeshGenerator
 
             chunk.isAlreadyBeingCalculated = false;
             world.chunksProcessedThisTick++;
-            chunk.entityShouldBeRemade = true;
+            if(meshRequest.isImmediate())
+            {
+                Main.getInstance().getEntityCreator().addChunkImmediate(chunk);
+            }
+            else
+            {
+                chunk.entityShouldBeRemade = true;
+            }
         }
         else
         {
@@ -140,7 +120,8 @@ public class ChunkMeshGenerator
                 {
                     if (chunk.containsVoxelAtOffset(x, y, z))
                     {
-                        if(chunk.getVoxelAtOffset(x, y, z).getVoxelShape() instanceof VoxelShapeCube)
+                        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+                        if(voxel != null && voxel.getVoxelShape() instanceof VoxelShapeCube)
                         {
                             if(!edgeCheck(x, y, z))
                             {

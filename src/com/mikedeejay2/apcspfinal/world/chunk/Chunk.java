@@ -277,7 +277,7 @@ public class Chunk
         if(!hasLoaded) return;
         if(entityShouldBeRemade && containsVoxels)
         {
-            ChunkMeshGenerator.createChunkEntity(this);
+            main.getEntityCreator().addChunk(this);
         }
         if(chunkEntity == null) return;
         if(shouldRender)

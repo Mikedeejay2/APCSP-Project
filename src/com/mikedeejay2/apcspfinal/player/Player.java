@@ -49,15 +49,15 @@ public class Player
 
     public void input(float delta)
     {
-//        if(Input.getScroll() != 0)
-//        {
-//            speed += Input.getScroll()*2000;
-//            System.out.println(Input.getScroll());
-//        }
-//        if(Input.getKey(GLFW_KEY_LEFT_CONTROL))
-//        {
-//            speed = REG_SPEED;
-//        }
+        if(Input.getScroll() != 0)
+        {
+            speed += Input.getScroll()*20;
+            System.out.println(Input.getScroll());
+        }
+        if(Input.getKey(GLFW_KEY_LEFT_CONTROL))
+        {
+            speed = REG_SPEED;
+        }
 
         camera.getViewMatrix().positiveZ(camera.getForward()).negate().mul(speed * delta);
         camera.getViewMatrix().positiveX(camera.getRight()).mul(speed * delta);
