@@ -2,6 +2,8 @@ package com.mikedeejay2.apcspfinal.io;
 
 import com.mikedeejay2.apcspfinal.graphics.font.TextMaster;
 import com.mikedeejay2.apcspfinal.Main;
+import com.mikedeejay2.apcspfinal.loaders.IconLoader;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
@@ -22,6 +24,8 @@ public class Window
     private int[] windowPosX = new int[1], windowPosY = new int[1];
     private static int FPS;
     private static int oldFPS;
+
+    private final IconLoader resource_01 = IconLoader.loadImage("res/textures/icon/icon.png");
 
     private static int monitorWidth, monitorHeight;
 
@@ -72,6 +76,14 @@ public class Window
         glfwSetWindowPos(window, (videoMode.width() - windowWidth) / 2, (videoMode.height() - windowHeight) / 2);
         glfwMakeContextCurrent(window);
         createCapabilities();
+
+        GLFWImage image = GLFWImage.malloc(); GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
+        image.set(
+                resource_01.getWidth(),
+                resource_01.getHeight(),
+                resource_01.getImage());
+        imagebf.put(0, image);
+        glfwSetWindowIcon(window, imagebf);
 
         //Callback debugProc = GLUtil.setupDebugMessageCallback(); // may return null if the debug mode is not available
 
