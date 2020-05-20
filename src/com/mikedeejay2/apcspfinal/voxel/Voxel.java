@@ -1,27 +1,22 @@
 package com.mikedeejay2.apcspfinal.voxel;
 
-import org.joml.Vector3f;
-
 public class Voxel
 {
     private String name;
     private int ID;
 
-    private Vector3f position;
+    VoxelShape voxelShape;
 
     private boolean solid;
+    private boolean liquid;
 
-    public Voxel(String name, int ID, boolean solid)
+    public Voxel(String name, VoxelShape voxelshape, int ID, boolean solid, boolean liquid)
     {
         this.name = name;
         this.ID = ID;
-        this.position = null;
         this.solid = solid;
-    }
-
-    public Vector3f getPosition()
-    {
-        return position;
+        this.liquid = liquid;
+        this.voxelShape = voxelshape;
     }
 
     public String getName()
@@ -37,5 +32,15 @@ public class Voxel
     public boolean isSolid()
     {
         return solid;
+    }
+
+    public boolean isLiquid()
+    {
+        return liquid;
+    }
+
+    public VoxelShape getVoxelShape()
+    {
+        return voxelShape;
     }
 }

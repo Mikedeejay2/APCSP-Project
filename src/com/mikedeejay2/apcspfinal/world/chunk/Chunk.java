@@ -315,13 +315,25 @@ public class Chunk
         return voxels[x][y][z] != 0;
     }
 
-    public boolean containsVoxelAtOffsetSolid(int x, int y, int z)
+    public boolean containsVoxelAtOffsetLiquid(int x, int y, int z, boolean liquid)
     {
         if(invalidCheck(x, y, z)) return false;
         int id = voxels[x][y][z];
         if(id == 0) return false;
         Voxel voxel = VoxelTypes.getFromID(id);
         if(voxel == null) return true;
+        if(liquid) return !voxel.isLiquid();
+        return voxel.isLiquid();
+    }
+
+    public boolean containsVoxelAtOffsetSolic(int x, int y, int z, boolean solic)
+    {
+        if(invalidCheck(x, y, z)) return false;
+        int id = voxels[x][y][z];
+        if(id == 0) return false;
+        Voxel voxel = VoxelTypes.getFromID(id);
+        if(voxel == null) return true;
+        if(!solic) return !voxel.isSolid();
         return voxel.isSolid();
     }
 
@@ -400,7 +412,6 @@ public class Chunk
         if(x == 32) x = 0;
         if(y == 32) y = 0;
         if(z == 32) z = 0;
-        System.out.println(x + ", " + y + ", " + z);
         if(!containsVoxels) initVoxelArray();
         voxels[x][y][z] = (byte) VoxelTypes.getIDFromName(name);
         setContainsVoxels(true);
@@ -420,10 +431,21 @@ public class Chunk
 
     public boolean inBounds(int x, int y, int z)
     {
-        return x <= World.CHUNK_SIZE && y <= World.CHUNK_SIZE && z <= World.CHUNK_SIZE && x >= -1 && y >= -1 && z >= -1;
+        return x < World.CHUNK_SIZE && y < World.CHUNK_SIZE && z < World.CHUNK_SIZE && x > -1 && y > -1 && z > -1;
+    }
+
+    public boolean isSolid(int x, int y, int z)
+    {
+        if(!containsVoxels) return false;
+        if(voxels[x][y][z] == 0) return false;
+        return VoxelTypes.getFromID(voxels[x][y][z]).isSolid();
     }
 
 
-
-
+    public boolean isLiquid(int x, int y, int z)
+    {
+        if(!containsVoxels) return false;
+        if(voxels[x][y][z] == 0) return false;
+        return VoxelTypes.getFromID(voxels[x][y][z]).isLiquid();
+    }
 }

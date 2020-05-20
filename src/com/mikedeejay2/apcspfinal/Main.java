@@ -11,14 +11,17 @@ import com.mikedeejay2.apcspfinal.io.Window;
 import com.mikedeejay2.apcspfinal.loaders.Loader;
 import com.mikedeejay2.apcspfinal.graphics.textures.ModelTexture;
 import com.mikedeejay2.apcspfinal.utils.Raycast;
+import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshProducerRunnable;
 import com.mikedeejay2.apcspfinal.player.Player;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshConsumerRunnable;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -88,8 +91,6 @@ public class Main
     public void update(float delta)
     {
         player.update(delta);
-//        camera.getRealPos().add(0.001, 0, 0.001);
-//        System.out.println(mousePicker.getCurrentPoint());
     }
 
     public void update50ms(float delta)
@@ -106,16 +107,26 @@ public class Main
         if(Input.getKeyDown(GLFW_KEY_F11)) coreEngine.getWindow().setFullscreen(!coreEngine.getWindow().isFullscreen());
         player.getCamera().input(delta);
         if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();
-            if(Input.getMouseDown(GLFW_MOUSE_BUTTON_LEFT))
+        if(Input.getMouseDown(GLFW_MOUSE_BUTTON_LEFT))
+        {
+            mousePicker.update();
+            if(mousePicker.getCurrentPoint() != null)
             {
-                mousePicker.update();
-                if(mousePicker.getCurrentPoint() != null) world.removeVoxel((int) Math.round(mousePicker.getCurrentPoint().x), (int) Math.round(mousePicker.getCurrentPoint().y), (int)Math.round(mousePicker.getCurrentPoint().z));
+                player.removeVoxel(Math.round(mousePicker.getCurrentPoint().x), Math.round(mousePicker.getCurrentPoint().y), Math.round(mousePicker.getCurrentPoint().z));
+//                    world.removeVoxel(Math.round(mousePicker.getCurrentPoint().x), Math.round(mousePicker.getCurrentPoint().y), Math.round(mousePicker.getCurrentPoint().z));
             }
-            if(Input.getMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
+
+        }
+        if(Input.getMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
+        {
+            mousePicker.update();
+            if(mousePicker.getCurrentPoint() != null &&
+            !player.getAabb().intersectBlockPoint(player.getPosition(), mousePicker.getCurrentPoint()))
             {
-                mousePicker.update();
-                if(mousePicker.getCurrentPoint() != null) world.addVoxelRelative("stone", mousePicker.getCurrentPoint());
+//                        world.addVoxelRelative("stone", mousePicker.getCurrentPoint());
+                        player.addVoxel(mousePicker.getCurrentPoint());
             }
+        }
     }
 
     public void render()

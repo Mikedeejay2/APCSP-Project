@@ -15,11 +15,11 @@ public class VoxelTypes
 
     public static final TextureAtlas textureAtlas = new TextureAtlas("block/blocks.png", Main.getLoader());
 
-    public static final Voxel dirt = loadVoxel("dirt", 1, true);
-    public static final Voxel grass = loadVoxel("grass", 2, true);
-    public static final Voxel stone = loadVoxel("stone", 3, true);
-    public static final Voxel water = loadVoxel("water", 4, false);
-    public static final Voxel sand = loadVoxel("sand", 5, true);
+    public static final Voxel dirt = loadVoxel("dirt", VoxelShape.voxelShapeCube,1, true, false);
+    public static final Voxel grass = loadVoxel("grass", VoxelShape.voxelShapeCube, 2, true, false);
+    public static final Voxel stone = loadVoxel("stone", VoxelShape.voxelShapeCube, 3, true, false);
+    public static final Voxel water = loadVoxel("water", VoxelShape.voxelShapeLiquid, 4, true, true);
+    public static final Voxel sand = loadVoxel("sand", VoxelShape.voxelShapeCube, 5, true,  false);
 
 
 
@@ -27,9 +27,9 @@ public class VoxelTypes
 
 
 
-    private static Voxel loadVoxel(String name, int ID, boolean solid)
+    private static Voxel loadVoxel(String name, VoxelShape voxelshape, int ID, boolean solid, boolean liquid)
     {
-        Voxel voxel = new Voxel(name, ID, solid);
+        Voxel voxel = new Voxel(name, voxelshape, ID, solid, liquid);
         voxelsByName.put(name, voxel);
         voxelsByID[ID] = voxel;
         return voxel;

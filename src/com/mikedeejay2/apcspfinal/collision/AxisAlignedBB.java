@@ -1,5 +1,6 @@
 package com.mikedeejay2.apcspfinal.collision;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 public class AxisAlignedBB
@@ -29,6 +30,58 @@ public class AxisAlignedBB
         if(currentPos.x + x1 > otherPos.x + other.x2) return false;
         if(currentPos.y + y1 > otherPos.y + other.y2) return false;
         if(currentPos.z + z1 > otherPos.z + other.z2) return false;
+
+        return true;
+    }
+
+    public boolean intersectPoint(Vector3f currentPos, Vector3f otherPos)
+    {
+        if(currentPos.x + x2 < otherPos.x) return false;
+        if(currentPos.y + y2 < otherPos.y) return false;
+        if(currentPos.z + z2 < otherPos.z) return false;
+
+        if(currentPos.x + x1 > otherPos.x) return false;
+        if(currentPos.y + y1 > otherPos.y) return false;
+        if(currentPos.z + z1 > otherPos.z) return false;
+
+        return true;
+    }
+
+    public boolean intersectPoint(Vector3d currentPos, Vector3f otherPos)
+    {
+        if(currentPos.x + x2 < otherPos.x) return false;
+        if(currentPos.y + y2 < otherPos.y) return false;
+        if(currentPos.z + z2 < otherPos.z) return false;
+
+        if(currentPos.x + x1 > otherPos.x) return false;
+        if(currentPos.y + y1 > otherPos.y) return false;
+        if(currentPos.z + z1 > otherPos.z) return false;
+
+        return true;
+    }
+
+    public boolean intersectBlockPoint(Vector3d currentPos, Vector3f otherPos)
+    {
+        if(Math.round(currentPos.x + x2) < Math.round(otherPos.x)) return false;
+        if(Math.round(currentPos.y + y2) < Math.round(otherPos.y)) return false;
+        if(Math.round(currentPos.z + z2) < Math.round(otherPos.z)) return false;
+
+        if(Math.round(currentPos.x + x1) > Math.round(otherPos.x)) return false;
+        if(Math.round(currentPos.y + y1) > Math.round(otherPos.y)) return false;
+        if(Math.round(currentPos.z + z1) > Math.round(otherPos.z)) return false;
+
+        return true;
+    }
+
+    public boolean intersectPoint(Vector3d currentPos, Vector3d otherPos)
+    {
+        if(currentPos.x + x2 < otherPos.x) return false;
+        if(currentPos.y + y2 < otherPos.y) return false;
+        if(currentPos.z + z2 < otherPos.z) return false;
+
+        if(currentPos.x + x1 > otherPos.x) return false;
+        if(currentPos.y + y1 > otherPos.y) return false;
+        if(currentPos.z + z1 > otherPos.z) return false;
 
         return true;
     }

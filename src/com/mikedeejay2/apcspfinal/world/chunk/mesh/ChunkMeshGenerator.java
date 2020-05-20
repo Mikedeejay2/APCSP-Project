@@ -6,7 +6,9 @@ import com.mikedeejay2.apcspfinal.graphics.models.TexturedModel;
 import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
 import com.mikedeejay2.apcspfinal.graphics.textures.ModelTexture;
 import com.mikedeejay2.apcspfinal.utils.DirectionEnum;
+import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.voxel.VoxelShape;
+import com.mikedeejay2.apcspfinal.voxel.VoxelShapeCube;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
@@ -93,6 +95,7 @@ public class ChunkMeshGenerator
             textureCoords = new float[textureCoordsList.size()];
             indices = new int[indicesList.size()];
             brightness = new float[brightnessList.size()];
+//            System.out.println(vertices.length == 0 && brightness.length == 0 ? 1 : ((float)vertices.length / (float)brightness.length) + ", " + textureCoords.length + ", " + indices.length);
 
             convertAllToArrays(verticesList, vertices, textureCoordsList, textureCoords, indicesList, indices, brightnessList, brightness);
 
@@ -137,13 +140,16 @@ public class ChunkMeshGenerator
                 {
                     if (chunk.containsVoxelAtOffset(x, y, z))
                     {
-                        if (!edgeCheck(x, y, z))
+                        if(chunk.getVoxelAtOffset(x, y, z).getVoxelShape() instanceof VoxelShapeCube)
                         {
-                            createSlice(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
-                        }
-                        else
-                        {
-                            createSliceEdge(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
+                            if(!edgeCheck(x, y, z))
+                            {
+                                createSlice(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
+                            }
+                            else
+                            {
+                                createSliceEdge(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
+                            }
                         }
                     }
                 }
@@ -153,181 +159,213 @@ public class ChunkMeshGenerator
 
     public void createSlice(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z)
     {
-        if (!chunk.containsVoxelAtOffset(x + 1, y, z))
+        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+        if(voxel == null) return;
+        VoxelShape voxelShape = voxel.getVoxelShape();
+        voxel = null;
+//        boolean solid = chunk.isSolid(x, y, z);
+//        boolean liquid = chunk.isLiquid(x, y, z);
+
+
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z) || (chunk.isLiquid(x + 1, y, z) && !chunk.isLiquid(x, y, z)))
         {
-            createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesWest(), verticesList);
             createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-            createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+            createIndex(x, y, z, voxelShape.getIndicesWest(), indicesList);
             createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, false, DirectionEnum.WEST);
         }
-        if (!chunk.containsVoxelAtOffset(x - 1, y, z))
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z) || (chunk.isLiquid(x - 1, y, z) && !chunk.isLiquid(x, y, z)))
         {
-            createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesEast(), verticesList);
             createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-            createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+            createIndex(x, y, z, voxelShape.getIndicesEast(), indicesList);
             createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, false, DirectionEnum.EAST);
         }
-        if (!chunk.containsVoxelAtOffset(x, y + 1, z))
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z) || (chunk.isLiquid(x, y + 1, z) && !chunk.isLiquid(x, y, z)))
         {
-            createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesUp(), verticesList);
             createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-            createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+            createIndex(x, y, z, voxelShape.getIndicesUp(), indicesList);
             createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, false, DirectionEnum.UP);
         }
-        if (!chunk.containsVoxelAtOffset(x, y - 1, z))
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z) || (chunk.isLiquid(x, y - 1, z) && !chunk.isLiquid(x, y, z)))
         {
-            createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesDown(), verticesList);
             createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-            createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+            createIndex(x, y, z, voxelShape.getIndicesDown(), indicesList);
             createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.DOWN);
         }
-        if (!chunk.containsVoxelAtOffset(x, y, z + 1))
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1) || (chunk.isLiquid(x, y, z + 1) && !chunk.isLiquid(x, y, z)))
         {
-            createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesSouth(), verticesList);
             createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-            createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+            createIndex(x, y, z, voxelShape.getIndicesSouth(), indicesList);
             createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.NORTH);
         }
-        if (!chunk.containsVoxelAtOffset(x, y, z - 1))
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1) || (chunk.isLiquid(x, y, z - 1) && !chunk.isLiquid(x, y, z)))
         {
-            createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesNorth(), verticesList);
             createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-            createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+            createIndex(x, y, z, voxelShape.getIndicesNorth(), indicesList);
             createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, false, DirectionEnum.SOUTH);
         }
     }
 
     public void createSliceEdge(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z)
     {
+        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+        if(voxel == null) return;
+        VoxelShape voxelShape = voxel.getVoxelShape();
+        voxel = null;
+//        boolean solid = chunk.isSolid(x, y, z);
+//        boolean liquid = chunk.isLiquid(x, y, z);
 
-        if (!chunk.containsVoxelAtOffset(x + 1, y, z))
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z) || (chunk.isLiquid(x + 1, y, z) && !chunk.isLiquid(x, y, z)))
         {
             if(x != World.CHUNK_SIZE - 1)
             {
-                createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+                createVertex(x, y, z, voxelShape.getVerticesWest(), verticesList);
                 createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesWest(), indicesList);
                 createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
             }
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
-                if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
+                if(newChunk != null && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
-                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
-                    createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
+                    if(newChunk.getVoxelIDAtOffset(0, y, z) == 0 || (newChunk.isLiquid(0, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z))
+                    {
+                        createVertex(x, y, z, voxelShape.getVerticesWest(), verticesList);
+                        createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+                        createIndex(x, y, z, voxelShape.getIndicesWest(), indicesList);
+                        createLightValue(world, chunk, 0.9f, brightnessList, x, y, z, true, DirectionEnum.WEST);
+                    }
                 }
             }
         }
 
-        if (!chunk.containsVoxelAtOffset(x - 1, y, z))
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z) || (chunk.isLiquid(x - 1, y, z) && !chunk.isLiquid(x, y, z)))
         {
             if(x != 0)
             {
-                createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+                createVertex(x, y, z, voxelShape.getVerticesEast(), verticesList);
                 createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesEast(), indicesList);
                 createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
             }
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
-                if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
+                if(newChunk != null && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
-                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
-                    createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
+                    if(newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 || (newChunk.isLiquid(World.CHUNK_SIZE - 1, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z))
+                    {
+                        createVertex(x, y, z, voxelShape.getVerticesEast(), verticesList);
+                        createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+                        createIndex(x, y, z, voxelShape.getIndicesEast(), indicesList);
+                        createLightValue(world, chunk, 0.8f, brightnessList, x, y, z, true, DirectionEnum.EAST);
+                    }
                 }
             }
         }
 
-        if (!chunk.containsVoxelAtOffset(x, y + 1, z))
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z) || (chunk.isLiquid(x, y + 1, z) && !chunk.isLiquid(x, y, z)))
         {
             if(y != World.CHUNK_SIZE - 1)
             {
-                createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+                createVertex(x, y, z, voxelShape.getVerticesUp(), verticesList);
                 createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesUp(), indicesList);
                 createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
             }
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
-                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
+                if(newChunk != null && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
-                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
-                    createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
+                    if(newChunk.getVoxelIDAtOffset(x, 0, z) == 0 || (newChunk.isLiquid(x, 0, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z))
+                    {
+                        createVertex(x, y, z, voxelShape.getVerticesUp(), verticesList);
+                        createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+                        createIndex(x, y, z, voxelShape.getIndicesUp(), indicesList);
+                        createLightValue(world, chunk, 1.0f, brightnessList, x, y, z, true, DirectionEnum.UP);
+                    }
                 }
             }
         }
 
-        if (!chunk.containsVoxelAtOffset(x, y - 1, z))
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z) || (chunk.isLiquid(x, y - 1, z) && !chunk.isLiquid(x, y, z)))
         {
             if(y != 0)
             {
-                createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+                createVertex(x, y, z, voxelShape.getVerticesDown(), verticesList);
                 createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesDown(), indicesList);
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
             }
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
-                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && chunk.hasLoaded)
+                if(newChunk != null && chunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
-                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
-                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
+                    if(newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 || (newChunk.isLiquid(x, World.CHUNK_SIZE - 1, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z))
+                    {
+                        createVertex(x, y, z, voxelShape.getVerticesDown(), verticesList);
+                        createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+                        createIndex(x, y, z, voxelShape.getIndicesDown(), indicesList);
+                        createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.DOWN);
+                    }
                 }
             }
         }
 
-        if (!chunk.containsVoxelAtOffset(x, y, z + 1))
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1) || (chunk.isLiquid(x, y, z + 1) && !chunk.isLiquid(x, y, z)))
         {
             if(z != World.CHUNK_SIZE - 1)
             {
-                createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+                createVertex(x, y, z, voxelShape.getVerticesSouth(), verticesList);
                 createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesSouth(), indicesList);
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
             }
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
-                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
+                if(newChunk != null && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
-                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
-                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
+                    if(newChunk.getVoxelIDAtOffset(x, y, 0) == 0 || (newChunk.isLiquid(x, y, 0) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z))
+                    {
+                        createVertex(x, y, z, voxelShape.getVerticesSouth(), verticesList);
+                        createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+                        createIndex(x, y, z, voxelShape.getIndicesSouth(), indicesList);
+                        createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.NORTH);
+                    }
                 }
             }
         }
 
-        if (!chunk.containsVoxelAtOffset(x, y, z - 1))
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1) || (chunk.isLiquid(x, y, z - 1) && !chunk.isLiquid(x, y, z)))
         {
             if(z != 0)
             {
-                createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+                createVertex(x, y, z, voxelShape.getVerticesNorth(), verticesList);
                 createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesNorth(), indicesList);
                 createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
             }
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
-                if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
+                if(newChunk != null && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
-                    createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
-                    createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
+                    if(newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 || (newChunk.isLiquid(x, y, World.CHUNK_SIZE - 1) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z))
+                    {
+                        createVertex(x, y, z, voxelShape.getVerticesNorth(), verticesList);
+                        createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
+                        createIndex(x, y, z, voxelShape.getIndicesNorth(), indicesList);
+                        createLightValue(world, chunk, 0.7f, brightnessList, x, y, z, true, DirectionEnum.SOUTH);
+                    }
                 }
             }
         }
@@ -474,9 +512,15 @@ public class ChunkMeshGenerator
 
     private void createLightValue(World world, Chunk chunk, float value, List<Float> brightnessList, int x, int y, int z, boolean edge, DirectionEnum direction)
     {
+        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+        if(voxel == null) return;
+        VoxelShape voxelShape = voxel.getVoxelShape();
+//        boolean solid = chunk.isSolid(x, y, z);
+//        boolean liquid = chunk.isLiquid(x, y, z);
+
         if(!edge)
         {
-            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
+            for (int i = 0; i < voxelShape.getVerticesEast().length; i++)
             {
                 //genBrightnessWithChunkLoc(world, chunk, value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, -5.5f);
                 genBrightness(chunk, value, x, y, z, i, brightnessList, direction, 0.2f);
@@ -486,7 +530,7 @@ public class ChunkMeshGenerator
         }
         else
         {
-            for (int i = 0; i < VoxelShape.getBrightnessSingleSide().length; i++)
+            for (int i = 0; i < voxelShape.getVerticesEast().length; i++)
             {
                 genBrightnessWithChunkLoc(world, chunk, value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, 0.2f);
 //                brightnessList.add(value);
@@ -502,27 +546,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate((x+1), (y+1), (z))) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -531,27 +575,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -560,27 +604,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -589,27 +633,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -618,27 +662,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -647,27 +691,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(world.isVoxelAtCoordinate(x, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(world.isVoxelAtCoordinate(x, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(world.isVoxelAtCoordinate(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(world.isVoxelAtCoordinateLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -683,27 +727,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -712,27 +756,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -741,27 +785,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                         break;
                     case 3: case 4: case 5:
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                         break;
                     case 6: case 7: case 8:
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                         break;
                     case 9: case 10: case 11:
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                         break;
                 }
@@ -770,27 +814,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -799,27 +843,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(chunk.containsVoxelAtOffset(x, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(chunk.containsVoxelAtOffset(x, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z+1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z+1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z+1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z+1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -828,27 +872,27 @@ public class ChunkMeshGenerator
                 switch (index)
                 {
                     case 0: case 1: case 2:
-                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 3: case 4: case 5:
-                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x-1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x-1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 6: case 7: case 8:
-                    if(chunk.containsVoxelAtOffset(x, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y-1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y-1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                     case 9: case 10: case 11:
-                    if(chunk.containsVoxelAtOffset(x, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y+1, z-1)) brightnessList.add(value - AO); else
-                    if(chunk.containsVoxelAtOffset(x+1, y, z-1)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y+1, z-1, true)) brightnessList.add(value - AO); else
+                    if(chunk.containsVoxelAtOffsetLiquid(x+1, y, z-1, true)) brightnessList.add(value - AO); else
                         brightnessList.add(value);
                     break;
                 }
@@ -952,85 +996,97 @@ public class ChunkMeshGenerator
 
     private void createIndexSlice(Chunk chunk, List<Integer> indicesList, int x, int y, int z)
     {
-        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
-        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
-        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
-        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
-        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
-        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+        if(voxel == null) return;
+        VoxelShape voxelShape = voxel.getVoxelShape();
+//        boolean solid = chunk.isSolid(x, y, z);
+//        boolean liquid = chunk.isLiquid(x, y, z);
+
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createIndex(x, y, z, voxelShape.getIndicesWest(), indicesList);
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createIndex(x, y, z, voxelShape.getIndicesEast(), indicesList);
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createIndex(x, y, z, voxelShape.getIndicesUp(), indicesList);
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createIndex(x, y, z, voxelShape.getIndicesDown(), indicesList);
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createIndex(x, y, z, voxelShape.getIndicesSouth(), indicesList);
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createIndex(x, y, z, voxelShape.getIndicesNorth(), indicesList);
     }
 
     private void createIndexSliceEdgeCase(World world, Chunk chunk, List<Integer> indicesList, int x, int y, int z)
     {
+        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+        if(voxel == null) return;
+        VoxelShape voxelShape = voxel.getVoxelShape();
+//        boolean solid = chunk.isSolid(x, y, z);
+//        boolean liquid = chunk.isLiquid(x, y, z);
+
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
-                createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesWest(), indicesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
                 {
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceWest(), indicesList);
+                    createIndex(x, y, z, voxelShape.getIndicesWest(), indicesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
-                createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesEast(), indicesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
                 {
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceEast(), indicesList);
+                    createIndex(x, y, z, voxelShape.getIndicesEast(), indicesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
-                createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesUp(), indicesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
                 {
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceUp(), indicesList);
+                    createIndex(x, y, z, voxelShape.getIndicesUp(), indicesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
-                createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesDown(), indicesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && newChunk.hasLoaded)
                 {
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceDown(), indicesList);
+                    createIndex(x, y, z, voxelShape.getIndicesDown(), indicesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
-                createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesSouth(), indicesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
                 {
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceSouth(), indicesList);
+                    createIndex(x, y, z, voxelShape.getIndicesSouth(), indicesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
-                createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+                createIndex(x, y, z, voxelShape.getIndicesNorth(), indicesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
                 {
-                    createIndex(x, y, z, VoxelShape.getIndicesFaceNorth(), indicesList);
+                    createIndex(x, y, z, voxelShape.getIndicesNorth(), indicesList);
                 }
             }
     }
@@ -1144,85 +1200,97 @@ public class ChunkMeshGenerator
 
     private void createVertexSlice(Chunk chunk, int x, int y, int z, List<Float> verticesList)
     {
-        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
-        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
-        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
-        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
-        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
-        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+        if(voxel == null) return;
+        VoxelShape voxelShape = voxel.getVoxelShape();
+//        boolean solid = chunk.isSolid(x, y, z);
+//        boolean liquid = chunk.isLiquid(x, y, z);
+
+        if (!chunk.containsVoxelAtOffset(x + 1, y, z)) createVertex(x, y, z, voxelShape.getVerticesWest(), verticesList);
+        if (!chunk.containsVoxelAtOffset(x - 1, y, z)) createVertex(x, y, z, voxelShape.getVerticesEast(), verticesList);
+        if (!chunk.containsVoxelAtOffset(x, y + 1, z)) createVertex(x, y, z, voxelShape.getVerticesUp(), verticesList);
+        if (!chunk.containsVoxelAtOffset(x, y - 1, z)) createVertex(x, y, z, voxelShape.getVerticesDown(), verticesList);
+        if (!chunk.containsVoxelAtOffset(x, y, z + 1)) createVertex(x, y, z, voxelShape.getVerticesSouth(), verticesList);
+        if (!chunk.containsVoxelAtOffset(x, y, z - 1)) createVertex(x, y, z, voxelShape.getVerticesNorth(), verticesList);
     }
 
     private void createVertexSliceEdgeCase(World world, Chunk chunk, int x, int y, int z, List<Float> verticesList)
     {
+        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
+        if(voxel == null) return;
+        VoxelShape voxelShape = voxel.getVoxelShape();
+//        boolean solid = chunk.isSolid(x, y, z);
+//        boolean liquid = chunk.isLiquid(x, y, z);
+
         if (!chunk.containsVoxelAtOffset(x + 1, y, z))
             if(x != World.CHUNK_SIZE-1)
-            createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesWest(), verticesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(0, y, z) == 0 && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceWest(), verticesList);
+                    createVertex(x, y, z, voxelShape.getVerticesWest(), verticesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x - 1, y, z))
             if(x != 0)
-            createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesEast(), verticesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceEast(), verticesList);
+                    createVertex(x, y, z, voxelShape.getVerticesEast(), verticesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y + 1, z))
             if(y != World.CHUNK_SIZE-1)
-            createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesUp(), verticesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, 0, z) == 0 && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceUp(), verticesList);
+                    createVertex(x, y, z, voxelShape.getVerticesUp(), verticesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y - 1, z))
             if(y != 0)
-            createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesDown(), verticesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 && chunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceDown(), verticesList);
+                    createVertex(x, y, z, voxelShape.getVerticesDown(), verticesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z + 1))
             if(z != World.CHUNK_SIZE-1)
-            createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesSouth(), verticesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, 0) == 0 && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceSouth(), verticesList);
+                    createVertex(x, y, z, voxelShape.getVerticesSouth(), verticesList);
                 }
             }
 
         if (!chunk.containsVoxelAtOffset(x, y, z - 1))
             if(z != 0)
-            createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+            createVertex(x, y, z, voxelShape.getVerticesNorth(), verticesList);
             else
             {
                 Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
                 if(newChunk != null && newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 && newChunk.hasLoaded)
                 {
-                    createVertex(x, y, z, VoxelShape.getVerticesFaceNorth(), verticesList);
+                    createVertex(x, y, z, voxelShape.getVerticesNorth(), verticesList);
                 }
             }
     }

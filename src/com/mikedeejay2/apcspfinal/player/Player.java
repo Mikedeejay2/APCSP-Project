@@ -1,5 +1,6 @@
 package com.mikedeejay2.apcspfinal.player;
 
+import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.collision.AxisAlignedBB;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.io.Input;
@@ -28,6 +29,8 @@ public class Player
     private PlayerCollision playerGravity;
 
     private AxisAlignedBB aabb;
+
+    String currentBlock = "stone";
 
     public Player(Camera camera)
     {
@@ -178,5 +181,15 @@ public class Player
     public AxisAlignedBB getAabb()
     {
         return aabb;
+    }
+
+    public void removeVoxel(int x, int y, int z)
+    {
+        Main.getInstance().getWorld().removeVoxel(x, y, z);
+    }
+
+    public void addVoxel(Vector3f location)
+    {
+        Main.getInstance().getWorld().addVoxelRelative(currentBlock, location);
     }
 }

@@ -1,5 +1,6 @@
 package com.mikedeejay2.apcspfinal.world;
 
+import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.world.chunk.ChunkConsumerRunnable;
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.world.generators.OverworldGenerator;
@@ -263,7 +264,7 @@ public class World extends Thread
         return false;
     }
 
-    public boolean isCollidableVoxelAtCoordinate(int x, int y, int z)
+    public boolean isVoxelAtCoordinateLiquid(int x, int y, int z, boolean liquid)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
         if(chunk != null)
@@ -275,7 +276,7 @@ public class World extends Thread
             if(newX < 0) newX += (CHUNK_SIZE);
             if(newY < 0) newY += (CHUNK_SIZE);
             if(newZ < 0) newZ += (CHUNK_SIZE);
-            return chunk.containsVoxelAtOffsetSolid(newX, newY, newZ);
+            return chunk.containsVoxelAtOffsetLiquid(newX, newY, newZ, liquid);
         }
         return false;
     }
@@ -341,13 +342,28 @@ public class World extends Thread
         int correctedX = currentPoint.x % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.x % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.x % CHUNK_SIZE);
         int correctedY = currentPoint.y % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.y % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.y % CHUNK_SIZE);
         int correctedZ = currentPoint.z % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.z % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.z % CHUNK_SIZE);
-        System.out.println(currentPoint.x + ", " + currentPoint.y + ", " + currentPoint.z);
                  if(down) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y - 1, currentPoint.z)).addVoxel(correctedX, correctedY-1, correctedZ, voxelName);
         else if(up) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y + 1, currentPoint.z)).addVoxel(correctedX, correctedY+1, correctedZ, voxelName);
         else if(west) getChunkFromCoordinates(new Vector3f(currentPoint.x - 1, currentPoint.y, currentPoint.z)).addVoxel(correctedX-1, correctedY, correctedZ, voxelName);
         else if(east) getChunkFromCoordinates(new Vector3f(currentPoint.x + 1, currentPoint.y, currentPoint.z)).addVoxel(correctedX+1, correctedY, correctedZ, voxelName);
         else if(north) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z - 1)).addVoxel(correctedX, correctedY, correctedZ-1, voxelName);
         else if(south) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z + 1)).addVoxel(correctedX, correctedY, correctedZ+1, voxelName);
-        System.out.println(up);
+    }
+
+    //Broken?
+    public Voxel getVoxel(float x, float y, float z)
+    {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null)
+        {
+            int newX = (int)((x)%(CHUNK_SIZE));
+            int newY = (int)((y)%(CHUNK_SIZE));
+            int newZ = (int)((z)%(CHUNK_SIZE));
+            if(newX < 0) newX += (CHUNK_SIZE);
+            if(newY < 0) newY += (CHUNK_SIZE);
+            if(newZ < 0) newZ += (CHUNK_SIZE);
+            chunk.getVoxelAtOffset(newX, newY, newZ);
+        }
+        return null;
     }
 }
