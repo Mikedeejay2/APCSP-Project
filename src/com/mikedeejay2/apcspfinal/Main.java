@@ -89,7 +89,6 @@ public class Main
     {
         player.update(delta);
 //        camera.getRealPos().add(0.001, 0, 0.001);
-        mousePicker.update();
 //        System.out.println(mousePicker.getCurrentPoint());
     }
 
@@ -107,13 +106,16 @@ public class Main
         if(Input.getKeyDown(GLFW_KEY_F11)) coreEngine.getWindow().setFullscreen(!coreEngine.getWindow().isFullscreen());
         player.getCamera().input(delta);
         if(Input.getKeyDown(GLFW_KEY_F3)) debugScreen.toggle();
-        if(mousePicker.getCurrentPoint() != null)
-        {
             if(Input.getMouseDown(GLFW_MOUSE_BUTTON_LEFT))
             {
-                world.removeVoxel((int) Math.round(mousePicker.getCurrentPoint().x), (int) Math.round(mousePicker.getCurrentPoint().y), (int)Math.round(mousePicker.getCurrentPoint().z));
+                mousePicker.update();
+                if(mousePicker.getCurrentPoint() != null) world.removeVoxel((int) Math.round(mousePicker.getCurrentPoint().x), (int) Math.round(mousePicker.getCurrentPoint().y), (int)Math.round(mousePicker.getCurrentPoint().z));
             }
-        }
+            if(Input.getMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
+            {
+                mousePicker.update();
+                if(mousePicker.getCurrentPoint() != null) world.addVoxelRelative("stone", mousePicker.getCurrentPoint());
+            }
     }
 
     public void render()

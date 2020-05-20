@@ -36,10 +36,10 @@ public class OverworldGenerator
                         while(height < 0) height += World.CHUNK_SIZE;
                         for(int i = height; i >= 0; i--)
                         {
-                            chunk.addVoxel(x, height - i, z, "dirt");
+                            chunk.addVoxelWorldGen(x, height - i, z, "dirt");
                         }
-                        if(chunk.getChunkLoc().y >= 0) chunk.addVoxel(x, height, z, "grass");
-                        else chunk.addVoxel(x, height, z, "sand");
+                        if(chunk.getChunkLoc().y >= 0) chunk.addVoxelWorldGen(x, height, z, "grass");
+                        else chunk.addVoxelWorldGen(x, height, z, "sand");
                     }
                     else
                     {
@@ -47,7 +47,7 @@ public class OverworldGenerator
                         {
                             for(int y = 0; y < World.CHUNK_SIZE; y++)
                             {
-                                chunk.addVoxel(x, y, z, "stone");
+                                chunk.addVoxelWorldGen(x, y, z, "stone");
                             }
                         }
                     }
@@ -55,7 +55,7 @@ public class OverworldGenerator
                     {
                         for(int y = 0; y < World.CHUNK_SIZE; y++)
                         {
-                            if(!chunk.containsVoxelAtOffset(x, y, z)) chunk.addVoxel(x, y, z, "water");
+                            if(!chunk.containsVoxelAtOffset(x, y, z)) chunk.addVoxelWorldGen(x, y, z, "water");
                         }
                     }
                 }
@@ -73,7 +73,7 @@ public class OverworldGenerator
                 {
                     for(int y = 0; y < World.CHUNK_SIZE; y++)
                     {
-                        chunk.addVoxel(x, y, z, "grass");
+                        chunk.addVoxelWorldGen(x, y, z, "grass");
                     }
                 }
             }

@@ -302,7 +302,7 @@ public class Chunk
 //        }
     }
 
-    public void addVoxel(int x, int y, int z, String name)
+    public void addVoxelWorldGen(int x, int y, int z, String name)
     {
         if(!containsVoxels) initVoxelArray();
         voxels[x][y][z] = (byte) VoxelTypes.getIDFromName(name);
@@ -395,6 +395,19 @@ public class Chunk
         else rebuildChunkMeshSmartNeighbor(true, true, x, y, z);
     }
 
+    public void addVoxel(int x, int y, int z, String name)
+    {
+        if(x == 32) x = 0;
+        if(y == 32) y = 0;
+        if(z == 32) z = 0;
+        System.out.println(x + ", " + y + ", " + z);
+        if(!containsVoxels) initVoxelArray();
+        voxels[x][y][z] = (byte) VoxelTypes.getIDFromName(name);
+        setContainsVoxels(true);
+        if(!edgeCheck(x, y, z)) rebuildChunkMeshSmartNeighbor(false, true, x, y, z);
+        else rebuildChunkMeshSmartNeighbor(true, true, x, y, z);
+    }
+
     private boolean edgeCheck(float x, float y, float z)
     {
         return x == 0 || y == 0 || z == 0 || x == World.CHUNK_SIZE-1 || y == World.CHUNK_SIZE-1 || z == World.CHUNK_SIZE-1;
@@ -403,6 +416,11 @@ public class Chunk
     private boolean edgeCheckSingle(float x)
     {
         return x == 0 || x == World.CHUNK_SIZE-1;
+    }
+
+    public boolean inBounds(int x, int y, int z)
+    {
+        return x <= World.CHUNK_SIZE && y <= World.CHUNK_SIZE && z <= World.CHUNK_SIZE && x >= -1 && y >= -1 && z >= -1;
     }
 
 

@@ -303,4 +303,51 @@ public class World extends Thread
         }
         chunkProducerThread.stop();
     }
+
+    public void addVoxelRelative(String voxelName, Vector3f currentPoint)
+    {
+        boolean down, up, west, east, north, south;
+        if(currentPoint.y >= 0)
+        {
+            down = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51;
+            up = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49;
+        }
+        else
+        {
+            down = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49;
+            up = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51;
+        }
+        if(currentPoint.x >= 0)
+        {
+            west = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51;
+            east = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49;
+        }
+        else
+        {
+            west = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49;
+            east = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51;
+        }
+        if(currentPoint.z >= 0)
+        {
+            north = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51;
+            south = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49;
+        }
+        else
+        {
+            north = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49;
+            south = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51;
+        }
+
+        int correctedX = currentPoint.x % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.x % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.x % CHUNK_SIZE);
+        int correctedY = currentPoint.y % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.y % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.y % CHUNK_SIZE);
+        int correctedZ = currentPoint.z % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.z % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.z % CHUNK_SIZE);
+        System.out.println(currentPoint.x + ", " + currentPoint.y + ", " + currentPoint.z);
+                 if(down) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y - 1, currentPoint.z)).addVoxel(correctedX, correctedY-1, correctedZ, voxelName);
+        else if(up) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y + 1, currentPoint.z)).addVoxel(correctedX, correctedY+1, correctedZ, voxelName);
+        else if(west) getChunkFromCoordinates(new Vector3f(currentPoint.x - 1, currentPoint.y, currentPoint.z)).addVoxel(correctedX-1, correctedY, correctedZ, voxelName);
+        else if(east) getChunkFromCoordinates(new Vector3f(currentPoint.x + 1, currentPoint.y, currentPoint.z)).addVoxel(correctedX+1, correctedY, correctedZ, voxelName);
+        else if(north) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z - 1)).addVoxel(correctedX, correctedY, correctedZ-1, voxelName);
+        else if(south) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z + 1)).addVoxel(correctedX, correctedY, correctedZ+1, voxelName);
+        System.out.println(up);
+    }
 }

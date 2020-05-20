@@ -39,7 +39,7 @@ public class Raycast
     {
         Maths.createViewMatrix(camera, viewMatrix);
         currentRay = calculateMouseRay();
-        currentPoint = binarySearch(0, RAY_RANGE, currentRay);
+        currentPoint = step(0, RAY_RANGE, currentRay);
         if(currentPoint != null) currentPoint.add((float)camera.getRealPos().x, (float)camera.getRealPos().y, (float)camera.getRealPos().z);
     }
 
@@ -88,12 +88,12 @@ public class Raycast
         return start.add(scaledRay);
     }
 
-    private Vector3f binarySearch(float start, float finish, Vector3f ray)
+    private Vector3f step(float start, float finish, Vector3f ray)
     {
-        for(int i = 0; i < finish*10; i++)
+        for(int i = 0; i < finish*100; i++)
         {
 //            System.out.println((int)(ray.x + camera.getRealPos().x) + ", " + (int)(ray.y + camera.getRealPos().y) + ", " + (int) (ray.z + camera.getRealPos().z));
-            Vector3f vector = getPointOnRay(ray, start+((float)i/10));
+            Vector3f vector = getPointOnRay(ray, start+((float)i/100));
             if(Main.getInstance().getWorld().isVoxelAtCoordinate((int) Math.round((vector.x + camera.getRealPos().x)), (int) Math.round((vector.y + camera.getRealPos().y)), (int) Math.round((vector.z + camera.getRealPos().z))))
             {
                 return vector;
