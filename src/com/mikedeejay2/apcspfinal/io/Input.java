@@ -73,6 +73,7 @@ public class Input
     {
         keysLast = Arrays.copyOf(keys, keys.length);
         mouseLast = Arrays.copyOf(mouse, mouse.length);
+        scroll = 0;
     }
 
 
@@ -180,7 +181,6 @@ public class Input
     public static double getScroll()
     {
         double tempScroll = scroll;
-        scroll = 0;
         return tempScroll;
     }
 }
