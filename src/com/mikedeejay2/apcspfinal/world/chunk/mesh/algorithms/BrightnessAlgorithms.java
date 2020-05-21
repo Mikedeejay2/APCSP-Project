@@ -3,11 +3,10 @@ package com.mikedeejay2.apcspfinal.world.chunk.mesh.algorithms;
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.utils.DirectionEnum;
 import com.mikedeejay2.apcspfinal.voxel.Voxel;
-import com.mikedeejay2.apcspfinal.voxel.VoxelShape;
+import com.mikedeejay2.apcspfinal.voxel.shape.VoxelShape;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.world.WorldLightColor;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
-import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -47,24 +46,12 @@ public class BrightnessAlgorithms
     {
         switch (direction)
         {
-            case WEST: //           X+1
-                genBrightnessWest(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace);
-                break;
-            case EAST: //         X-1
-                genBrightnessEast(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace);
-                break;
-            case UP: //          Y+1
-                genBrightnessUp(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace);
-                break;
-            case DOWN: //           Y-1
-                genBrightnessDown(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace);
-                break;
-            case NORTH: //          Z+1
-                genBrightnessNorth(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace);
-                break;
-            case SOUTH: //         Z-1
-                genBrightnessSouth(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace);
-                break;
+            case WEST: genBrightnessWest(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace); break;
+            case EAST: genBrightnessEast(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace); break;
+            case UP: genBrightnessUp(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace); break;
+            case DOWN: genBrightnessDown(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace); break;
+            case NORTH: genBrightnessNorth(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace); break;
+            case SOUTH: genBrightnessSouth(world, chunk, r, g, b, x, y, z, index, brightnessList, AO, worldSpace); break;
         }
     }
 
@@ -73,72 +60,28 @@ public class BrightnessAlgorithms
         switch (index)
         {
             case 0:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 1:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 2:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z+1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 3:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z+1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
         }
     }
@@ -148,72 +91,29 @@ public class BrightnessAlgorithms
         switch (index)
         {
             case 0:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 1:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
             if(isVoxelAtCoordinate(world, chunk, x-1, y, z-1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 2:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z+1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y, z+1, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 3:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace))
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
         }
     }
@@ -223,72 +123,30 @@ public class BrightnessAlgorithms
         switch (index)
         {
             case 0:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace))  { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x, y+1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 1:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
             if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace))  { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 2:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 3:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
             if(isVoxelAtCoordinate(world, chunk, x, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
         }
     }
@@ -298,72 +156,30 @@ public class BrightnessAlgorithms
         switch (index)
         {
             case 0:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z+1, worldSpace))
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
             if(isVoxelAtCoordinate(world, chunk, x, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 1:
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 2:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 3:
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x, y-1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
         }
     }
@@ -373,72 +189,31 @@ public class BrightnessAlgorithms
         switch (index)
         {
             case 0:
-            if(isVoxelAtCoordinate(world, chunk, x, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
+            if(isVoxelAtCoordinate(world, chunk, x, y+1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
             if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
             if(isVoxelAtCoordinate(world, chunk, x-1, y, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 1:
-            if(isVoxelAtCoordinate(world, chunk, x, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x, y-1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 2:
-            if(isVoxelAtCoordinate(world, chunk, x, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x, y-1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z+1, worldSpace))  { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 3:
             if(isVoxelAtCoordinate(world, chunk, x, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z+1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z+1, worldSpace))  { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
         }
     }
@@ -448,72 +223,28 @@ public class BrightnessAlgorithms
         switch (index)
         {
             case 0:
-            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace))  { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y+1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 1:
-            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x-1, y, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x-1, y, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 2:
-            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y-1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
             case 3:
-            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace)) 
-            {
-                brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO);
-            } else
-            {
-                brightnessList.add(r); brightnessList.add(g); brightnessList.add(b);
-            }
+            if(isVoxelAtCoordinate(world, chunk, x, y+1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y+1, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); } else
+            if(isVoxelAtCoordinate(world, chunk, x+1, y, z-1, worldSpace)) { brightnessList.add(r - AO); brightnessList.add(g - AO); brightnessList.add(b - AO); }
+            else { brightnessList.add(r); brightnessList.add(g); brightnessList.add(b); }
             break;
         }
     }

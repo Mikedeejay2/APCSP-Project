@@ -1,23 +1,16 @@
 package com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables;
 
 import com.mikedeejay2.apcspfinal.Main;
-import com.mikedeejay2.apcspfinal.graphics.models.RawModel;
-import com.mikedeejay2.apcspfinal.graphics.models.TexturedModel;
-import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
-import com.mikedeejay2.apcspfinal.graphics.textures.ModelTexture;
 import com.mikedeejay2.apcspfinal.utils.DirectionEnum;
 import com.mikedeejay2.apcspfinal.voxel.Voxel;
-import com.mikedeejay2.apcspfinal.voxel.VoxelShape;
-import com.mikedeejay2.apcspfinal.voxel.VoxelShapeCube;
+import com.mikedeejay2.apcspfinal.voxel.shape.VoxelShape;
+import com.mikedeejay2.apcspfinal.voxel.shape.VoxelShapeCube;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
-import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.MeshRequest;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.algorithms.BrightnessAlgorithms;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;

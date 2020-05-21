@@ -2,6 +2,7 @@ package com.mikedeejay2.apcspfinal.voxel;
 
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.graphics.textures.TextureAtlas;
+import com.mikedeejay2.apcspfinal.voxel.shape.VoxelShape;
 
 import java.util.HashMap;
 

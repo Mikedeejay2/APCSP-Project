@@ -1,4 +1,4 @@
-package com.mikedeejay2.apcspfinal.voxel;
+package com.mikedeejay2.apcspfinal.voxel.shape;
 
 public class VoxelShapeLiquid extends VoxelShape
 {

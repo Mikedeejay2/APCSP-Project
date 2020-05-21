@@ -1,5 +1,7 @@
 package com.mikedeejay2.apcspfinal.voxel;
 
+import com.mikedeejay2.apcspfinal.voxel.shape.VoxelShape;
+
 public class Voxel
 {
     private String name;
