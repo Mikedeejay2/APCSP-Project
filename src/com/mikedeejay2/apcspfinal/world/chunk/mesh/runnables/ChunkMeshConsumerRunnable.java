@@ -1,4 +1,4 @@
-package com.mikedeejay2.apcspfinal.world.chunk.mesh;
+package com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables;
 
 public class ChunkMeshConsumerRunnable implements Runnable
 {

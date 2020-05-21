@@ -1,6 +1,6 @@
 package com.mikedeejay2.apcspfinal.graphics.font;
 
-import com.mikedeejay2.apcspfinal.graphics.font.rendering.FontRenderer;
+import com.mikedeejay2.apcspfinal.graphics.renderers.FontRenderer;
 import com.mikedeejay2.apcspfinal.loaders.Loader;
 import com.mikedeejay2.apcspfinal.loaders.font.creator.FontType;
 import com.mikedeejay2.apcspfinal.loaders.font.creator.GUIText;

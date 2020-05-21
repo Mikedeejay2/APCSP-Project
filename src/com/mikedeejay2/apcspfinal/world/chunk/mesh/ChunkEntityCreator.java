@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class EntityCreator
+public class ChunkEntityCreator
 {
     private LinkedList<Chunk> queue = new LinkedList<Chunk>();
     private LinkedList<Chunk> immediateQueue = new LinkedList<Chunk>();

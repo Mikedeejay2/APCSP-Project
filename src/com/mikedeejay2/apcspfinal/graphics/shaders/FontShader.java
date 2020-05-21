@@ -1,4 +1,4 @@
-package com.mikedeejay2.apcspfinal.graphics.font.rendering;
+package com.mikedeejay2.apcspfinal.graphics.shaders;
 
 import com.mikedeejay2.apcspfinal.graphics.shaders.ShaderProgram;
 import org.joml.Vector2f;
@@ -29,11 +29,11 @@ public class FontShader extends ShaderProgram
 		super.bindAttribute(1, "textureCoords");
 	}
 
-	protected void loadColor(Vector3f color){
+	public void loadColor(Vector3f color){
 		super.loadVector(location_color, color);
 	}
 
-	protected void loadTranslation(Vector2f translation){
+	public void loadTranslation(Vector2f translation){
 		super.load2DVector(location_translation, translation);
 	}
 

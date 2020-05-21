@@ -5,8 +5,6 @@ import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
 import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshGenerator;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.joml.Vector3f;
 
 public class Chunk
@@ -326,14 +324,14 @@ public class Chunk
         return voxel.isLiquid();
     }
 
-    public boolean containsVoxelAtOffsetSolic(int x, int y, int z, boolean solic)
+    public boolean containsVoxelAtOffsetSolid(int x, int y, int z, boolean solid)
     {
         if(invalidCheck(x, y, z)) return false;
         int id = voxels[x][y][z];
         if(id == 0) return false;
         Voxel voxel = VoxelTypes.getFromID(id);
         if(voxel == null) return true;
-        if(!solic) return !voxel.isSolid();
+        if(!solid) return !voxel.isSolid();
         return voxel.isSolid();
     }
 

@@ -37,18 +37,18 @@ public class VoxelShapeLiquid extends VoxelShape
 
     private static float[] verticesNorth = new float[]
             {
-                    -0.5f, 0.4375f, -0.5f, //NORTH FACE
-                    -0.5f, -0.5f, -0.5f,
-                    0.5f, -0.5f, -0.5f,
-                    0.5f, 0.4375f, -0.5f
+                    -0.5f, 0.4375f, 0.5f, //NORTH FACE
+                    -0.5f, -0.5f, 0.5f,
+                    0.5f, -0.5f, 0.5f,
+                    0.5f, 0.4375f, 0.5f
             };
 
     private static float[] verticesSouth = new float[]
             {
-                    -0.5f, 0.4375f, 0.5f, //SOUTH FACE
-                    -0.5f, -0.5f, 0.5f,
-                    0.5f, -0.5f, 0.5f,
-                    0.5f, 0.4375f, 0.5f
+                    -0.5f, 0.4375f, -0.5f, //SOUTH FACE
+                    -0.5f, -0.5f, -0.5f,
+                    0.5f, -0.5f, -0.5f,
+                    0.5f, 0.4375f, -0.5f
             };
 
     private static float[] verticesWest = new float[]
@@ -106,14 +106,14 @@ public class VoxelShapeLiquid extends VoxelShape
 
     private static int[] indicesNorth = new int[]
             {
-                    3,1,0, //NORTH FACE
-                    2,1,3
+                    0,1,3, //SOUTH FACE
+                    3,1,2,
             };
 
     private static int[] indicesSouth = new int[]
             {
-                    0,1,3, //SOUTH FACE
-                    3,1,2,
+                    3,1,0, //NORTH FACE
+                    2,1,3
             };
 
     private static int[] indicesWest = new int[]

@@ -1,6 +1,7 @@
-package com.mikedeejay2.apcspfinal.graphics.font.rendering;
+package com.mikedeejay2.apcspfinal.graphics.renderers;
 
 
+import com.mikedeejay2.apcspfinal.graphics.shaders.FontShader;
 import com.mikedeejay2.apcspfinal.loaders.font.creator.FontType;
 import com.mikedeejay2.apcspfinal.loaders.font.creator.GUIText;
 import org.joml.Vector2f;

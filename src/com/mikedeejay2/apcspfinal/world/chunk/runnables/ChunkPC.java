@@ -1,7 +1,8 @@
-package com.mikedeejay2.apcspfinal.world.chunk;
+package com.mikedeejay2.apcspfinal.world.chunk.runnables;
 
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.world.World;
+import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 import org.joml.Vector3f;
 
 import java.util.LinkedList;

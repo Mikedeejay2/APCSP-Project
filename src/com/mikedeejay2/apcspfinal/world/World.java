@@ -1,12 +1,12 @@
 package com.mikedeejay2.apcspfinal.world;
 
 import com.mikedeejay2.apcspfinal.voxel.Voxel;
-import com.mikedeejay2.apcspfinal.world.chunk.ChunkConsumerRunnable;
+import com.mikedeejay2.apcspfinal.world.chunk.runnables.ChunkConsumerRunnable;
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.world.generators.OverworldGenerator;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
-import com.mikedeejay2.apcspfinal.world.chunk.ChunkPC;
-import com.mikedeejay2.apcspfinal.world.chunk.ChunkProducerRunnable;
+import com.mikedeejay2.apcspfinal.world.chunk.runnables.ChunkPC;
+import com.mikedeejay2.apcspfinal.world.chunk.runnables.ChunkProducerRunnable;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -25,6 +25,8 @@ public class World extends Thread
     public static int renderDistanceVertical = 8;
 
     ChunkPC chunkPC;
+
+    WorldLightColor worldLightColor;
 
     ChunkProducerRunnable chunkProducer;
     Thread chunkProducerThread;
@@ -49,6 +51,8 @@ public class World extends Thread
         playerChunkPrevious = new Vector3f(0, 0, 0);
         allChunks = new ConcurrentHashMap<>();
         overworldGenerator = new OverworldGenerator(this);
+
+        this.worldLightColor = new WorldLightColor(0.6f, 0.8f, 1f, 1, 1, 1);
 
         chunkConsumerThreads = new ArrayList<Thread>();
 
@@ -365,5 +369,10 @@ public class World extends Thread
             chunk.getVoxelAtOffset(newX, newY, newZ);
         }
         return null;
+    }
+
+    public WorldLightColor getWorldLightColor()
+    {
+        return worldLightColor;
     }
 }

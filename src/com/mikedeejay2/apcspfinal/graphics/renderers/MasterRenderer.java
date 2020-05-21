@@ -1,15 +1,14 @@
 package com.mikedeejay2.apcspfinal.graphics.renderers;
 
-import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.graphics.models.TexturedModel;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
 import com.mikedeejay2.apcspfinal.graphics.shaders.StaticShader;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshConsumerRunnable;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshGenerator;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshProducerRunnable;
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables.ChunkMeshConsumerRunnable;
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables.ChunkMeshGenerator;
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables.ChunkMeshProducerRunnable;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.MeshRequest;
 import org.joml.Matrix4f;
 

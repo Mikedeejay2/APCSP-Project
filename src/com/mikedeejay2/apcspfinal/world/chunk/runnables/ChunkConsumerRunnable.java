@@ -1,4 +1,4 @@
-package com.mikedeejay2.apcspfinal.world.chunk;
+package com.mikedeejay2.apcspfinal.world.chunk.runnables;
 
 import com.mikedeejay2.apcspfinal.world.World;
 

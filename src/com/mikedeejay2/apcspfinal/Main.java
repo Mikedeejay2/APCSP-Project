@@ -9,20 +9,16 @@ import com.mikedeejay2.apcspfinal.graphics.textures.TextureAtlas;
 import com.mikedeejay2.apcspfinal.io.Input;
 import com.mikedeejay2.apcspfinal.io.Window;
 import com.mikedeejay2.apcspfinal.loaders.Loader;
-import com.mikedeejay2.apcspfinal.graphics.textures.ModelTexture;
 import com.mikedeejay2.apcspfinal.utils.Raycast;
-import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.world.World;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshProducerRunnable;
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables.ChunkMeshProducerRunnable;
 import com.mikedeejay2.apcspfinal.player.Player;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkMeshConsumerRunnable;
-import com.mikedeejay2.apcspfinal.world.chunk.mesh.EntityCreator;
-import org.joml.Vector3f;
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables.ChunkMeshConsumerRunnable;
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.ChunkEntityCreator;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -35,7 +31,7 @@ public class Main
     public MasterRenderer renderer;
 
     public World world;
-    EntityCreator entityCreator;
+    ChunkEntityCreator entityCreator;
     Thread worldThread;
 
     public ChunkMeshProducerRunnable chunkMeshProducer;
@@ -82,7 +78,7 @@ public class Main
         this.worldThread = new Thread(world, "world");
         worldThread.start();
 
-        entityCreator = new EntityCreator();
+        entityCreator = new ChunkEntityCreator();
 
 
         TextMaster.init(loader, this);
@@ -221,7 +217,7 @@ public class Main
         return chunksToRender;
     }
 
-    public EntityCreator getEntityCreator()
+    public ChunkEntityCreator getEntityCreator()
     {
         return entityCreator;
     }

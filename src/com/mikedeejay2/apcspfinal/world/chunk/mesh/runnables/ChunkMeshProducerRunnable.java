@@ -1,4 +1,6 @@
-package com.mikedeejay2.apcspfinal.world.chunk.mesh;
+package com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables;
+
+import com.mikedeejay2.apcspfinal.world.chunk.mesh.MeshRequest;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
