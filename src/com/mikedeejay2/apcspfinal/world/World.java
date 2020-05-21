@@ -314,44 +314,83 @@ public class World extends Thread
         boolean down, up, west, east, north, south;
         if(currentPoint.y >= 0)
         {
-            down = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51;
-            up = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49;
+            down = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.6;
+            up = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.4;
         }
         else
         {
-            down = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49;
-            up = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51;
+            down = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.4;
+            up = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.6;
         }
         if(currentPoint.x >= 0)
         {
-            west = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51;
-            east = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49;
+            west = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.6;
+            east = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.4;
         }
         else
         {
-            west = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49;
-            east = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51;
+            west = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.4;
+            east = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.6;
         }
         if(currentPoint.z >= 0)
         {
-            north = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51;
-            south = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49;
+            north = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.6;
+            south = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.4;
         }
         else
         {
-            north = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49;
-            south = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51;
+            north = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.4;
+            south = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.6;
         }
 
         int correctedX = currentPoint.x % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.x % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.x % CHUNK_SIZE);
         int correctedY = currentPoint.y % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.y % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.y % CHUNK_SIZE);
         int correctedZ = currentPoint.z % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.z % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.z % CHUNK_SIZE);
-                 if(down) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y - 1, currentPoint.z)).addVoxel(correctedX, correctedY-1, correctedZ, voxelName);
-        else if(up) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y + 1, currentPoint.z)).addVoxel(correctedX, correctedY+1, correctedZ, voxelName);
-        else if(west) getChunkFromCoordinates(new Vector3f(currentPoint.x - 1, currentPoint.y, currentPoint.z)).addVoxel(correctedX-1, correctedY, correctedZ, voxelName);
-        else if(east) getChunkFromCoordinates(new Vector3f(currentPoint.x + 1, currentPoint.y, currentPoint.z)).addVoxel(correctedX+1, correctedY, correctedZ, voxelName);
-        else if(north) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z - 1)).addVoxel(correctedX, correctedY, correctedZ-1, voxelName);
-        else if(south) getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z + 1)).addVoxel(correctedX, correctedY, correctedZ+1, voxelName);
+
+
+        System.out.println(correctedX + ", " + correctedY + ", " + correctedZ);
+
+        Chunk chunk = null;
+        if(down)
+        {
+            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y-1, currentPoint.z));
+            correctedY--;
+            if(correctedY == -1) correctedY = 31;
+        }
+        if(up)
+        {
+            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y+1, currentPoint.z));
+            correctedY++;
+            if(correctedY == 32) correctedY = 0;
+        }
+        if(west)
+        {
+            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x-1, currentPoint.y, currentPoint.z));
+            correctedX--;
+            if(correctedX == -1) correctedX = 31;
+        }
+        if(east)
+        {
+            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x+1, currentPoint.y, currentPoint.z));
+            correctedX++;
+            if(correctedX == 32) correctedX = 0;
+        }
+        if(north)
+        {
+            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z-1));
+            correctedZ--;
+            if(correctedZ == -1) correctedZ = 31;
+        }
+        if(south)
+        {
+            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z+1));
+            correctedZ++;
+            if(correctedZ == 32) correctedZ = 0;
+        }
+        if(correctedX == 32) correctedX = 31;
+        if(correctedY == 32) correctedY = 31;
+        if(correctedZ == 32) correctedZ = 31;
+        if(chunk != null && (!chunk.containsVoxelAtOffsetLiquid(correctedX, correctedY, correctedZ, true))) chunk.addVoxel(correctedX, correctedY, correctedZ, voxelName);
     }
 
     //Broken?

@@ -2,8 +2,10 @@ package com.mikedeejay2.apcspfinal;
 
 import com.mikedeejay2.apcspfinal.core.CoreEngine;
 import com.mikedeejay2.apcspfinal.debug.DebugScreen;
+import com.mikedeejay2.apcspfinal.graphics.crosshair.Crosshair;
 import com.mikedeejay2.apcspfinal.graphics.font.TextMaster;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
+import com.mikedeejay2.apcspfinal.graphics.renderers.CrosshairRenderer;
 import com.mikedeejay2.apcspfinal.graphics.renderers.MasterRenderer;
 import com.mikedeejay2.apcspfinal.graphics.textures.TextureAtlas;
 import com.mikedeejay2.apcspfinal.io.Input;
@@ -29,15 +31,15 @@ public class Main
     public DebugScreen debugScreen;
     public CoreEngine coreEngine;
     public MasterRenderer renderer;
+    public Crosshair crosshair;
+    public CrosshairRenderer crosshairRenderer;
 
     public World world;
-    ChunkEntityCreator entityCreator;
-    Thread worldThread;
+    public ChunkEntityCreator entityCreator;
+    public Thread worldThread;
 
     public ChunkMeshProducerRunnable chunkMeshProducer;
     public ChunkMeshConsumerRunnable chunkMeshConsumer;
-    Thread chunkMeshProducerThread;
-    Thread chunkMeshConsumerThread;
 
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
@@ -80,6 +82,8 @@ public class Main
 
         entityCreator = new ChunkEntityCreator();
 
+        crosshair = new Crosshair(loader);
+        crosshairRenderer = new CrosshairRenderer();
 
         TextMaster.init(loader, this);
         debugScreen = new DebugScreen(this);
@@ -121,8 +125,7 @@ public class Main
         if(Input.getMouseDown(GLFW_MOUSE_BUTTON_RIGHT))
         {
             mousePicker.update();
-            if(mousePicker.getCurrentPoint() != null &&
-            !player.getAabb().intersectBlockPoint(player.getPosition(), mousePicker.getCurrentPoint()))
+            if(mousePicker.getCurrentPoint() != null)
             {
 //                        world.addVoxelRelative("stone", mousePicker.getCurrentPoint());
                         player.addVoxel(mousePicker.getCurrentPoint());
@@ -141,6 +144,7 @@ public class Main
         }
         renderer.render(player.getCamera());
         TextMaster.render();
+        crosshairRenderer.render(crosshair);
     }
 
     public void close()

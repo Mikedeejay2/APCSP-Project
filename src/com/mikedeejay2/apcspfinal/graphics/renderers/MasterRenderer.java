@@ -1,10 +1,12 @@
 package com.mikedeejay2.apcspfinal.graphics.renderers;
 
+import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.graphics.models.TexturedModel;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
 import com.mikedeejay2.apcspfinal.graphics.shaders.StaticShader;
 import com.mikedeejay2.apcspfinal.world.World;
+import com.mikedeejay2.apcspfinal.world.WorldLightColor;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables.ChunkMeshConsumerRunnable;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.runnables.ChunkMeshGenerator;
@@ -21,6 +23,8 @@ public class MasterRenderer
 {
     private StaticShader shader = new StaticShader();
     private Renderer renderer = new Renderer(shader);
+
+    private static WorldLightColor worldLightColor;
 
     private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
 
@@ -40,7 +44,7 @@ public class MasterRenderer
         chunkMeshProducerThread.start();
 
         chunkMeshConsumerThreads = new ArrayList<Thread>();
-        for(int i =0; i < 4; i++)
+        for(int i =0; i < 3; i++)
         {
             ChunkMeshConsumerRunnable chunkMeshConsumer = new ChunkMeshConsumerRunnable(chunkMeshGenerator);
             Thread threadConsumer = new Thread(chunkMeshConsumer, "chunkMeshConsumer" + i);
@@ -57,9 +61,10 @@ public class MasterRenderer
 
     public void render(Camera camera)
     {
+        worldLightColor = Main.getInstance().getWorld().getWorldLightColor();
         renderer.prepare();
         shader.start();
-        shader.loadSkyColor(Renderer.RED, Renderer.GREEN, Renderer.BLUE);
+        shader.loadSkyColor(worldLightColor.getSkyColorR(), worldLightColor.getSkyColorG(), worldLightColor.getSkyColorB());
         shader.loadViewMatrix(camera);
         renderer.render(entities);
         shader.stop();

@@ -407,9 +407,6 @@ public class Chunk
 
     public void addVoxel(int x, int y, int z, String name)
     {
-        if(x == 32) x = 0;
-        if(y == 32) y = 0;
-        if(z == 32) z = 0;
         if(!containsVoxels) initVoxelArray();
         voxels[x][y][z] = (byte) VoxelTypes.getIDFromName(name);
         setContainsVoxels(true);

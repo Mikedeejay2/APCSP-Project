@@ -119,19 +119,15 @@ public class ChunkMeshGenerator
             {
                 for (int z = 0; z < World.CHUNK_SIZE; z++)
                 {
-                    if (chunk.containsVoxelAtOffset(x, y, z))
+                    if(chunk.containsVoxelAtOffset(x, y, z))
                     {
-                        Voxel voxel = chunk.getVoxelAtOffset(x, y, z);
-                        if(voxel != null && voxel.getVoxelShape() instanceof VoxelShapeCube)
+                        if(!edgeCheck(x, y, z))
                         {
-                            if(!edgeCheck(x, y, z))
-                            {
-                                createSlice(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
-                            }
-                            else
-                            {
-                                createSliceEdge(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
-                            }
+                            createSlice(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
+                        }
+                        else
+                        {
+                            createSliceEdge(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z);
                         }
                     }
                 }
@@ -177,7 +173,7 @@ public class ChunkMeshGenerator
         }
         createVertex(x, y, z, vertices, verticesList);
         createTextureCoord(textureCoordsList, chunk.getVoxelIDAtOffset(x, y, z));
-        createIndex(x, y, z, indices, indicesList);
+        createIndex(indices, indicesList);
         createLightValue(world, chunk, lightVal, brightnessList, x, y, z, edge, directionEnum);
     }
 

@@ -1,11 +1,13 @@
 package com.mikedeejay2.apcspfinal.graphics.renderers;
 
+import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.graphics.models.TexturedModel;
 import com.mikedeejay2.apcspfinal.graphics.models.RawModel;
 import com.mikedeejay2.apcspfinal.graphics.shaders.StaticShader;
 import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
 import com.mikedeejay2.apcspfinal.io.Window;
 import com.mikedeejay2.apcspfinal.utils.Maths;
+import com.mikedeejay2.apcspfinal.world.WorldLightColor;
 import org.joml.Matrix4f;
 
 import java.util.List;
@@ -26,9 +28,7 @@ public class Renderer
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000;
 
-    public static final float RED = 0.6f;
-    public static final float GREEN = 0.8f;
-    public static final float BLUE = 1.0f;
+    private static WorldLightColor worldLightColor;
 
     public Renderer(StaticShader shader)
     {
@@ -59,7 +59,8 @@ public class Renderer
 
     public void prepare()
     {
-        glClearColor(RED, GREEN, BLUE, 1);
+        worldLightColor = Main.getInstance().getWorld().getWorldLightColor();
+        glClearColor(worldLightColor.getSkyColorR(), worldLightColor.getSkyColorG(), worldLightColor.getSkyColorB(), 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
