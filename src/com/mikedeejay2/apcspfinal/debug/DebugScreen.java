@@ -17,6 +17,9 @@ public class DebugScreen
 
     float fontColorR, fontColorG, fontColorB;
 
+    float fontColor = 1f;
+    float shadowColor = 0.5f;
+
     FontType font;
 
     GUIText versionText;
@@ -64,10 +67,20 @@ public class DebugScreen
             locationText = new GUIText("", fontSize, font, new Vector2f(0.003f, 0.06f), 1f, false);
             chunkLocationText = new GUIText("", fontSize, font, new Vector2f(0.003f, 0.09f), 1f, false);
 
-            versionText.setColor(1, 1, 1);
-            fpsText.setColor(1, 1, 1);
-            locationText.setColor(1, 1, 1);
-            chunkLocationText.setColor(1, 1, 1);
+            versionText.setColor(fontColor, fontColor, fontColor);
+            fpsText.setColor(fontColor, fontColor, fontColor);
+            locationText.setColor(fontColor, fontColor, fontColor);
+            chunkLocationText.setColor(fontColor, fontColor, fontColor);
+
+//            versionText.setShadowColor(shadowColor, shadowColor, shadowColor);
+//            fpsText.setShadowColor(shadowColor, shadowColor, shadowColor);
+//            locationText.setShadowColor(shadowColor, shadowColor, shadowColor);
+//            chunkLocationText.setShadowColor(shadowColor, shadowColor, shadowColor);
+//
+//            versionText.setHasShadow(true);
+//            fpsText.setHasShadow(true);
+//            locationText.setHasShadow(true);
+//            chunkLocationText.setHasShadow(true);
         }
         else
         {

@@ -5,6 +5,7 @@ import com.mikedeejay2.apcspfinal.collision.AxisAlignedBB;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.io.Input;
 import com.mikedeejay2.apcspfinal.io.Window;
+import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -30,7 +31,9 @@ public class Player
 
     private AxisAlignedBB aabb;
 
-    String currentBlock = "stone";
+    private int currentBlockIndex = 0;
+
+    String currentBlock = "";
 
     public Player(Camera camera)
     {
@@ -49,14 +52,23 @@ public class Player
 
     public void input(float delta)
     {
+//        if(Input.getScroll() != 0)
+//        {
+//            speed += Input.getScroll()*20;
+//            System.out.println(Input.getScroll());
+//        }
+//        if(Input.getKey(GLFW_KEY_LEFT_CONTROL))
+//        {
+//            speed = REG_SPEED;
+//        }
+
         if(Input.getScroll() != 0)
         {
-            speed += Input.getScroll()*20;
-            System.out.println(Input.getScroll());
-        }
-        if(Input.getKey(GLFW_KEY_LEFT_CONTROL))
-        {
-            speed = REG_SPEED;
+            if(Input.getScroll() > 0) currentBlockIndex++;
+            if(Input.getScroll() < 0) currentBlockIndex--;
+            if(currentBlockIndex > VoxelTypes.getAmtOfVoxels()) currentBlockIndex = 1;
+            if(currentBlockIndex < 1) currentBlockIndex = VoxelTypes.getAmtOfVoxels();
+            currentBlock = VoxelTypes.getNameFromID(currentBlockIndex);
         }
 
         camera.getViewMatrix().positiveZ(camera.getForward()).negate().mul(speed * delta);
@@ -191,5 +203,10 @@ public class Player
     public void addVoxel(Vector3f location)
     {
         Main.getInstance().getWorld().addVoxelRelative(currentBlock, location);
+    }
+
+    public String getCurrentVoxel()
+    {
+        return currentBlock;
     }
 }

@@ -4,6 +4,7 @@ import com.mikedeejay2.apcspfinal.core.CoreEngine;
 import com.mikedeejay2.apcspfinal.debug.DebugScreen;
 import com.mikedeejay2.apcspfinal.graphics.crosshair.Crosshair;
 import com.mikedeejay2.apcspfinal.graphics.font.TextMaster;
+import com.mikedeejay2.apcspfinal.graphics.hud.PlayerHUD;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.graphics.renderers.CrosshairRenderer;
 import com.mikedeejay2.apcspfinal.graphics.renderers.MasterRenderer;
@@ -37,6 +38,8 @@ public class Main
     public World world;
     public ChunkEntityCreator entityCreator;
     public Thread worldThread;
+
+    public PlayerHUD playerHUD;
 
     public ChunkMeshProducerRunnable chunkMeshProducer;
     public ChunkMeshConsumerRunnable chunkMeshConsumer;
@@ -90,6 +93,9 @@ public class Main
         debugScreen.init();
 
         mousePicker = new Raycast(player.getCamera(), renderer.getProjectionMatrix());
+
+        playerHUD = new PlayerHUD(player);
+        playerHUD.init();
     }
 
     public void update(float delta)
@@ -102,6 +108,7 @@ public class Main
     {
         world.updateChunkUpdates();
         debugScreen.update();
+        playerHUD.update();
         world.unloadOldChunks();
         world.chunksProcessedThisTick = 0;
     }

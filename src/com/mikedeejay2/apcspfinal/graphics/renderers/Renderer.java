@@ -40,6 +40,10 @@ public class Renderer
         glEnable(GL_DEPTH_CLAMP);
 
         glEnable(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
         this.shader = shader;
         transformationMatrix = new Matrix4f();
         projectionMatrix = new Matrix4f();

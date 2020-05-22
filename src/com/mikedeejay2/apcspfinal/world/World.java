@@ -347,49 +347,49 @@ public class World extends Thread
         int correctedY = currentPoint.y % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.y % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.y % CHUNK_SIZE);
         int correctedZ = currentPoint.z % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.z % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.z % CHUNK_SIZE);
 
+        float currentPointX = currentPoint.x;
+        float currentPointY = currentPoint.y;
+        float currentPointZ = currentPoint.z;
 
-        System.out.println(correctedX + ", " + correctedY + ", " + correctedZ);
-
-        Chunk chunk = null;
+        coordsToChunkLoc(currentPoint);
         if(down)
         {
-            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y-1, currentPoint.z));
+            currentPointY--;
             correctedY--;
             if(correctedY == -1) correctedY = 31;
         }
         if(up)
         {
-            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y+1, currentPoint.z));
+            currentPointY++;
             correctedY++;
             if(correctedY == 32) correctedY = 0;
         }
         if(west)
         {
-            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x-1, currentPoint.y, currentPoint.z));
+            currentPointX--;
             correctedX--;
             if(correctedX == -1) correctedX = 31;
         }
         if(east)
         {
-            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x+1, currentPoint.y, currentPoint.z));
+            currentPointX++;
             correctedX++;
             if(correctedX == 32) correctedX = 0;
         }
         if(north)
         {
-            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z-1));
+            currentPointZ--;
             correctedZ--;
             if(correctedZ == -1) correctedZ = 31;
         }
         if(south)
         {
-            chunk = getChunkFromCoordinates(new Vector3f(currentPoint.x, currentPoint.y, currentPoint.z+1));
+            currentPointZ++;
             correctedZ++;
             if(correctedZ == 32) correctedZ = 0;
         }
-        if(correctedX == 32) correctedX = 31;
-        if(correctedY == 32) correctedY = 31;
-        if(correctedZ == 32) correctedZ = 31;
+        System.out.println(correctedX + ", " + correctedY + ", "  + correctedZ);
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(currentPointX, currentPointY, currentPointZ));
         if(chunk != null && (!chunk.containsVoxelAtOffsetLiquid(correctedX, correctedY, correctedZ, true))) chunk.addVoxel(correctedX, correctedY, correctedZ, voxelName);
     }
 

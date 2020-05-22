@@ -68,4 +68,9 @@ public class VoxelTypes
     {
         return textureAtlas;
     }
+
+    public static int getAmtOfVoxels()
+    {
+        return AMT_OF_VOXELS;
+    }
 }
