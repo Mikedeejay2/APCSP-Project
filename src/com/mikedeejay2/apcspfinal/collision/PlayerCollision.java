@@ -1,6 +1,7 @@
-package com.mikedeejay2.apcspfinal.player;
+package com.mikedeejay2.apcspfinal.collision;
 
 import com.mikedeejay2.apcspfinal.Main;
+import com.mikedeejay2.apcspfinal.player.Player;
 import com.mikedeejay2.apcspfinal.world.World;
 import org.joml.Vector3d;
 import org.joml.Vector3f;

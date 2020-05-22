@@ -9,6 +9,7 @@ import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -33,8 +34,12 @@ public class ChunkEntityCreator
     public void createImmediate()
     {
         if(immediateQueue.isEmpty()) return;
-        Chunk chunk = immediateQueue.removeFirst();
-        createChunkEntity(chunk);
+        try
+        {
+            Chunk chunk = immediateQueue.removeFirst();
+            createChunkEntity(chunk);
+        }
+        catch(NoSuchElementException e) {}
     }
 
     private Entity createChunkEntity(Chunk chunk)

@@ -2,6 +2,7 @@ package com.mikedeejay2.apcspfinal.player;
 
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.collision.AxisAlignedBB;
+import com.mikedeejay2.apcspfinal.collision.PlayerCollision;
 import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.io.Input;
 import com.mikedeejay2.apcspfinal.io.Window;

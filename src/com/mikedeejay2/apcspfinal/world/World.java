@@ -351,14 +351,13 @@ public class World extends Thread
         float currentPointY = currentPoint.y;
         float currentPointZ = currentPoint.z;
 
-        coordsToChunkLoc(currentPoint);
         if(down)
         {
             currentPointY--;
             correctedY--;
             if(correctedY == -1) correctedY = 31;
         }
-        if(up)
+        else if(up)
         {
             currentPointY++;
             correctedY++;
@@ -368,29 +367,38 @@ public class World extends Thread
         {
             currentPointX--;
             correctedX--;
+            if(correctedX == 0) currentPointX++;
             if(correctedX == -1) correctedX = 31;
         }
-        if(east)
+        else if(east)
         {
             currentPointX++;
             correctedX++;
+            if(correctedX == 31) currentPointX--;
             if(correctedX == 32) correctedX = 0;
         }
         if(north)
         {
             currentPointZ--;
             correctedZ--;
+            if(correctedZ == 0) currentPointZ++;
             if(correctedZ == -1) correctedZ = 31;
         }
-        if(south)
+        else if(south)
         {
             currentPointZ++;
             correctedZ++;
+            if(correctedZ == 31) currentPointZ--;
             if(correctedZ == 32) correctedZ = 0;
         }
         System.out.println(correctedX + ", " + correctedY + ", "  + correctedZ);
         Chunk chunk = getChunkFromCoordinates(new Vector3f(currentPointX, currentPointY, currentPointZ));
         if(chunk != null && (!chunk.containsVoxelAtOffsetLiquid(correctedX, correctedY, correctedZ, true))) chunk.addVoxel(correctedX, correctedY, correctedZ, voxelName);
+    }
+
+    public void addVoxel(float x, float y, float z)
+    {
+
     }
 
     //Broken?
