@@ -13,7 +13,7 @@ import org.joml.Vector3f;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class World extends Thread
+public class World implements Runnable
 {
     public static final int CHUNK_SIZE = 32;
 
@@ -343,9 +343,9 @@ public class World extends Thread
             south = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.6;
         }
 
-        int correctedX = currentPoint.x % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.x % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.x % CHUNK_SIZE);
-        int correctedY = currentPoint.y % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.y % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.y % CHUNK_SIZE);
-        int correctedZ = currentPoint.z % CHUNK_SIZE < 0 ? (int) Math.round(currentPoint.z % CHUNK_SIZE + CHUNK_SIZE) : (int)Math.round(currentPoint.z % CHUNK_SIZE);
+        int correctedX = currentPoint.x % CHUNK_SIZE < 0 ? Math.round(currentPoint.x % CHUNK_SIZE + CHUNK_SIZE) : Math.round(currentPoint.x % CHUNK_SIZE);
+        int correctedY = currentPoint.y % CHUNK_SIZE < 0 ? Math.round(currentPoint.y % CHUNK_SIZE + CHUNK_SIZE) : Math.round(currentPoint.y % CHUNK_SIZE);
+        int correctedZ = currentPoint.z % CHUNK_SIZE < 0 ? Math.round(currentPoint.z % CHUNK_SIZE + CHUNK_SIZE) : Math.round(currentPoint.z % CHUNK_SIZE);
 
         float currentPointX = currentPoint.x;
         float currentPointY = currentPoint.y;
@@ -391,12 +391,16 @@ public class World extends Thread
             if(correctedZ == 31) currentPointZ--;
             if(correctedZ == 32) correctedZ = 0;
         }
+        if(correctedX == 32) correctedX = 0;
+        if(correctedY == 32) correctedY = 0;
+        if(correctedZ == 32) correctedZ = 0;
         System.out.println(correctedX + ", " + correctedY + ", "  + correctedZ);
         Chunk chunk = getChunkFromCoordinates(new Vector3f(currentPointX, currentPointY, currentPointZ));
         if(chunk != null && (!chunk.containsVoxelAtOffsetLiquid(correctedX, correctedY, correctedZ, true))) chunk.addVoxel(correctedX, correctedY, correctedZ, voxelName);
     }
 
-    public void addVoxel(float x, float y, float z)
+    //TODO: THIS
+    public void addVoxel(float x, float y, float z, String voxelName)
     {
 
     }
