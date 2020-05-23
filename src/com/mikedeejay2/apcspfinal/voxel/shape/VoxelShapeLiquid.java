@@ -4,30 +4,30 @@ public class VoxelShapeLiquid extends VoxelShape
 {
     private static float[] vertices = new float[]
             {
-                    -0.5f, 0.4375f, -0.5f, //NORTH FACE
+                    -0.5f, 0.375f, -0.5f, //NORTH FACE
                     -0.5f, -0.5f, -0.5f,
                     0.5f, -0.5f, -0.5f,
-                    0.5f, 0.4375f, -0.5f,
+                    0.5f, 0.375f, -0.5f,
 
-                    -0.5f, 0.4375f, 0.5f, //SOUTH FACE
+                    -0.5f, 0.375f, 0.5f, //SOUTH FACE
                     -0.5f, -0.5f, 0.5f,
                     0.5f, -0.5f, 0.5f,
-                    0.5f, 0.4375f, 0.5f,
+                    0.5f, 0.375f, 0.5f,
 
-                    0.5f, 0.4375f, -0.5f, //WEST FACE
+                    0.5f, 0.375f, -0.5f, //WEST FACE
                     0.5f, -0.5f, -0.5f,
                     0.5f, -0.5f, 0.5f,
-                    0.5f, 0.4375f, 0.5f,
+                    0.5f, 0.375f, 0.5f,
 
-                    -0.5f, 0.4375f, -0.5f, //EAST FACE
+                    -0.5f, 0.375f, -0.5f, //EAST FACE
                     -0.5f, -0.5f, -0.5f,
                     -0.5f, -0.5f, 0.5f,
-                    -0.5f, 0.4375f, 0.5f,
+                    -0.5f, 0.375f, 0.5f,
 
-                    -0.5f, 0.4375f, 0.5f, //UP FACE
-                    -0.5f, 0.4375f, -0.5f,
-                    0.5f, 0.4375f, -0.5f,
-                    0.5f, 0.4375f, 0.5f,
+                    -0.5f, 0.375f, 0.5f, //UP FACE
+                    -0.5f, 0.375f, -0.5f,
+                    0.5f, 0.375f, -0.5f,
+                    0.5f, 0.375f, 0.5f,
 
                     -0.5f, -0.5f, 0.5f, //DOWN FACE
                     -0.5f, -0.5f, -0.5f,
@@ -37,42 +37,42 @@ public class VoxelShapeLiquid extends VoxelShape
 
     private static float[] verticesNorth = new float[]
             {
-                    -0.5f, 0.4375f, 0.5f, //NORTH FACE
+                    -0.5f, 0.375f, 0.5f, //NORTH FACE
                     -0.5f, -0.5f, 0.5f,
                     0.5f, -0.5f, 0.5f,
-                    0.5f, 0.4375f, 0.5f
+                    0.5f, 0.375f, 0.5f
             };
 
     private static float[] verticesSouth = new float[]
             {
-                    -0.5f, 0.4375f, -0.5f, //SOUTH FACE
+                    -0.5f, 0.375f, -0.5f, //SOUTH FACE
                     -0.5f, -0.5f, -0.5f,
                     0.5f, -0.5f, -0.5f,
-                    0.5f, 0.4375f, -0.5f
+                    0.5f, 0.375f, -0.5f
             };
 
     private static float[] verticesWest = new float[]
             {
-                    0.5f, 0.4375f, -0.5f, //WEST FACE
+                    0.5f, 0.375f, -0.5f, //WEST FACE
                     0.5f, -0.5f, -0.5f,
                     0.5f, -0.5f, 0.5f,
-                    0.5f, 0.4375f, 0.5f
+                    0.5f, 0.375f, 0.5f
             };
 
     private static float[] verticesEast = new float[]
             {
-                    -0.5f, 0.4375f, -0.5f, //EAST FACE
+                    -0.5f, 0.375f, -0.5f, //EAST FACE
                     -0.5f, -0.5f, -0.5f,
                     -0.5f, -0.5f, 0.5f,
-                    -0.5f, 0.4375f, 0.5f
+                    -0.5f, 0.375f, 0.5f
             };
 
     private static float[] verticesUp = new float[]
             {
-                    -0.5f, 0.4375f, 0.5f, //UP FACE
-                    -0.5f, 0.4375f, -0.5f,
-                    0.5f, 0.4375f, -0.5f,
-                    0.5f, 0.4375f, 0.5f
+                    -0.5f, 0.375f, 0.5f, //UP FACE
+                    -0.5f, 0.375f, -0.5f,
+                    0.5f, 0.375f, -0.5f,
+                    0.5f, 0.375f, 0.5f
             };
 
     private static float[] verticesDown = new float[]

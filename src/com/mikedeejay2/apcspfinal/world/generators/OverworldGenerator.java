@@ -105,7 +105,7 @@ public class OverworldGenerator
             instanceWorld.addVoxelWorldGen(worldX, worldY + height, worldZ, "wood log");
         }
 
-        int branchCount = (int)(random.nextFloat()*(topHeight*1.5));
+        int branchCount = (int)(random.nextFloat()*(topHeight*1.5)+2);
         for(int i = 0; i < branchCount; i++)
         {
             int branchLength = (int)(random.nextFloat()*(topHeight));
@@ -125,17 +125,14 @@ public class OverworldGenerator
 
         for(int i = 0; i < branchEnds.size(); i++)
         {
-            int leafExtend = (int)(random.nextFloat()*(topHeight/4f))+2;
+            int leafExtend = 2;
             for(int leafX = (int)branchEnds.get(i).x - leafExtend; leafX < branchEnds.get(i).x+leafExtend; leafX++)
             {
                 for(int leafY = (int)branchEnds.get(i).y - leafExtend; leafY < branchEnds.get(i).y+leafExtend; leafY++)
                 {
                     for(int leafZ = (int)branchEnds.get(i).z - leafExtend; leafZ < branchEnds.get(i).z+leafExtend; leafZ++)
                     {
-                        if(random.nextFloat() < 0.5f)
-                        {
-                            instanceWorld.addVoxelWorldGenNoOverride(leafX, leafY, leafZ, "leaves");
-                        }
+                        instanceWorld.addVoxelWorldGenNoOverride(leafX, leafY, leafZ, "leaves");
                     }
                 }
             }
