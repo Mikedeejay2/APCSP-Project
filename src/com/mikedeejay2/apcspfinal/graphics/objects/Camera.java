@@ -26,7 +26,7 @@ public class Camera
 
     public Camera()
     {
-        realPos = new Vector3d(-2540, 5, 6740);
+        realPos = new Vector3d(0, 100, 0);
         position = new Vector3f(0, 0, 0);
         viewMatrix = new Matrix4f();
         this.forward = new Vector3f();

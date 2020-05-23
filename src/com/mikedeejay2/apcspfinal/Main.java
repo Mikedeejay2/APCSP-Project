@@ -125,7 +125,6 @@ public class Main
             if(mousePicker.getCurrentPoint() != null)
             {
                 player.removeVoxel(Math.round(mousePicker.getCurrentPoint().x), Math.round(mousePicker.getCurrentPoint().y), Math.round(mousePicker.getCurrentPoint().z));
-//                    world.removeVoxel(Math.round(mousePicker.getCurrentPoint().x), Math.round(mousePicker.getCurrentPoint().y), Math.round(mousePicker.getCurrentPoint().z));
             }
 
         }
@@ -134,7 +133,6 @@ public class Main
             mousePicker.update();
             if(mousePicker.getCurrentPoint() != null)
             {
-//                        world.addVoxelRelative("stone", mousePicker.getCurrentPoint());
                         player.addVoxel(mousePicker.getCurrentPoint());
             }
         }

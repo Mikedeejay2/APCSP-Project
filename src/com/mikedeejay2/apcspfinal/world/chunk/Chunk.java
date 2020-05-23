@@ -2,6 +2,7 @@ package com.mikedeejay2.apcspfinal.world.chunk;
 
 import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.graphics.objects.Entity;
+import com.mikedeejay2.apcspfinal.utils.DirectionEnum;
 import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
@@ -307,6 +308,27 @@ public class Chunk
         setContainsVoxels(true);
     }
 
+    public void addVoxelNeighbor(DirectionEnum direction, String voxelName, int x, int y, int z)
+    {
+        Chunk neighborChunk = null;
+        switch(direction)
+        {
+            case UP: neighborChunk = instanceWorld.getChunkFromChunkLoc(new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z)); break;
+            case DOWN: neighborChunk = instanceWorld.getChunkFromChunkLoc(new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z)); break;
+            case WEST: neighborChunk = instanceWorld.getChunkFromChunkLoc(new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z)); break;
+            case EAST: neighborChunk = instanceWorld.getChunkFromChunkLoc(new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z)); break;
+            case NORTH: neighborChunk = instanceWorld.getChunkFromChunkLoc(new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z+1)); break;
+            case SOUTH: neighborChunk = instanceWorld.getChunkFromChunkLoc(new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z-1)); break;
+        }
+
+        if(neighborChunk == null) return;
+        if(x < 0) x += World.CHUNK_SIZE; if(x >= World.CHUNK_SIZE) x -= World.CHUNK_SIZE;
+        if(y < 0) y += World.CHUNK_SIZE; if(y >= World.CHUNK_SIZE) y -= World.CHUNK_SIZE;
+        if(z < 0) z += World.CHUNK_SIZE; if(z >= World.CHUNK_SIZE) z -= World.CHUNK_SIZE;
+
+        neighborChunk.addVoxelWorldGen(x, y, z, voxelName);
+    }
+
     public boolean containsVoxelAtOffset(int x, int y, int z)
     {
         if(invalidCheck(x, y, z)) return false;
@@ -432,7 +454,7 @@ public class Chunk
     public boolean isSolid(int x, int y, int z)
     {
         if(!containsVoxels) return false;
-        if(voxels[x][y][z] == 0) return false;
+        if(voxels[x][y][z] == 0) return true;
         return VoxelTypes.getFromID(voxels[x][y][z]).isSolid();
     }
 

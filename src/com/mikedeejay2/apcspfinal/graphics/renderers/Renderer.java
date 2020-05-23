@@ -38,6 +38,7 @@ public class Renderer
         glEnable(GL_DEPTH_TEST);
 
         glEnable(GL_DEPTH_CLAMP);
+        glEnable(GL_BLEND);
 
         glEnable(GL_TEXTURE_2D);
 

@@ -13,5 +13,12 @@ uniform vec3 skyColor;
 void main(void)
 {
     out_Color = texture(textureSampler, pass_textureCoords) * vec4(pass_brightness, 1.0);
+
+    vec4 textureColor = texture(textureSampler, pass_textureCoords);
+    if(textureColor.a < 0.5)
+    {
+        discard;
+    }
+
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
 }

@@ -399,10 +399,49 @@ public class World implements Runnable
         if(chunk != null && (!chunk.containsVoxelAtOffsetLiquid(correctedX, correctedY, correctedZ, true))) chunk.addVoxel(correctedX, correctedY, correctedZ, voxelName);
     }
 
-    //TODO: THIS
-    public void addVoxel(float x, float y, float z, String voxelName)
+    public void addVoxel(int x, int y, int z, String voxelName)
     {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null)
+        {
+            int newX = ((x)%(CHUNK_SIZE));
+            int newY = ((y)%(CHUNK_SIZE));
+            int newZ = ((z)%(CHUNK_SIZE));
+            if(newX < 0) newX += (CHUNK_SIZE);
+            if(newY < 0) newY += (CHUNK_SIZE);
+            if(newZ < 0) newZ += (CHUNK_SIZE);
+            chunk.addVoxel(newX, newY, newZ, voxelName);
+        }
+    }
 
+    public void addVoxelWorldGen(int x, int y, int z, String voxelName)
+    {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null)
+        {
+            int newX = ((x)%(CHUNK_SIZE));
+            int newY = ((y)%(CHUNK_SIZE));
+            int newZ = ((z)%(CHUNK_SIZE));
+            if(newX < 0) newX += (CHUNK_SIZE);
+            if(newY < 0) newY += (CHUNK_SIZE);
+            if(newZ < 0) newZ += (CHUNK_SIZE);
+            chunk.addVoxelWorldGen(newX, newY, newZ, voxelName);
+        }
+    }
+
+    public void addVoxelWorldGenNoOverride(int x, int y, int z, String voxelName)
+    {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null)
+        {
+            int newX = ((x)%(CHUNK_SIZE));
+            int newY = ((y)%(CHUNK_SIZE));
+            int newZ = ((z)%(CHUNK_SIZE));
+            if(newX < 0) newX += (CHUNK_SIZE);
+            if(newY < 0) newY += (CHUNK_SIZE);
+            if(newZ < 0) newZ += (CHUNK_SIZE);
+            if(!chunk.containsVoxelAtOffset(newX, newY, newZ)) chunk.addVoxelWorldGen(newX, newY, newZ, voxelName);
+        }
     }
 
     //Broken?
