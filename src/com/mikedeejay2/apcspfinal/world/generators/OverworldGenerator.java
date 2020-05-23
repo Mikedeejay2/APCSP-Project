@@ -108,7 +108,7 @@ public class OverworldGenerator
         int branchCount = (int)(random.nextFloat()*(topHeight*1.5)+2);
         for(int i = 0; i < branchCount; i++)
         {
-            int branchLength = (int)(random.nextFloat()*(topHeight));
+            int branchLength = (int)(random.nextFloat()*(topHeight+1));
             float directionX = (random.nextFloat()*2)-1;
             float directionY = (random.nextFloat()*2)-1;
             float directionZ = (random.nextFloat()*2)-1;

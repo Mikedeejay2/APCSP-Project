@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class VoxelTypes
 {
-    public static final int AMT_OF_VOXELS = 7;
+    public static final int AMT_OF_VOXELS = 10;
 
     public static HashMap<String, Voxel> voxelsByName = new HashMap<String, Voxel>();
     public static Voxel[] voxelsByID = new Voxel[AMT_OF_VOXELS+1];
@@ -23,6 +23,9 @@ public class VoxelTypes
     public static final Voxel sand = loadVoxel("sand", VoxelShape.voxelShapeCube, 5, true,  false);
     public static final Voxel wood_log = loadVoxel("wood log", VoxelShape.voxelShapeCube, 6, true, false);
     public static final Voxel leaves = loadVoxel("leaves", VoxelShape.voxelShapeCube, 7, false, false);
+    public static final Voxel wood_planks = loadVoxel("wood planks", VoxelShape.voxelShapeCube, 8, true, false);
+    public static final Voxel stone_bricks = loadVoxel("stone bricks", VoxelShape.voxelShapeCube, 9, true, false);
+    public static final Voxel gray_tile = loadVoxel("gray tile", VoxelShape.voxelShapeCube, 10, true, false);
 
 
 
