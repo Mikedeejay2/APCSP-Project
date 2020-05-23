@@ -6,12 +6,16 @@ import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 import org.joml.SimplexNoise;
 import org.joml.Vector3f;
 
+import java.util.Random;
+
 public class OverworldGenerator
 {
+    public static final long seed = 12093;
+
     World instanceWorld;
 
-    SimplexNoise huh;
-    LayeredNoiseGenerator simplexNoiseGenerator = new LayeredNoiseGenerator(12093);
+    LayeredNoiseGenerator simplexNoiseGenerator = new LayeredNoiseGenerator(seed);
+    Random random = new Random(seed);
 
     public OverworldGenerator(World world)
     {
@@ -38,7 +42,10 @@ public class OverworldGenerator
                         {
                             chunk.addVoxelWorldGen(x, height - i, z, "dirt");
                         }
-                        if(chunk.getChunkLoc().y >= 0) chunk.addVoxelWorldGen(x, height, z, "grass");
+                        if(chunk.getChunkLoc().y >= 0)
+                        {
+                            chunk.addVoxelWorldGen(x, height, z, "grass");
+                        }
                         else chunk.addVoxelWorldGen(x, height, z, "sand");
                     }
                     else

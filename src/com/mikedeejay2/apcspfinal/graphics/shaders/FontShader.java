@@ -1,6 +1,5 @@
 package com.mikedeejay2.apcspfinal.graphics.shaders;
 
-import com.mikedeejay2.apcspfinal.graphics.shaders.ShaderProgram;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
