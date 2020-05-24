@@ -269,7 +269,7 @@ public class World implements Runnable
         return false;
     }
 
-    public boolean isVoxelAtCoordinateLiquid(int x, int y, int z, boolean liquid)
+    public boolean isVoxelAtCoordinate(int x, int y, int z, boolean liquid)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
         if(chunk != null)
@@ -312,7 +312,7 @@ public class World implements Runnable
 
     public void addVoxelRelative(String voxelName, Vector3f currentPoint)
     {
-        DirectionEnum voxelFace = getDirectionFromCurrentPoint(currentPoint);
+        DirectionEnum voxelFace = DirectionEnum.getDirectionFromCurrentPoint(currentPoint);
         if(voxelFace == null) return;
 
         float currentPointX = currentPoint.x, currentPointY = currentPoint.y, currentPointZ = currentPoint.z;
@@ -329,43 +329,8 @@ public class World implements Runnable
 
         int resultX = Math.round(currentPointX), resultY = Math.round(currentPointY), resultZ = Math.round(currentPointZ);
 
-        if(!isVoxelAtCoordinateLiquid(resultX, resultY, resultZ, true))
+        if(!isVoxelAtCoordinate(resultX, resultY, resultZ, true))
             addVoxel(resultX, resultY, resultZ, voxelName);
-    }
-
-    private DirectionEnum getDirectionFromCurrentPoint(Vector3f currentPoint)
-    {
-        if(currentPoint.y >= 0)
-        {
-            if(Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51) return DirectionEnum.DOWN;
-            if(Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49) return DirectionEnum.UP;
-        }
-        else
-        {
-            if(Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49) return DirectionEnum.DOWN;
-            if(Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51) return DirectionEnum.UP;
-        }
-        if(currentPoint.x >= 0)
-        {
-            if(Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51) return DirectionEnum.WEST;
-            if(Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49) return DirectionEnum.EAST;
-        }
-        else
-        {
-            if(Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49) return DirectionEnum.WEST;
-            if(Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51) return DirectionEnum.EAST;
-        }
-        if(currentPoint.z >= 0)
-        {
-            if(Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51) return DirectionEnum.NORTH;
-            if(Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49) return DirectionEnum.SOUTH;
-        }
-        else
-        {
-            if(Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49) return DirectionEnum.NORTH;
-            if(Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51) return DirectionEnum.SOUTH;
-        }
-        return null;
     }
 
     public void addVoxel(int x, int y, int z, String voxelName)

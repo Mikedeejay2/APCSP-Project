@@ -94,7 +94,7 @@ public class Raycast
         {
 //            System.out.println((int)(ray.x + camera.getRealPos().x) + ", " + (int)(ray.y + camera.getRealPos().y) + ", " + (int) (ray.z + camera.getRealPos().z));
             Vector3f vector = getPointOnRay(ray, start+((float)i/100));
-            if(Main.getInstance().getWorld().isVoxelAtCoordinateLiquid((int) Math.round((vector.x + camera.getRealPos().x)), (int) Math.round((vector.y + camera.getRealPos().y)), (int) Math.round((vector.z + camera.getRealPos().z)), true))
+            if(Main.getInstance().getWorld().isVoxelAtCoordinate((int) Math.round((vector.x + camera.getRealPos().x)), (int) Math.round((vector.y + camera.getRealPos().y)), (int) Math.round((vector.z + camera.getRealPos().z)), true))
             {
                 return vector;
             }

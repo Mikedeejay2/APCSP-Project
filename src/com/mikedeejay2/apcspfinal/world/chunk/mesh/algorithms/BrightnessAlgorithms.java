@@ -253,7 +253,7 @@ public class BrightnessAlgorithms
     {
         if(worldSpace)
         {
-            return world.isVoxelAtCoordinateLiquid(x, y, z, true);
+            return world.isVoxelAtCoordinate(x, y, z, true);
         }
         else
         {
