@@ -28,7 +28,7 @@ void main(void)
 
     float distance = length(positionRelativeToCam.xyz);
     visibility = exp(-pow((distance * fogDensity), fogGradient));
-    visibility = visibility * exp(-pow((distance * density), fogGradient2));
+    visibility = visibility * exp(-pow((distance * fogDensity), fogGradient2));
     visibility = clamp(visibility, 0.0, 1.0);
 
     pass_brightness = brightness;

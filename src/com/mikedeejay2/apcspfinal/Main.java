@@ -1,3 +1,9 @@
+/*
+ * Voxel game built with LWJGL 3 as a boilerplate.
+ * LWJGL 3 features being used are OpenGL, JOML,
+ * and OpenSimplexNoise. Other credits are listed
+ * in the code as needed.
+ */
 package com.mikedeejay2.apcspfinal;
 
 import com.mikedeejay2.apcspfinal.core.CoreEngine;
