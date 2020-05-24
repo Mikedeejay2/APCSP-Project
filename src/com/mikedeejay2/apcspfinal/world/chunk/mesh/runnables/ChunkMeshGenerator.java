@@ -183,70 +183,96 @@ public class ChunkMeshGenerator
         voxel = null;
 
         if (!chunk.containsVoxelAtOffset(x + 1, y, z) || (chunk.isLiquid(x + 1, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x + 1, y, z))
-            if(x != World.CHUNK_SIZE - 1)
-                createSingle(x, y, z, voxelShape, DirectionEnum.WEST, true, 0.9f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            else
-            {
-                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
-                if(newChunk != null && newChunk.hasLoaded)
-                    if(newChunk.getVoxelIDAtOffset(0, y, z) == 0 || (newChunk.isLiquid(0, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(0, y, z))
-                        createSingle(x, y, z, voxelShape, DirectionEnum.WEST, true, 0.9f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            }
-
+            createSliceEdgeWest(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z, voxelShape);
         if (!chunk.containsVoxelAtOffset(x - 1, y, z) || (chunk.isLiquid(x - 1, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x - 1, y, z))
-            if(x != 0)
-                createSingle(x, y, z, voxelShape, DirectionEnum.EAST, true, 0.8f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            else
-            {
-                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
-                if(newChunk != null && newChunk.hasLoaded)
-                    if(newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 || (newChunk.isLiquid(World.CHUNK_SIZE - 1, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(World.CHUNK_SIZE - 1, y, z))
-                        createSingle(x, y, z, voxelShape, DirectionEnum.EAST, true, 0.8f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            }
-
+            createSliceEdgeEast(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z, voxelShape);
         if (!chunk.containsVoxelAtOffset(x, y + 1, z) || (chunk.isLiquid(x, y + 1, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y + 1, z))
-            if(y != World.CHUNK_SIZE - 1)
-                createSingle(x, y, z, voxelShape, DirectionEnum.UP, true, 1f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            else
-            {
-                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
-                if(newChunk != null && newChunk.hasLoaded)
-                    if(newChunk.getVoxelIDAtOffset(x, 0, z) == 0 || (newChunk.isLiquid(x, 0, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, 0, z))
-                        createSingle(x, y, z, voxelShape, DirectionEnum.UP, true, 1f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            }
-
+            createSliceEdgeUp(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z, voxelShape);
         if (!chunk.containsVoxelAtOffset(x, y - 1, z) || (chunk.isLiquid(x, y - 1, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y - 1, z))
-            if(y != 0)
-                createSingle(x, y, z, voxelShape, DirectionEnum.DOWN, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            else
-            {
-                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
-                if(newChunk != null && chunk.hasLoaded)
-                    if(newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 || (newChunk.isLiquid(x, World.CHUNK_SIZE - 1, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, World.CHUNK_SIZE - 1, z))
-                        createSingle(x, y, z, voxelShape, DirectionEnum.DOWN, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            }
-
+            createSliceEdgeDown(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z, voxelShape);
         if (!chunk.containsVoxelAtOffset(x, y, z + 1) || (chunk.isLiquid(x, y, z + 1) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z + 1))
-            if(z != World.CHUNK_SIZE - 1)
-                createSingle(x, y, z, voxelShape, DirectionEnum.NORTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            else
-            {
-                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
-                if(newChunk != null && newChunk.hasLoaded)
-                    if(newChunk.getVoxelIDAtOffset(x, y, 0) == 0 || (newChunk.isLiquid(x, y, 0) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, 0))
-                        createSingle(x, y, z, voxelShape, DirectionEnum.NORTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            }
-
+            createSliceEdgeNorth(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z, voxelShape);
         if (!chunk.containsVoxelAtOffset(x, y, z - 1) || (chunk.isLiquid(x, y, z - 1) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, z - 1))
-            if(z != 0)
-                createSingle(x, y, z, voxelShape, DirectionEnum.SOUTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            else
-            {
-                Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
-                if(newChunk != null && newChunk.hasLoaded)
-                    if(newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 || (newChunk.isLiquid(x, y, World.CHUNK_SIZE - 1) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, World.CHUNK_SIZE - 1))
-                        createSingle(x, y, z, voxelShape, DirectionEnum.SOUTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
-            }
+            createSliceEdgeSouth(verticesList, textureCoordsList, indicesList, brightnessList, world, chunk, x, y, z, voxelShape);
+
             voxelShape = null;
+    }
+
+    private void createSliceEdgeWest(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z, VoxelShape voxelShape)
+    {
+        if(x != World.CHUNK_SIZE - 1)
+            createSingle(x, y, z, voxelShape, DirectionEnum.WEST, true, 0.9f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        else
+        {
+            Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x + 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+            if(newChunk != null && newChunk.hasLoaded)
+                if(newChunk.getVoxelIDAtOffset(0, y, z) == 0 || (newChunk.isLiquid(0, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(0, y, z))
+                    createSingle(x, y, z, voxelShape, DirectionEnum.WEST, true, 0.9f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        }
+    }
+
+    private void createSliceEdgeEast(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z, VoxelShape voxelShape)
+    {
+        if(x != 0)
+            createSingle(x, y, z, voxelShape, DirectionEnum.EAST, true, 0.8f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        else
+        {
+            Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x - 1, chunk.chunkLoc.y, chunk.chunkLoc.z));
+            if(newChunk != null && newChunk.hasLoaded)
+                if(newChunk.getVoxelIDAtOffset(World.CHUNK_SIZE - 1, y, z) == 0 || (newChunk.isLiquid(World.CHUNK_SIZE - 1, y, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(World.CHUNK_SIZE - 1, y, z))
+                    createSingle(x, y, z, voxelShape, DirectionEnum.EAST, true, 0.8f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        }
+    }
+
+    private void createSliceEdgeUp(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z, VoxelShape voxelShape)
+    {
+        if(y != World.CHUNK_SIZE - 1)
+            createSingle(x, y, z, voxelShape, DirectionEnum.UP, true, 1f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        else
+        {
+            Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y + 1, chunk.chunkLoc.z));
+            if(newChunk != null && newChunk.hasLoaded)
+                if(newChunk.getVoxelIDAtOffset(x, 0, z) == 0 || (newChunk.isLiquid(x, 0, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, 0, z))
+                    createSingle(x, y, z, voxelShape, DirectionEnum.UP, true, 1f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        }
+    }
+
+    private void createSliceEdgeDown(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z, VoxelShape voxelShape)
+    {
+        if(y != 0)
+            createSingle(x, y, z, voxelShape, DirectionEnum.DOWN, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        else
+        {
+            Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y - 1, chunk.chunkLoc.z));
+            if(newChunk != null && chunk.hasLoaded)
+                if(newChunk.getVoxelIDAtOffset(x, World.CHUNK_SIZE - 1, z) == 0 || (newChunk.isLiquid(x, World.CHUNK_SIZE - 1, z) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, World.CHUNK_SIZE - 1, z))
+                    createSingle(x, y, z, voxelShape, DirectionEnum.DOWN, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        }
+    }
+
+    private void createSliceEdgeNorth(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z, VoxelShape voxelShape)
+    {
+        if(z != World.CHUNK_SIZE - 1)
+            createSingle(x, y, z, voxelShape, DirectionEnum.NORTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        else
+        {
+            Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z + 1));
+            if(newChunk != null && newChunk.hasLoaded)
+                if(newChunk.getVoxelIDAtOffset(x, y, 0) == 0 || (newChunk.isLiquid(x, y, 0) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, 0))
+                    createSingle(x, y, z, voxelShape, DirectionEnum.NORTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        }
+    }
+
+    private void createSliceEdgeSouth(ArrayList<Float> verticesList, ArrayList<Float> textureCoordsList, ArrayList<Integer> indicesList, ArrayList<Float> brightnessList, World world, Chunk chunk, int x, int y, int z, VoxelShape voxelShape)
+    {
+        if(z != 0)
+            createSingle(x, y, z, voxelShape, DirectionEnum.SOUTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        else
+        {
+            Chunk newChunk = world.getChunk(new Vector3f(chunk.chunkLoc.x, chunk.chunkLoc.y, chunk.chunkLoc.z - 1));
+            if(newChunk != null && newChunk.hasLoaded)
+                if(newChunk.getVoxelIDAtOffset(x, y, World.CHUNK_SIZE - 1) == 0 || (newChunk.isLiquid(x, y, World.CHUNK_SIZE - 1) && !chunk.isLiquid(x, y, z)) || !chunk.isSolid(x, y, World.CHUNK_SIZE - 1))
+                    createSingle(x, y, z, voxelShape, DirectionEnum.SOUTH, true, 0.7f, verticesList, textureCoordsList, indicesList, brightnessList, world, chunk);
+        }
     }
 }

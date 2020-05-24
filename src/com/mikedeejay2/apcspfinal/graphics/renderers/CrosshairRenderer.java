@@ -2,18 +2,12 @@ package com.mikedeejay2.apcspfinal.graphics.renderers;
 
 import com.mikedeejay2.apcspfinal.graphics.crosshair.Crosshair;
 import com.mikedeejay2.apcspfinal.graphics.shaders.CrosshairShader;
-import com.mikedeejay2.apcspfinal.graphics.shaders.FontShader;
 import com.mikedeejay2.apcspfinal.io.Window;
-import com.mikedeejay2.apcspfinal.loaders.font.creator.FontType;
-import com.mikedeejay2.apcspfinal.loaders.font.creator.GUIText;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 
