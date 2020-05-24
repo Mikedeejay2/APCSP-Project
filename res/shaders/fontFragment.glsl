@@ -1,9 +1,3 @@
-/*
- * Created using ThinMatrix's text
- * tutorial on Youtube. It's not the same
- * code, and I still coded it myself,
- * but the original idea was from that video.
-*/
 #version 330
 
 in vec2 pass_textureCoords;
