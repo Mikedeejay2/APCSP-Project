@@ -1,5 +1,6 @@
 package com.mikedeejay2.apcspfinal.world;
 
+import com.mikedeejay2.apcspfinal.utils.DirectionEnum;
 import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.world.chunk.runnables.ChunkConsumerRunnable;
 import com.mikedeejay2.apcspfinal.Main;
@@ -311,92 +312,60 @@ public class World implements Runnable
 
     public void addVoxelRelative(String voxelName, Vector3f currentPoint)
     {
-        boolean down, up, west, east, north, south;
+        DirectionEnum voxelFace = getDirectionFromCurrentPoint(currentPoint);
+        if(voxelFace == null) return;
+
+        float currentPointX = currentPoint.x, currentPointY = currentPoint.y, currentPointZ = currentPoint.z;
+
+        switch(voxelFace)
+        {
+            case DOWN: currentPointY--; break;
+            case UP: currentPointY++; break;
+            case WEST: currentPointX--; break;
+            case EAST: currentPointX++; break;
+            case NORTH: currentPointZ--; break;
+            case SOUTH: currentPointZ++; break;
+        }
+
+        int resultX = Math.round(currentPointX), resultY = Math.round(currentPointY), resultZ = Math.round(currentPointZ);
+
+        if(!isVoxelAtCoordinateLiquid(resultX, resultY, resultZ, true))
+            addVoxel(resultX, resultY, resultZ, voxelName);
+    }
+
+    private DirectionEnum getDirectionFromCurrentPoint(Vector3f currentPoint)
+    {
         if(currentPoint.y >= 0)
         {
-            down = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.6;
-            up = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.4;
+            if(Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51) return DirectionEnum.DOWN;
+            if(Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49) return DirectionEnum.UP;
         }
         else
         {
-            down = Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.4;
-            up = Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.6;
+            if(Math.abs(currentPoint.y % 1) < 0.5 && Math.abs(currentPoint.y % 1) > 0.49) return DirectionEnum.DOWN;
+            if(Math.abs(currentPoint.y % 1) > 0.5 && Math.abs(currentPoint.y % 1) < 0.51) return DirectionEnum.UP;
         }
         if(currentPoint.x >= 0)
         {
-            west = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.6;
-            east = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.4;
+            if(Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51) return DirectionEnum.WEST;
+            if(Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49) return DirectionEnum.EAST;
         }
         else
         {
-            west = Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.4;
-            east = Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.6;
+            if(Math.abs(currentPoint.x % 1) < 0.5 && Math.abs(currentPoint.x % 1) > 0.49) return DirectionEnum.WEST;
+            if(Math.abs(currentPoint.x % 1) > 0.5 && Math.abs(currentPoint.x % 1) < 0.51) return DirectionEnum.EAST;
         }
         if(currentPoint.z >= 0)
         {
-            north = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.6;
-            south = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.4;
+            if(Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51) return DirectionEnum.NORTH;
+            if(Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49) return DirectionEnum.SOUTH;
         }
         else
         {
-            north = Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.4;
-            south = Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.6;
+            if(Math.abs(currentPoint.z % 1) < 0.5 && Math.abs(currentPoint.z % 1) > 0.49) return DirectionEnum.NORTH;
+            if(Math.abs(currentPoint.z % 1) > 0.5 && Math.abs(currentPoint.z % 1) < 0.51) return DirectionEnum.SOUTH;
         }
-
-        int correctedX = currentPoint.x % CHUNK_SIZE < 0 ? Math.round(currentPoint.x % CHUNK_SIZE + CHUNK_SIZE) : Math.round(currentPoint.x % CHUNK_SIZE);
-        int correctedY = currentPoint.y % CHUNK_SIZE < 0 ? Math.round(currentPoint.y % CHUNK_SIZE + CHUNK_SIZE) : Math.round(currentPoint.y % CHUNK_SIZE);
-        int correctedZ = currentPoint.z % CHUNK_SIZE < 0 ? Math.round(currentPoint.z % CHUNK_SIZE + CHUNK_SIZE) : Math.round(currentPoint.z % CHUNK_SIZE);
-
-        float currentPointX = currentPoint.x;
-        float currentPointY = currentPoint.y;
-        float currentPointZ = currentPoint.z;
-
-        if(down)
-        {
-            currentPointY--;
-            correctedY--;
-            if(correctedY == -1) correctedY = 31;
-        }
-        else if(up)
-        {
-            currentPointY++;
-            correctedY++;
-            if(correctedY == 32) correctedY = 0;
-        }
-        if(west)
-        {
-            currentPointX--;
-            correctedX--;
-            if(correctedX == 0) currentPointX++;
-            if(correctedX == -1) correctedX = 31;
-        }
-        else if(east)
-        {
-            currentPointX++;
-            correctedX++;
-            if(correctedX == 31) currentPointX--;
-            if(correctedX == 32) correctedX = 0;
-        }
-        if(north)
-        {
-            currentPointZ--;
-            correctedZ--;
-            if(correctedZ == 0) currentPointZ++;
-            if(correctedZ == -1) correctedZ = 31;
-        }
-        else if(south)
-        {
-            currentPointZ++;
-            correctedZ++;
-            if(correctedZ == 31) currentPointZ--;
-            if(correctedZ == 32) correctedZ = 0;
-        }
-        if(correctedX == 32) correctedX = 0;
-        if(correctedY == 32) correctedY = 0;
-        if(correctedZ == 32) correctedZ = 0;
-        System.out.println(correctedX + ", " + correctedY + ", "  + correctedZ);
-        Chunk chunk = getChunkFromCoordinates(new Vector3f(currentPointX, currentPointY, currentPointZ));
-        if(chunk != null && (!chunk.containsVoxelAtOffsetLiquid(correctedX, correctedY, correctedZ, true))) chunk.addVoxel(correctedX, correctedY, correctedZ, voxelName);
+        return null;
     }
 
     public void addVoxel(int x, int y, int z, String voxelName)
