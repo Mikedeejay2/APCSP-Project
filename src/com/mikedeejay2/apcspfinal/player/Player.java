@@ -47,7 +47,7 @@ public class Player
     public void update(float delta)
     {
         playerGravity.update(velocity, delta);
-        camera.getRealPos().add(velocity);
+        camera.getWorldPos().add(velocity);
         velocity.set(0, 0, 0);
     }
 
@@ -138,7 +138,7 @@ public class Player
 
     public Vector3d getPosition()
     {
-        return camera.getRealPos();
+        return camera.getWorldPos();
     }
 
     public Camera getCamera()

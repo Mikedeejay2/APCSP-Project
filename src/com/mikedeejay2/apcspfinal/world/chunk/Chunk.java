@@ -8,6 +8,8 @@ import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.voxel.VoxelTypes;
 import org.joml.Vector3f;
 
+import static com.mikedeejay2.apcspfinal.world.World.CHUNK_SIZE;
+
 public class Chunk
 {
     public short[][][] voxels;
@@ -38,7 +40,7 @@ public class Chunk
         instanceWorld = world;
         main = Main.getInstance();
         this.chunkLoc = chunkLoc;
-        this.chunkCoords = new Vector3f(chunkLoc.x *  World.CHUNK_SIZE, chunkLoc.y * World.CHUNK_SIZE, chunkLoc.z * World.CHUNK_SIZE);
+        this.chunkCoords = new Vector3f(chunkLoc.x *  CHUNK_SIZE, chunkLoc.y * CHUNK_SIZE, chunkLoc.z * CHUNK_SIZE);
         hasLoaded = false;
         containsVoxels = false;
         shouldRender = false;
@@ -46,7 +48,7 @@ public class Chunk
 
     public void initVoxelArray()
     {
-        this.voxels = new short[World.CHUNK_SIZE][World.CHUNK_SIZE][World.CHUNK_SIZE];
+        this.voxels = new short[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     }
 
     public void populate()
@@ -68,175 +70,63 @@ public class Chunk
     public void updateNeighbors(boolean immediate)
     {
         Vector3f nextChunkLoc;
-        try
-        {
-            nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
-            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+        nextChunkLoc = new Vector3f(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+            instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
-            nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
-            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+        nextChunkLoc = new Vector3f(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+            instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
-            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
-            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+            instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
-            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
-            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+            instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
-            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
-            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+            instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
-            nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
-            if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
-                instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
+        nextChunkLoc = new Vector3f(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1);
+        if(instanceWorld.chunkAtChunkLoc(nextChunkLoc))
+            instanceWorld.getChunk(nextChunkLoc).rebuildChunkMesh(false, immediate);
 
             shouldUpdateNeighbors = false;
-        } catch(NullPointerException e) {System.out.println("bruh");}
 
     }
 
     public void updateNeighborsSmart(boolean immediate, float x, float y, float z)
     {
-        try
-        {
-            if(x == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z, immediate);
-            }
-
-            if(x == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z, immediate);
-            }
-
-            if(y == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z, immediate);
-            }
-
-            if(y == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z, immediate);
-            }
-
-            if(z == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y, chunkLoc.z + 1, immediate);
-            }
-
-            if(z == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y, chunkLoc.z - 1, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && y == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y + 1, chunkLoc.z, immediate);
-            }
-
-
-            if(x == 0 && y == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y - 1, chunkLoc.z, immediate);
-            }
-
-            if(x == 0 && y == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y + 1, chunkLoc.z, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && y == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y - 1, chunkLoc.z, immediate);
-            }
-
-            if(z == World.CHUNK_SIZE-1 && y == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z + 1, immediate);
-            }
-
-            if(z == 0 && y == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z - 1, immediate);
-            }
-
-            if(z == 0 && y == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y + 1, chunkLoc.z - 1, immediate);
-            }
-
-            if(z == World.CHUNK_SIZE-1 && y == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x, chunkLoc.y - 1, chunkLoc.z + 1, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && z == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z + 1, immediate);
-            }
-
-            if(x == 0 && z == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z - 1, immediate);
-            }
-
-            if(x == 0 && z == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y, chunkLoc.z + 1, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && z == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y, chunkLoc.z - 1, immediate);
-            }
-
-            if(x == 0 && y == 0 && z == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y - 1, chunkLoc.z - 1, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && y == World.CHUNK_SIZE-1 && z == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y + 1, chunkLoc.z + 1, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && y == 0 && z == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y - 1, chunkLoc.z - 1, immediate);
-            }
-
-            if(x == 0 && y == World.CHUNK_SIZE-1 && z == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y + 1, chunkLoc.z - 1, immediate);
-            }
-
-            if(x == 0 && y == 0 && z == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y - 1, chunkLoc.z + 1, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && y == World.CHUNK_SIZE-1 && z == 0)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y + 1, chunkLoc.z - 1, immediate);
-            }
-
-            if(x == 0 && y == World.CHUNK_SIZE-1 && z == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x - 1, chunkLoc.y + 1, chunkLoc.z + 1, immediate);
-            }
-
-            if(x == World.CHUNK_SIZE-1 && y == 0 && z == World.CHUNK_SIZE-1)
-            {
-                rebuildFromChunkLoc(chunkLoc.x + 1, chunkLoc.y - 1, chunkLoc.z + 1, immediate);
-            }
-
+            if(x == CHUNK_SIZE-1                                          ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z    ), immediate);
+            if(x == 0                                                     ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z    ), immediate);
+            if(                     y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
+            if(                     y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
+            if(                                          z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
+            if(                                          z == 0           ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
+            if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
+            if(x == 0            && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
+            if(x == 0            && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
+            if(x == CHUNK_SIZE-1 && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
+            if(z == CHUNK_SIZE-1 && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
+            if(z == 0            && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
+            if(z == 0            && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
+            if(z == CHUNK_SIZE-1 && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
+            if(x == CHUNK_SIZE-1                      && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
+            if(x == 0                                 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
+            if(x == 0                                 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
+            if(x == CHUNK_SIZE-1                      && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
+            if(x == 0            && y == 0            && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
+            if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
+            if(x == CHUNK_SIZE-1 && y == 0            && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
+            if(x == 0            && y == CHUNK_SIZE-1 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
+            if(x == 0            && y == 0            && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
+            if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
+            if(x == 0            && y == CHUNK_SIZE-1 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
+            if(x == CHUNK_SIZE-1 && y == 0            && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
             shouldUpdateNeighbors = false;
-        } catch(NullPointerException e) {System.out.println("bruh");}
-
     }
 
     public void rebuildFromChunkLoc(float x, float y, float z, boolean immediate)
@@ -307,9 +197,9 @@ public class Chunk
         }
 
         if(neighborChunk == null) return;
-        if(x < 0) x += World.CHUNK_SIZE; if(x >= World.CHUNK_SIZE) x -= World.CHUNK_SIZE;
-        if(y < 0) y += World.CHUNK_SIZE; if(y >= World.CHUNK_SIZE) y -= World.CHUNK_SIZE;
-        if(z < 0) z += World.CHUNK_SIZE; if(z >= World.CHUNK_SIZE) z -= World.CHUNK_SIZE;
+        if(x < 0) x += CHUNK_SIZE; if(x >= CHUNK_SIZE) x -= CHUNK_SIZE;
+        if(y < 0) y += CHUNK_SIZE; if(y >= CHUNK_SIZE) y -= CHUNK_SIZE;
+        if(z < 0) z += CHUNK_SIZE; if(z >= CHUNK_SIZE) z -= CHUNK_SIZE;
 
         neighborChunk.addVoxelWorldGen(x, y, z, voxelName);
     }
@@ -344,7 +234,7 @@ public class Chunk
 
     public boolean invalidCheck(int x, int y, int z)
     {
-        return x < 0 || y < 0 || z < 0 || x > World.CHUNK_SIZE-1 || y > World.CHUNK_SIZE-1 || z > World.CHUNK_SIZE-1 || !containsVoxels;
+        return x < 0 || y < 0 || z < 0 || x > CHUNK_SIZE-1 || y > CHUNK_SIZE-1 || z > CHUNK_SIZE-1 || !containsVoxels;
     }
 
     public Voxel getVoxelAtOffset(int x, int y, int z)
@@ -423,17 +313,17 @@ public class Chunk
 
     private boolean edgeCheck(float x, float y, float z)
     {
-        return x == 0 || y == 0 || z == 0 || x == World.CHUNK_SIZE-1 || y == World.CHUNK_SIZE-1 || z == World.CHUNK_SIZE-1;
+        return x == 0 || y == 0 || z == 0 || x == CHUNK_SIZE-1 || y == CHUNK_SIZE-1 || z == CHUNK_SIZE-1;
     }
 
     private boolean edgeCheckSingle(float x)
     {
-        return x == 0 || x == World.CHUNK_SIZE-1;
+        return x == 0 || x == CHUNK_SIZE-1;
     }
 
     public boolean inBounds(int x, int y, int z)
     {
-        return x < World.CHUNK_SIZE && y < World.CHUNK_SIZE && z < World.CHUNK_SIZE && x > -1 && y > -1 && z > -1;
+        return x < CHUNK_SIZE && y < CHUNK_SIZE && z < CHUNK_SIZE && x > -1 && y > -1 && z > -1;
     }
 
     public boolean isSolid(int x, int y, int z)

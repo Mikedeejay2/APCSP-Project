@@ -4,6 +4,7 @@ import com.mikedeejay2.apcspfinal.graphics.objects.Camera;
 import com.mikedeejay2.apcspfinal.io.Input;
 import com.mikedeejay2.apcspfinal.io.Window;
 import com.mikedeejay2.apcspfinal.Main;
+import com.mikedeejay2.apcspfinal.world.World;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -12,7 +13,7 @@ import org.joml.Vector4f;
 public class Raycast
 {
 
-    private static final int RECURSION_COUNT = 7;
+    private static final int ACCURACY = 100;
     private static final float RAY_RANGE = 7;
 
     private Vector3f currentRay;
@@ -22,12 +23,15 @@ public class Raycast
     private Matrix4f viewMatrix;
     private Camera camera;
 
+    World instanceWorld;
+
     public Raycast(Camera cam, Matrix4f projectionMatrix)
     {
         this.camera = cam;
         this.projectionMatrix = projectionMatrix;
         this.viewMatrix = new Matrix4f();
         Maths.createViewMatrix(camera, viewMatrix);
+        instanceWorld = Main.getInstance().getWorld();
     }
 
     public Vector3f getCurrentRay()
@@ -39,8 +43,8 @@ public class Raycast
     {
         Maths.createViewMatrix(camera, viewMatrix);
         currentRay = calculateMouseRay();
-        currentPoint = step(0, RAY_RANGE, currentRay, false);
-        if(currentPoint != null) currentPoint.add((float)camera.getRealPos().x, (float)camera.getRealPos().y, (float)camera.getRealPos().z);
+        currentPoint = step(currentRay, true);
+        if(currentPoint != null) currentPoint.add((float)camera.getWorldPos().x, (float)camera.getWorldPos().y, (float)camera.getWorldPos().z);
     }
 
     private Vector3f calculateMouseRay()
@@ -82,22 +86,24 @@ public class Raycast
         return projectionMatrix;
     }
 
-    private Vector3f getPointOnRay(Vector3f ray, float distance) {
+    private Vector3f getCoordinatesOnRay(Vector3f ray, float distance) {
         Vector3f start = new Vector3f(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
         Vector3f scaledRay = new Vector3f(ray.x * distance, ray.y * distance, ray.z * distance);
         return start.add(scaledRay);
     }
 
-    private Vector3f step(float start, float finish, Vector3f ray, boolean countLiquids)
+    private Vector3f step(Vector3f ray, boolean ignoreLiquids)
     {
-        for(int i = 0; i < finish*100; i++)
+        for(int i = 0; i < RAY_RANGE*ACCURACY; i++)
         {
-//            System.out.println((int)(ray.x + camera.getRealPos().x) + ", " + (int)(ray.y + camera.getRealPos().y) + ", " + (int) (ray.z + camera.getRealPos().z));
-            Vector3f vector = getPointOnRay(ray, start+((float)i/100));
-            if(Main.getInstance().getWorld().isVoxelAtCoordinate((int) Math.round((vector.x + camera.getRealPos().x)), (int) Math.round((vector.y + camera.getRealPos().y)), (int) Math.round((vector.z + camera.getRealPos().z)), true))
-            {
-                return vector;
-            }
+            Vector3f coords = getCoordinatesOnRay(ray, (float)i/ACCURACY);
+
+            if(instanceWorld.isVoxelAtCoordinate(
+                    (int) Math.round((coords.x + camera.getWorldPos().x)),
+                    (int) Math.round((coords.y + camera.getWorldPos().y)),
+                    (int) Math.round((coords.z + camera.getWorldPos().z)),
+                    ignoreLiquids))
+                return coords;
         }
         return null;
     }

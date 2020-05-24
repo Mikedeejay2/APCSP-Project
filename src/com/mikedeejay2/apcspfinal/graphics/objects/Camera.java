@@ -78,7 +78,7 @@ public class Camera
         return viewMatrix;
     }
 
-    public Vector3d getRealPos()
+    public Vector3d getWorldPos()
     {
         return realPos;
     }

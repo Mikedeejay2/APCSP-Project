@@ -50,7 +50,7 @@ public class DebugScreen
         if (isEnabled)
         {
             TextMaster.editText(fpsText, Window.getFPS() + " fps, " + main.getWorld().getChunkUpdates() + " chunk updates, " + main.getWorld().getAllChunksSize() + " chunks loaded");
-            TextMaster.editText(locationText, "X: " + Math.round(main.getCamera().getRealPos().x * 100) / 100f + ", Y: " + Math.round(main.getCamera().getRealPos().y * 100) / 100f + ", Z: " + Math.round(main.getCamera().getRealPos().z * 100) / 100f +
+            TextMaster.editText(locationText, "X: " + Math.round(main.getCamera().getWorldPos().x * 100) / 100f + ", Y: " + Math.round(main.getCamera().getWorldPos().y * 100) / 100f + ", Z: " + Math.round(main.getCamera().getWorldPos().z * 100) / 100f +
                     " (" + Math.round(main.getCamera().getYaw() * 100) / 100f + ", " + Math.round(main.getCamera().getPitch() * 100) / 100f + ")" + getDirection());
             TextMaster.editText(chunkLocationText, "Chunk Location " + main.getWorld().getPlayerChunk().x + ", " + main.getWorld().getPlayerChunk().y + ", " + main.getWorld().getPlayerChunk().z);
         }

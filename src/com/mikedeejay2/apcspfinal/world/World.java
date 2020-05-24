@@ -178,7 +178,7 @@ public class World implements Runnable
     {
         playerChunkPrevious = new Vector3f(playerChunk);
         playerPositionPrevious = new Vector3d(playerPosition);
-        playerPosition = instance.getCamera().getRealPos();
+        playerPosition = instance.getCamera().getWorldPos();
         playerChunk.x = (float)Math.floor(playerPosition.x/CHUNK_SIZE);
         playerChunk.y = (float)Math.floor(playerPosition.y/CHUNK_SIZE);
         playerChunk.z = (float)Math.floor(playerPosition.z/CHUNK_SIZE);
