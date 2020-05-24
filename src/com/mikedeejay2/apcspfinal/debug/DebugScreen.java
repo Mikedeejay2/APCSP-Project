@@ -49,7 +49,9 @@ public class DebugScreen
     {
         if (isEnabled)
         {
-            TextMaster.editText(fpsText, Window.getFPS() + " fps, " + main.getWorld().getChunkUpdates() + " chunk updates, " + main.getWorld().getAllChunksSize() + " chunks loaded");
+            TextMaster.editText(fpsText, Window.getFPS() + " fps, " +
+                    main.getWorld().getChunkUpdates() + " chunk updates, " +
+                    main.getWorld().getAllChunksSize() + " chunks loaded");
             TextMaster.editText(locationText,
                     "X: " + Math.round(main.getCamera().getWorldPos().x * 100) / 100f +
                             ", Y: " + Math.round(main.getCamera().getWorldPos().y * 100) / 100f +
