@@ -259,13 +259,22 @@ public class World implements Runnable
         return false;
     }
 
-    public boolean isVoxelAtCoordinate(int x, int y, int z, boolean liquid)
+    public void cleanUp()
+    {
+        for(Thread thread : chunkConsumerThreads)
+        {
+            thread.stop();
+        }
+        chunkProducerThread.stop();
+    }
+
+    public boolean isVoxelAtCoordinate(int x, int y, int z, boolean ignoreLiquids)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
         if(chunk != null)
         {
             if(!chunk.hasLoaded) return false;
-            return chunk.containsVoxelAtOffsetLiquid(getOffsetX(x), getOffsetY(y), getOffsetZ(z), liquid);
+            return chunk.containsVoxelAtOffset(getOffsetX(x), getOffsetY(y), getOffsetZ(z), ignoreLiquids);
         }
         return false;
     }
@@ -274,15 +283,6 @@ public class World implements Runnable
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
         if(chunk != null) chunk.removeVoxel(getOffsetX(x), getOffsetY(y), getOffsetZ(z));
-    }
-
-    public void cleanUp()
-    {
-        for(Thread thread : chunkConsumerThreads)
-        {
-            thread.stop();
-        }
-        chunkProducerThread.stop();
     }
 
     public void addVoxel(int x, int y, int z, String voxelName)

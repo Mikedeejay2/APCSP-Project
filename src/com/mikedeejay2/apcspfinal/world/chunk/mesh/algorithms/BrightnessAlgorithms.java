@@ -27,8 +27,8 @@ public class BrightnessAlgorithms
         {
             for (int i = 0; i < voxelShape.getVerticesEast().length/3f; i++)
             {
-                //genBrightnessWithChunkLoc(world, chunk, value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, -5.5f);
-                if(smoothLighting) genBrightness(world, chunk, worldLightColor.getSunColorR()*value, worldLightColor.getSunColorG()*value, worldLightColor.getSunColorB()*value, x, y, z, i, brightnessList, direction, AO_DEFAULT, false);
+                if(smoothLighting) genBrightness(world, chunk, worldLightColor.getSunColorR()*value, worldLightColor.getSunColorG()*value, worldLightColor.getSunColorB()*value,
+                        x, y, z, i, brightnessList, direction, AO_DEFAULT, false);
                 else brightnessList.add(value);
             }
         }
@@ -36,7 +36,8 @@ public class BrightnessAlgorithms
         {
             for (int i = 0; i < voxelShape.getVerticesEast().length/3f; i++)
             {
-                if(smoothLighting) genBrightness(world, chunk, worldLightColor.getSunColorR()*value, worldLightColor.getSunColorG()*value, worldLightColor.getSunColorB()*value, (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, AO_DEFAULT, true);
+                if(smoothLighting) genBrightness(world, chunk, worldLightColor.getSunColorR()*value, worldLightColor.getSunColorG()*value, worldLightColor.getSunColorB()*value,
+                        (int) (chunk.chunkCoords.x + x), (int) (chunk.chunkCoords.y + y), (int) (chunk.chunkCoords.z + z), i, brightnessList, direction, AO_DEFAULT, true);
                 else brightnessList.add(value);
             }
         }
@@ -257,7 +258,7 @@ public class BrightnessAlgorithms
         }
         else
         {
-            return chunk.containsVoxelAtOffsetLiquid(x, y, z, true);
+            return chunk.containsVoxelAtOffset(x, y, z, true);
         }
     }
 }

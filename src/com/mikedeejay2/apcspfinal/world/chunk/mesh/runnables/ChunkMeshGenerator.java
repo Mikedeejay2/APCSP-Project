@@ -4,7 +4,6 @@ import com.mikedeejay2.apcspfinal.Main;
 import com.mikedeejay2.apcspfinal.utils.DirectionEnum;
 import com.mikedeejay2.apcspfinal.voxel.Voxel;
 import com.mikedeejay2.apcspfinal.voxel.shape.VoxelShape;
-import com.mikedeejay2.apcspfinal.voxel.shape.VoxelShapeCube;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
 import com.mikedeejay2.apcspfinal.world.chunk.mesh.MeshRequest;
@@ -69,7 +68,6 @@ public class ChunkMeshGenerator
             textureCoords = new float[textureCoordsList.size()];
             indices = new int[indicesList.size()];
             brightness = new float[brightnessList.size()];
-//            System.out.println(vertices.length == 0 && brightness.length == 0 ? 1 : ((float)vertices.length / (float)brightness.length) + ", " + textureCoords.length + ", " + indices.length);
 
             convertAllToArrays(verticesList, vertices, textureCoordsList, textureCoords, indicesList, indices, brightnessList, brightness);
 

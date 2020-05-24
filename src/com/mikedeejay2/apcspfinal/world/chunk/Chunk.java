@@ -284,21 +284,6 @@ public class Chunk
             chunkEntity.setPosition(new Vector3f((float) (chunkCoords.x - instanceWorld.playerPosition.x), (float) (chunkCoords.y - instanceWorld.playerPosition.y), (float) (chunkCoords.z - instanceWorld.playerPosition.z)));
             Main.getInstance().getRenderer().processEntity(chunkEntity);
         }
-//        for(int x = 0; x < World.CHUNK_SIZE; x++)
-//        {
-//            for(int y = 0; y < World.CHUNK_SIZE; y++)
-//            {
-//                for(int z = 0; z < World.CHUNK_SIZE; z++)
-//                {
-//                    Vector3f position = new Vector3f(chunkCoords.x + x, chunkCoords.y + y, chunkCoords.z + z);
-//                    if(containsVoxelAtOffset(x, y, z))
-//                    {
-//                        getVoxelAtOffset(x, y, z).render();
-//                    }
-//                    position = null;
-//                }
-//            }
-//        }
     }
 
     public void addVoxelWorldGen(int x, int y, int z, String name)
@@ -335,14 +320,14 @@ public class Chunk
         return voxels[x][y][z] != 0;
     }
 
-    public boolean containsVoxelAtOffsetLiquid(int x, int y, int z, boolean liquid)
+    public boolean containsVoxelAtOffset(int x, int y, int z, boolean ignoreLiquid)
     {
         if(invalidCheck(x, y, z)) return false;
         int id = voxels[x][y][z];
         if(id == 0) return false;
         Voxel voxel = VoxelTypes.getFromID(id);
         if(voxel == null) return true;
-        if(liquid) return !voxel.isLiquid();
+        if(ignoreLiquid) return !voxel.isLiquid();
         return voxel.isLiquid();
     }
 

@@ -133,7 +133,7 @@ public class Main
             mousePicker.update();
             if(mousePicker.getCurrentPoint() != null)
             {
-                        player.addVoxel(mousePicker.getCurrentPoint());
+                player.addVoxel(mousePicker.getCurrentPoint());
             }
         }
     }
