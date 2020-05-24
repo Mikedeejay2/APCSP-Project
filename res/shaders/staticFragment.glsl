@@ -1,3 +1,9 @@
+/*
+ * This shader is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 #version 400 core
 
 in vec3 color;
@@ -12,13 +18,9 @@ uniform vec3 skyColor;
 
 void main(void)
 {
-    out_Color = texture(textureSampler, pass_textureCoords) * vec4(pass_brightness, 1.0);
-
     vec4 textureColor = texture(textureSampler, pass_textureCoords);
-    if(textureColor.a < 0.5)
-    {
-        discard;
-    }
+    if(textureColor.a < 0.1) discard;
 
+    out_Color = texture(textureSampler, pass_textureCoords) * vec4(pass_brightness, 1.0);
     out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
 }

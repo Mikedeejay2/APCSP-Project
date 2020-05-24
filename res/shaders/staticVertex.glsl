@@ -1,3 +1,9 @@
+/*
+ * This shader is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 #version 400 core
 
 in vec3 position;
@@ -14,9 +20,9 @@ uniform mat4 viewMatrix;
 
 out float visibility;
 
-const float density = 0.002; //0.002
-const float gradient = 10; //10
-const float gradient2 = 2; //2
+const float fogDensity = 0.002; //0.002
+const float fogGradient = 10; //10
+const float fogGradient2 = 2; //2
 
 void main(void)
 {
@@ -27,8 +33,8 @@ void main(void)
     color = vec3(position.x + 0.5, 0.0, position.y + 0.5);
 
     float distance = length(positionRelativeToCam.xyz);
-    visibility = exp(-pow((distance * density), gradient));
-    visibility = visibility * exp(-pow((distance * density), gradient2));
+    visibility = exp(-pow((distance * fogDensity), fogGradient));
+    visibility = visibility * exp(-pow((distance * density), fogGradient2));
     visibility = clamp(visibility, 0.0, 1.0);
 
     pass_brightness = brightness;

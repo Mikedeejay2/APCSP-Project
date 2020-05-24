@@ -3,7 +3,6 @@ package com.mikedeejay2.apcspfinal.world.generators;
 import com.mikedeejay2.apcspfinal.world.noise.LayeredNoiseGenerator;
 import com.mikedeejay2.apcspfinal.world.World;
 import com.mikedeejay2.apcspfinal.world.chunk.Chunk;
-import org.joml.SimplexNoise;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;

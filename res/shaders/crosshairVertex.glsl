@@ -1,3 +1,9 @@
+/*
+ * This code was created by me.
+ * I put this here because a lot of GLSL
+ * code looks very similar. Please keep
+ * this in mind when looking at GLSL code.
+*/
 #version 330
 
 in vec2 position;
