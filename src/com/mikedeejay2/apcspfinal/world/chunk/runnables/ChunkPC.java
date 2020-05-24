@@ -48,7 +48,6 @@ public class ChunkPC
                                     while (chunksToBeProcessed.size() == capacity) Thread.sleep(1);
                                     Chunk chunk = world.generateChunk(currentChunkLoc);
                                     chunksToBeProcessed.add(chunk);
-//                                    notify();
                                 }
                                 if(breakout) break;
                             }

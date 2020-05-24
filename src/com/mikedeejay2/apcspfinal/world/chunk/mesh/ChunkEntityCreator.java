@@ -55,7 +55,7 @@ public class ChunkEntityCreator
         ModelTexture modelTexture = VoxelTypes.getTextureAtlas().getTexture();
         TexturedModel texturedModel = new TexturedModel(model, modelTexture);
         Entity entity = new Entity(texturedModel, chunk.chunkCoords);
-//
+
         chunk.chunkEntity = entity;
         chunk.entityShouldBeRemade = false;
 

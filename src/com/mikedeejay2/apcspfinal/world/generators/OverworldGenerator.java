@@ -64,18 +64,10 @@ public class OverworldGenerator
     public void genFlat(Chunk chunk)
     {
         for (int x = 0; x < World.CHUNK_SIZE; x++)
-        {
             for (int z = 0; z < World.CHUNK_SIZE; z++)
-            {
                 if(chunk.getChunkLoc().y <= -1)
-                {
                     for(int y = 0; y < World.CHUNK_SIZE; y++)
-                    {
                         chunk.addVoxelWorldGen(x, y, z, "grass");
-                    }
-                }
-            }
-        }
     }
 
     public void generateTree(Chunk chunk, int x, int y, int z)

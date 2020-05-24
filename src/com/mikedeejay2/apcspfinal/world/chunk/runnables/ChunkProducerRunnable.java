@@ -19,8 +19,7 @@ public class ChunkProducerRunnable implements Runnable
     {
         try
         {
-            while(true)
-                chunkPC.produce(world);
+            while(true) chunkPC.produce(world);
         }
         catch (InterruptedException e)
         {

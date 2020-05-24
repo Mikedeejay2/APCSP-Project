@@ -20,10 +20,7 @@ public class ChunkConsumerRunnable implements Runnable
     {
         try
         {
-            while(true)
-            {
-                chunkPC.consume(world);
-            }
+            while(true) chunkPC.consume(world);
         }
         catch (InterruptedException e) {}
     }

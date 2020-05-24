@@ -100,33 +100,33 @@ public class Chunk
 
     public void updateNeighborsSmart(boolean immediate, float x, float y, float z)
     {
-            if(x == CHUNK_SIZE-1                                          ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z    ), immediate);
-            if(x == 0                                                     ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z    ), immediate);
-            if(                     y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
-            if(                     y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
-            if(                                          z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
-            if(                                          z == 0           ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
-            if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
-            if(x == 0            && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
-            if(x == 0            && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
-            if(x == CHUNK_SIZE-1 && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
-            if(z == CHUNK_SIZE-1 && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
-            if(z == 0            && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
-            if(z == 0            && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
-            if(z == CHUNK_SIZE-1 && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
-            if(x == CHUNK_SIZE-1                      && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
-            if(x == 0                                 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
-            if(x == 0                                 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
-            if(x == CHUNK_SIZE-1                      && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
-            if(x == 0            && y == 0            && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
-            if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
-            if(x == CHUNK_SIZE-1 && y == 0            && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
-            if(x == 0            && y == CHUNK_SIZE-1 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
-            if(x == 0            && y == 0            && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
-            if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
-            if(x == 0            && y == CHUNK_SIZE-1 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
-            if(x == CHUNK_SIZE-1 && y == 0            && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
-            shouldUpdateNeighbors = false;
+        if(x == CHUNK_SIZE-1                                          ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z    ), immediate);
+        if(x == 0                                                     ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z    ), immediate);
+        if(                     y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
+        if(                     y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
+        if(                                          z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
+        if(                                          z == 0           ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
+        if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
+        if(x == 0            && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
+        if(x == 0            && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z    ), immediate);
+        if(x == CHUNK_SIZE-1 && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z    ), immediate);
+        if(z == CHUNK_SIZE-1 && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
+        if(z == 0            && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
+        if(z == 0            && y == CHUNK_SIZE-1                     ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
+        if(z == CHUNK_SIZE-1 && y == 0                                ) rebuildFromChunkLoc((chunkLoc.x    ), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
+        if(x == CHUNK_SIZE-1                      && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
+        if(x == 0                                 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
+        if(x == 0                                 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y    ), (chunkLoc.z + 1), immediate);
+        if(x == CHUNK_SIZE-1                      && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y    ), (chunkLoc.z - 1), immediate);
+        if(x == 0            && y == 0            && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
+        if(x == CHUNK_SIZE-1 && y == 0            && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z - 1), immediate);
+        if(x == 0            && y == CHUNK_SIZE-1 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
+        if(x == 0            && y == 0            && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
+        if(x == CHUNK_SIZE-1 && y == 0            && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y - 1), (chunkLoc.z + 1), immediate);
+        if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1 && z == 0           ) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z - 1), immediate);
+        if(x == 0            && y == CHUNK_SIZE-1 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x - 1), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
+        if(x == CHUNK_SIZE-1 && y == CHUNK_SIZE-1 && z == CHUNK_SIZE-1) rebuildFromChunkLoc((chunkLoc.x + 1), (chunkLoc.y + 1), (chunkLoc.z + 1), immediate);
+        shouldUpdateNeighbors = false;
     }
 
     public void rebuildFromChunkLoc(float x, float y, float z, boolean immediate)
@@ -284,8 +284,6 @@ public class Chunk
     {
         chunkEntity.destroy();
         chunkEntity = null;
-//        chunkLoc = null;
-//        chunkCoords = null;
         verticesTemp = null;
         textureCoordsTemp = null;
         indicesTemp = null;
