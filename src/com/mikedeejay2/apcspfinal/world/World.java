@@ -255,17 +255,7 @@ public class World implements Runnable
     public boolean isVoxelAtCoordinate(int x, int y, int z)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
-        if(chunk != null)
-        {
-            if(!chunk.hasLoaded) return false;
-            int newX = ((x)%(CHUNK_SIZE));
-            int newY = ((y)%(CHUNK_SIZE));
-            int newZ = ((z)%(CHUNK_SIZE));
-            if(newX < 0) newX += (CHUNK_SIZE);
-            if(newY < 0) newY += (CHUNK_SIZE);
-            if(newZ < 0) newZ += (CHUNK_SIZE);
-            return chunk.containsVoxelAtOffset(newX, newY, newZ);
-        }
+        if(chunk != null) return chunk.containsVoxelAtOffset(getOffsetX(x), getOffsetY(y), getOffsetZ(z));
         return false;
     }
 
@@ -275,13 +265,7 @@ public class World implements Runnable
         if(chunk != null)
         {
             if(!chunk.hasLoaded) return false;
-            int newX = ((x)%(CHUNK_SIZE));
-            int newY = ((y)%(CHUNK_SIZE));
-            int newZ = ((z)%(CHUNK_SIZE));
-            if(newX < 0) newX += (CHUNK_SIZE);
-            if(newY < 0) newY += (CHUNK_SIZE);
-            if(newZ < 0) newZ += (CHUNK_SIZE);
-            return chunk.containsVoxelAtOffsetLiquid(newX, newY, newZ, liquid);
+            return chunk.containsVoxelAtOffsetLiquid(getOffsetX(x), getOffsetY(y), getOffsetZ(z), liquid);
         }
         return false;
     }
@@ -289,16 +273,7 @@ public class World implements Runnable
     public void removeVoxel(int x, int y, int z)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
-        if(chunk != null)
-        {
-            int newX = ((x)%(CHUNK_SIZE));
-            int newY = ((y)%(CHUNK_SIZE));
-            int newZ = ((z)%(CHUNK_SIZE));
-            if(newX < 0) newX += (CHUNK_SIZE);
-            if(newY < 0) newY += (CHUNK_SIZE);
-            if(newZ < 0) newZ += (CHUNK_SIZE);
-            chunk.removeVoxel(newX, newY, newZ);
-        }
+        if(chunk != null) chunk.removeVoxel(getOffsetX(x), getOffsetY(y), getOffsetZ(z));
     }
 
     public void cleanUp()
@@ -308,6 +283,12 @@ public class World implements Runnable
             thread.stop();
         }
         chunkProducerThread.stop();
+    }
+
+    public void addVoxel(int x, int y, int z, String voxelName)
+    {
+        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
+        if(chunk != null) chunk.addVoxel(getOffsetX(x), getOffsetY(y), getOffsetZ(z), voxelName);
     }
 
     public void addVoxelRelative(String voxelName, Vector3f currentPoint)
@@ -333,65 +314,45 @@ public class World implements Runnable
             addVoxel(resultX, resultY, resultZ, voxelName);
     }
 
-    public void addVoxel(int x, int y, int z, String voxelName)
+    public int getOffsetX(int x)
     {
-        Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
-        if(chunk != null)
-        {
-            int newX = ((x)%(CHUNK_SIZE));
-            int newY = ((y)%(CHUNK_SIZE));
-            int newZ = ((z)%(CHUNK_SIZE));
-            if(newX < 0) newX += (CHUNK_SIZE);
-            if(newY < 0) newY += (CHUNK_SIZE);
-            if(newZ < 0) newZ += (CHUNK_SIZE);
-            chunk.addVoxel(newX, newY, newZ, voxelName);
-        }
+        int newX = ((x)%(CHUNK_SIZE));
+        if(newX < 0) newX += (CHUNK_SIZE);
+        return newX;
+    }
+
+    public int getOffsetY(int y)
+    {
+        int newY = ((y)%(CHUNK_SIZE));
+        if(newY < 0) newY += (CHUNK_SIZE);
+        return newY;
+    }
+
+    public int getOffsetZ(int z)
+    {
+        int newZ = ((z)%(CHUNK_SIZE));
+        if(newZ < 0) newZ += (CHUNK_SIZE);
+        return newZ;
     }
 
     public void addVoxelWorldGen(int x, int y, int z, String voxelName)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
-        if(chunk != null)
-        {
-            int newX = ((x)%(CHUNK_SIZE));
-            int newY = ((y)%(CHUNK_SIZE));
-            int newZ = ((z)%(CHUNK_SIZE));
-            if(newX < 0) newX += (CHUNK_SIZE);
-            if(newY < 0) newY += (CHUNK_SIZE);
-            if(newZ < 0) newZ += (CHUNK_SIZE);
-            chunk.addVoxelWorldGen(newX, newY, newZ, voxelName);
-        }
+        if(chunk != null) chunk.addVoxelWorldGen(getOffsetX(x), getOffsetY(y), getOffsetZ(z), voxelName);
     }
 
     public void addVoxelWorldGenNoOverride(int x, int y, int z, String voxelName)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
-        if(chunk != null)
-        {
-            int newX = ((x)%(CHUNK_SIZE));
-            int newY = ((y)%(CHUNK_SIZE));
-            int newZ = ((z)%(CHUNK_SIZE));
-            if(newX < 0) newX += (CHUNK_SIZE);
-            if(newY < 0) newY += (CHUNK_SIZE);
-            if(newZ < 0) newZ += (CHUNK_SIZE);
-            if(!chunk.containsVoxelAtOffset(newX, newY, newZ)) chunk.addVoxelWorldGen(newX, newY, newZ, voxelName);
-        }
+        if(chunk != null) if(!chunk.containsVoxelAtOffset(getOffsetX(x), getOffsetY(y), getOffsetZ(z)))
+            chunk.addVoxelWorldGen(getOffsetX(x), getOffsetY(y), getOffsetZ(z), voxelName);
     }
 
     //Broken?
-    public Voxel getVoxel(float x, float y, float z)
+    public Voxel getVoxel(int x, int y, int z)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
-        if(chunk != null)
-        {
-            int newX = (int)((x)%(CHUNK_SIZE));
-            int newY = (int)((y)%(CHUNK_SIZE));
-            int newZ = (int)((z)%(CHUNK_SIZE));
-            if(newX < 0) newX += (CHUNK_SIZE);
-            if(newY < 0) newY += (CHUNK_SIZE);
-            if(newZ < 0) newZ += (CHUNK_SIZE);
-            chunk.getVoxelAtOffset(newX, newY, newZ);
-        }
+        if(chunk != null)chunk.getVoxelAtOffset(getOffsetX(x), getOffsetY(y), getOffsetZ(z));
         return null;
     }
 
