@@ -2,6 +2,12 @@ package com.mikedeejay2.apcspfinal.graphics.models;
 
 import com.mikedeejay2.apcspfinal.graphics.textures.ModelTexture;
 
+/*
+ * This class is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 public class TexturedModel
 {
     private RawModel rawModel;

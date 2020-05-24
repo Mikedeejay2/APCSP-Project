@@ -12,6 +12,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
+/*
+ * This class is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 public abstract class ShaderProgram
 {
     private int programID;

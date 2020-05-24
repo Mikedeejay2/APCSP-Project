@@ -16,6 +16,12 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL30.*;
 
+/*
+ * This class is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 public class Loader
 {
     private List<Integer> vaos = new ArrayList<Integer>();

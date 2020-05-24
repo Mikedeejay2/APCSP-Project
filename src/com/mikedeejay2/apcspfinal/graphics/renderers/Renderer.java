@@ -16,6 +16,12 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
+/*
+ * This class is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 public class Renderer
 {
     private Matrix4f transformationMatrix;

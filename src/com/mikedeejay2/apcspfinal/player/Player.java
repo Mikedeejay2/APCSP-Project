@@ -210,4 +210,19 @@ public class Player
     {
         return currentBlock;
     }
+
+    public boolean isJumping()
+    {
+        return jumping;
+    }
+
+    public int getCurrentBlockIndex()
+    {
+        return currentBlockIndex;
+    }
+
+    public String getCurrentBlock()
+    {
+        return currentBlock;
+    }
 }

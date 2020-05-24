@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+/*
+ * This class was based off of ThinMatrix's Youtube game engine
+ * tutorials, but had to be completely programmed from scratch
+ * because I'm using a newer version of LWJGL3.
+ */
 public class Maths
 {
     public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry, float rz, float scale, Matrix4f matrix)

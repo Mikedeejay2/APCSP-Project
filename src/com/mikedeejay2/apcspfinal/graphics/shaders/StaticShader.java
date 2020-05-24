@@ -5,6 +5,11 @@ import com.mikedeejay2.apcspfinal.utils.Maths;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+/*
+ * This class was based off of ThinMatrix's Youtube game engine
+ * tutorials, but had to be completely programmed from scratch
+ * because I'm using a newer version of LWJGL3.
+ */
 public class StaticShader extends ShaderProgram
 {
     private static final String VERTEX_FILE = "res/shaders/staticVertex.glsl";

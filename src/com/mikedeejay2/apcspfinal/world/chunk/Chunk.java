@@ -338,4 +338,44 @@ public class Chunk
         if(voxels[x][y][z] == 0) return false;
         return VoxelTypes.getFromID(voxels[x][y][z]).isLiquid();
     }
+
+    public short[][][] getVoxels()
+    {
+        return voxels;
+    }
+
+    public Entity getChunkEntity()
+    {
+        return chunkEntity;
+    }
+
+    public boolean isHasLoaded()
+    {
+        return hasLoaded;
+    }
+
+    public boolean isContainsVoxels()
+    {
+        return containsVoxels;
+    }
+
+    public boolean isShouldUpdateNeighbors()
+    {
+        return shouldUpdateNeighbors;
+    }
+
+    public boolean isEntityShouldBeRemade()
+    {
+        return entityShouldBeRemade;
+    }
+
+    public boolean isShouldRender()
+    {
+        return shouldRender;
+    }
+
+    public boolean isAlreadyBeingCalculated()
+    {
+        return isAlreadyBeingCalculated;
+    }
 }

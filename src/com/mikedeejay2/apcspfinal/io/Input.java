@@ -13,6 +13,9 @@ import java.util.Arrays;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+/*
+ * Based off the GLFW wiki
+ */
 public class Input
 {
     private static Main instance = Main.getInstance();

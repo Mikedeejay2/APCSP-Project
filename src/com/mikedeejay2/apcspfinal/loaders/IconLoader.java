@@ -7,6 +7,11 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.stb.STBImage.stbi_load;
 
+/*
+ * Concepts borrowed from LWJGL3 wiki.
+ * Code was written from mostly scratch.
+ * (besides the mallocInt part)
+ */
 public class IconLoader
 {
     public ByteBuffer getImage()

@@ -19,6 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * This class is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 public class MasterRenderer
 {
     private StaticShader shader = new StaticShader();

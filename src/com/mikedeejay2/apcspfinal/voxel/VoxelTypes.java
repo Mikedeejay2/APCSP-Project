@@ -78,4 +78,14 @@ public class VoxelTypes
     {
         return AMT_OF_VOXELS;
     }
+
+    public static HashMap<String, Voxel> getVoxelsByName()
+    {
+        return voxelsByName;
+    }
+
+    public static Voxel[] getVoxelsByID()
+    {
+        return voxelsByID;
+    }
 }

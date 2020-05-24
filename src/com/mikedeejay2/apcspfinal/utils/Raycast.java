@@ -10,9 +10,16 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+/*
+ * This class is based off of ThinMatrix's Youtube tutorial
+ * "Mouse Picking", but the the majority of the algorithms
+ * didn't work because they depended on other methods
+ * from his other tutorials and therefore the entire class
+ * was programmed from scratch with the ideas taught from the
+ * tutorial.
+ */
 public class Raycast
 {
-
     private static final int ACCURACY = 100;
     private static final float RAY_RANGE = 7;
 

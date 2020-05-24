@@ -348,7 +348,6 @@ public class World implements Runnable
             chunk.addVoxelWorldGen(getOffsetX(x), getOffsetY(y), getOffsetZ(z), voxelName);
     }
 
-    //Broken?
     public Voxel getVoxel(int x, int y, int z)
     {
         Chunk chunk = getChunkFromCoordinates(new Vector3f(x, y ,z));
@@ -359,5 +358,15 @@ public class World implements Runnable
     public WorldLightColor getWorldLightColor()
     {
         return worldLightColor;
+    }
+
+    public Vector3d getPlayerPositionPrevious()
+    {
+        return playerPositionPrevious;
+    }
+
+    public Vector3f getPlayerChunkPrevious()
+    {
+        return playerChunkPrevious;
     }
 }

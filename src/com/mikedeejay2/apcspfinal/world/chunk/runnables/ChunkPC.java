@@ -72,6 +72,5 @@ public class ChunkPC
                 world.chunksProcessedThisTick++;
             }
             catch(IllegalMonitorStateException e) {}
-//            notify();
     }
 }

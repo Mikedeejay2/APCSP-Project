@@ -4,6 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Heavily modified version of ThinMatrix's
+ * text rendering tutorial. Made things a ton
+ * more efficient.
+ */
 public class TextMeshCreator
 {
 	protected static final double LINE_HEIGHT = 0.03f;

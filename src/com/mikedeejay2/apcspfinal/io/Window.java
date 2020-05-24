@@ -11,6 +11,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.*;
 import static org.lwjgl.opengl.GL11.*;
 
+/*
+ * Based off the GLFW wiki
+ */
 public class Window
 {
     private Main instance = Main.getInstance();

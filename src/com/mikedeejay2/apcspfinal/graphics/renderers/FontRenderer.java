@@ -12,6 +12,12 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 
+/*
+ * This class is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 public class FontRenderer {
 
 	private FontShader shader;

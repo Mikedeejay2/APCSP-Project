@@ -10,21 +10,20 @@ public class PerlinNoiseGenerator {
 
     private Random random = new Random();
     private int seed;
-    private int xOffset = 0;
-    private int zOffset = 0;
+    private int offsetX = 0;
+    private int offsetZ = 0;
 
     public PerlinNoiseGenerator() {
         this.seed = 392874598;
     }
 
-    //only works with POSITIVE gridX and gridZ values!
     public PerlinNoiseGenerator(int gridX, int gridZ, int vertexCount, int seed) {
         this.seed = seed;
-        xOffset = gridX * (vertexCount-1);
-        zOffset = gridZ * (vertexCount-1);
+        offsetX = gridX * (vertexCount-1);
+        offsetZ = gridZ * (vertexCount-1);
     }
 
-    public float generateHeight(int x, int z) {
+    public float genNoise(int x, int z) {
 
         x = x < 0 ? -x : x;
         z = z < 0 ? -z : z;
@@ -34,23 +33,23 @@ public class PerlinNoiseGenerator {
         for(int i=0;i<OCTAVES;i++){
             float freq = (float) (Math.pow(2, i) / d);
             float amp = (float) Math.pow(ROUGHNESS, i) * AMPLITUDE;
-            total += getInterpolatedNoise((x+xOffset)*freq, (z + zOffset)*freq) * amp;
+            total += getMixedNoise((x+ offsetX)*freq, (z + offsetZ)*freq) * amp;
         }
 
         return (float) (int) total;
 
     }
 
-    private float getInterpolatedNoise(float x, float z){
+    private float getMixedNoise(float x, float z){
         int intX = (int) x;
         int intZ = (int) z;
         float fracX = x - intX;
         float fracZ = z - intZ;
 
-        float v1 = getSmoothNoise(intX, intZ);
-        float v2 = getSmoothNoise(intX + 1, intZ);
-        float v3 = getSmoothNoise(intX, intZ + 1);
-        float v4 = getSmoothNoise(intX + 1, intZ + 1);
+        float v1 = genSmoothNoise(intX, intZ);
+        float v2 = genSmoothNoise(intX + 1, intZ);
+        float v3 = genSmoothNoise(intX, intZ + 1);
+        float v4 = genSmoothNoise(intX + 1, intZ + 1);
         float i1 = interpolate(v1, v2, fracX);
         float i2 = interpolate(v3, v4, fracX);
         return interpolate(i1, i2, fracZ);
@@ -62,16 +61,16 @@ public class PerlinNoiseGenerator {
         return a * (1f - f) + b * f;
     }
 
-    private float getSmoothNoise(int x, int z) {
-        float corners = (getNoise(x - 1, z - 1) + getNoise(x + 1, z - 1) + getNoise(x - 1, z + 1)
-                + getNoise(x + 1, z + 1)) / 16f;
-        float sides = (getNoise(x - 1, z) + getNoise(x + 1, z) + getNoise(x, z - 1)
-                + getNoise(x, z + 1)) / 8f;
-        float center = getNoise(x, z) / 4f;
+    private float genSmoothNoise(int x, int z) {
+        float corners = (createNoise(x - 1, z - 1) + createNoise(x + 1, z - 1) + createNoise(x - 1, z + 1)
+                + createNoise(x + 1, z + 1)) / 16f;
+        float sides = (createNoise(x - 1, z) + createNoise(x + 1, z) + createNoise(x, z - 1)
+                + createNoise(x, z + 1)) / 8f;
+        float center = createNoise(x, z) / 4f;
         return corners + sides + center;
     }
 
-    private float getNoise(int x, int z) {
+    private float createNoise(int x, int z) {
         random.setSeed(x * 49632 + z * 325176 + seed);
         return random.nextFloat() * 2f - 1f;
     }

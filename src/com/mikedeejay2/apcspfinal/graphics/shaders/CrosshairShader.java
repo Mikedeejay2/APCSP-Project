@@ -3,6 +3,12 @@ package com.mikedeejay2.apcspfinal.graphics.shaders;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+/*
+ * This class is loosely organized off of ThinMatrix's
+ * LWJGL tutorials, but was created by me without
+ * rewatching any tutorials. I learned LWJGL from ThinMatrix,
+ * so similarities will be visible.
+ */
 public class CrosshairShader extends ShaderProgram
 {
 

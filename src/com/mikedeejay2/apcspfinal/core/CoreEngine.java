@@ -4,6 +4,11 @@ import com.mikedeejay2.apcspfinal.io.Input;
 import com.mikedeejay2.apcspfinal.io.Window;
 import com.mikedeejay2.apcspfinal.Main;
 
+/*
+ * This class is loosely organized off of BennyBox's
+ * LWJGL game engine series, but was created by me without
+ * rewatching any tutorials.
+ */
 public class CoreEngine implements Runnable
 {
     private boolean isRunning;

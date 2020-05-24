@@ -124,7 +124,10 @@ public class Main
             mousePicker.update();
             if(mousePicker.getCurrentPoint() != null)
             {
-                player.removeVoxel(Math.round(mousePicker.getCurrentPoint().x), Math.round(mousePicker.getCurrentPoint().y), Math.round(mousePicker.getCurrentPoint().z));
+                player.removeVoxel(
+                        Math.round(mousePicker.getCurrentPoint().x),
+                        Math.round(mousePicker.getCurrentPoint().y),
+                        Math.round(mousePicker.getCurrentPoint().z));
             }
 
         }
@@ -229,5 +232,25 @@ public class Main
     public ChunkEntityCreator getEntityCreator()
     {
         return entityCreator;
+    }
+
+    public Crosshair getCrosshair()
+    {
+        return crosshair;
+    }
+
+    public CrosshairRenderer getCrosshairRenderer()
+    {
+        return crosshairRenderer;
+    }
+
+    public Player getPlayer()
+    {
+        return player;
+    }
+
+    public Raycast getMousePicker()
+    {
+        return mousePicker;
     }
 }

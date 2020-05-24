@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * Heavily modified version of ThinMatrix's
+ * text rendering tutorial. Made things a ton
+ * more efficient.
+ */
 public class TextMaster
 {
     private static Loader loader;

@@ -103,4 +103,8 @@ public class OverworldGenerator
                         instanceWorld.addVoxelWorldGenNoOverride(leafX, leafY, leafZ, "leaves");
     }
 
+    public static long getSeed()
+    {
+        return seed;
+    }
 }
